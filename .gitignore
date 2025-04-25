@@ -1,0 +1,46 @@
+# Gradle
+.gradle/
+**/build/
+local.properties
+.gradle-local/
+
+# Android Studio
+.idea/
+*.iml
+.DS_Store
+
+# .idea specific (safe to ignore if you're not sharing IDE settings)
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# NDK / CMake
+.cxx/
+.externalNativeBuild/
+
+# Logs / Test captures / Outputs
+captures/
+*.log
+
+# Keystore and credentials
+*.jks
+*.keystore
+*.key
+*.pem
+*.properties
+
+# Firebase / Google Services
+google-services.json
+
+# Kotlin / Java
+.kotlinc/
+
+# Misc
+*.apk
+*.ap_
+
+# VSCode (if you use it for editing)
+.vscode/
