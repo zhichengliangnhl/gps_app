@@ -1,7 +1,6 @@
 # Gradle
 .gradle/
 **/build/
-local.properties
 .gradle-local/
 
 # Android Studio
@@ -30,7 +29,6 @@ captures/
 *.keystore
 *.key
 *.pem
-*.properties
 
 # Firebase / Google Services
 google-services.json
