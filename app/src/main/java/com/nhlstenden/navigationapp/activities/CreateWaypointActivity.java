@@ -1,4 +1,4 @@
-package activities;
+package com.nhlstenden.navigationapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.nhlstenden.navigationapp.R;
 
-import models.Waypoint;
+import com.nhlstenden.navigationapp.models.Waypoint;
 
 public class CreateWaypointActivity extends AppCompatActivity {
 

@@ -1,19 +1,18 @@
-package activities;
+package com.nhlstenden.navigationapp.activities;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import adapters.FolderAdapter; // ← UPDATED
-
-import com.nhlstenden.navigationapp.R; // keep this import if your app package name is still com.nhlstenden.navigationapp
+import com.nhlstenden.navigationapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.nhlstenden.navigationapp.adapters.FolderAdapter;
 
 public class FolderActivity extends AppCompatActivity {
 

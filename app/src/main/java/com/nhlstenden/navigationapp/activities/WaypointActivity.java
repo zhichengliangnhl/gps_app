@@ -1,4 +1,4 @@
-package activities;
+package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import com.nhlstenden.navigationapp.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapters.WaypointAdapter;
-import models.Waypoint;
+import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.models.Waypoint;
 
 public class WaypointActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package adapters;
+package com.nhlstenden.navigationapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import com.nhlstenden.navigationapp.R;
 
 import java.util.List;
 
-import models.Waypoint;
+import com.nhlstenden.navigationapp.models.Waypoint;
 
 public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHolder> {
 

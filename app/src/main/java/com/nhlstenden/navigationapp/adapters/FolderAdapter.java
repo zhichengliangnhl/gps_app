@@ -1,4 +1,4 @@
-package adapters;
+package com.nhlstenden.navigationapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nhlstenden.navigationapp.R; // keep this import
+import com.nhlstenden.navigationapp.R;
 
 import java.util.List;
 
