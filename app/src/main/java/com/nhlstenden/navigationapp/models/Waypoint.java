@@ -1,25 +1,67 @@
 package com.nhlstenden.navigationapp.models;
 
-import java.io.Serializable;
-
-public class Waypoint implements Serializable {
+public class Waypoint {
+    private String id;
     private String name;
     private String description;
-    private String photoUri;
-    private double latitude;
-    private double longitude;
+    private String imageUri;
+    private double lat;
+    private double lng;
 
-    public Waypoint(String name, String description, String photoUri, double latitude, double longitude) {
+    public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.photoUri = photoUri;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.imageUri = imageUri;
+        this.lat = lat;
+        this.lng = lng;
     }
 
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public String getPhotoUri() { return photoUri; }
-    public double getLatitude() { return latitude; }
-    public double getLongitude() { return longitude; }
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
 }

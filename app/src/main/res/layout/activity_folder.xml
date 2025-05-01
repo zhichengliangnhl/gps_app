@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f8f5f0">
+
+    <EditText
+        android:id="@+id/folderNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Folder name"
+        android:backgroundTint="#FF8C42"
+        android:layout_marginBottom="8dp"/>
 
     <Button
         android:id="@+id/addFolderButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add New Folder" />
+        android:text="Add New Folder"
+        android:backgroundTint="#34b3a0"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFolders"

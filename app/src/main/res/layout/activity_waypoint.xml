@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_waypoint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#f8f5f0">
-
-    <Button
-        android:id="@+id/createWaypointButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create New Waypoint"
-        android:backgroundTint="#FF8C42"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp"
-        android:layout_gravity="center"/>
+    android:background="#121212"
+    tools:context=".activities.WaypointActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewWaypoints"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnAddWaypoint"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btnAddWaypoint"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:text="+"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="24dp"
+        android:background="@drawable/circular_button"
+        android:elevation="6dp" />
+
+</RelativeLayout>

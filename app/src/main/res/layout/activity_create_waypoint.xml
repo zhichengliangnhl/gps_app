@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="#f8f5f0">
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,46 +10,55 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/nameEditText"
+            android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Waypoint Name"
-            android:backgroundTint="#FF8C42"
-            android:layout_marginBottom="12dp"/>
+            android:hint="Name"
+            android:background="@android:drawable/editbox_background"
+            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:padding="10dp" />
 
         <EditText
-            android:id="@+id/descriptionEditText"
+            android:id="@+id/etDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
-            android:backgroundTint="#FF8C42"
-            android:layout_marginBottom="12dp"/>
-
-        <Button
-            android:id="@+id/selectPhotoButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Photo"
-            android:backgroundTint="#34b3a0"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:background="@android:drawable/editbox_background"
+            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:padding="10dp"
+            android:layout_marginTop="12dp" />
 
         <ImageView
-            android:id="@+id/selectedPhotoImageView"
+            android:id="@+id/imagePreview"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginTop="16dp"
             android:scaleType="centerCrop"
-            android:background="#cccccc"
-            android:layout_marginBottom="12dp" />
+            android:background="@android:color/darker_gray" />
 
         <Button
-            android:id="@+id/saveWaypointButton"
-            android:layout_width="match_parent"
+            android:id="@+id/btnChooseImage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Waypoint"
-            android:backgroundTint="#FF8C42"
-            android:textColor="#FFFFFF" />
+            android:text="Choose Image"
+            android:layout_marginTop="8dp" />
 
+        <Button
+            android:id="@+id/btnSaveWaypoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#B00020"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
-
 </ScrollView>

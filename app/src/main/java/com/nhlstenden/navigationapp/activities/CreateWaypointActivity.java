@@ -1,77 +1,84 @@
 package com.nhlstenden.navigationapp.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nhlstenden.navigationapp.R;
 
-import com.nhlstenden.navigationapp.models.Waypoint;
-
 public class CreateWaypointActivity extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private EditText etName, etDescription;
+    private ImageView imagePreview;
+    private Uri imageUri;
 
-    private EditText nameEditText, descriptionEditText;
-    private Button selectPhotoButton, saveWaypointButton;
-    private ImageView selectedPhotoImageView;
-    private Uri selectedPhotoUri;
+    private String mode;
+    private String id;
+    private double lat;
+    private double lng;
+
+    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    imageUri = uri;
+                    imagePreview.setImageURI(uri);
+                }
+            });
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
 
-        nameEditText = findViewById(R.id.nameEditText);
-        descriptionEditText = findViewById(R.id.descriptionEditText);
-        selectPhotoButton = findViewById(R.id.selectPhotoButton);
-        saveWaypointButton = findViewById(R.id.saveWaypointButton);
-        selectedPhotoImageView = findViewById(R.id.selectedPhotoImageView);
+        etName = findViewById(R.id.etName);
+        etDescription = findViewById(R.id.etDescription);
+        imagePreview = findViewById(R.id.imagePreview);
+        Button btnChooseImage = findViewById(R.id.btnChooseImage);
+        Button btnSave = findViewById(R.id.btnSaveWaypoint);
+        Button btnCancel = findViewById(R.id.btnCancel);
 
-        selectPhotoButton.setOnClickListener(v -> openGallery());
+        Intent intent = getIntent();
+        mode = intent.getStringExtra("mode");
+        id = intent.getStringExtra("id");
+        lat = intent.getDoubleExtra("lat", 0.0);
+        lng = intent.getDoubleExtra("lng", 0.0);
 
-        saveWaypointButton.setOnClickListener(v -> saveWaypoint());
-    }
-
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            selectedPhotoUri = data.getData();
-            selectedPhotoImageView.setImageURI(selectedPhotoUri);
-        }
-    }
-
-    private void saveWaypoint() {
-        String name = nameEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
-            return;
+        if ("edit".equals(mode)) {
+            etName.setText(intent.getStringExtra("name"));
+            etDescription.setText(intent.getStringExtra("description"));
+            String imageUriString = intent.getStringExtra("imageUri");
+            if (imageUriString != null) {
+                imageUri = Uri.parse(imageUriString);
+                imagePreview.setImageURI(imageUri);
+            }
         }
 
-        String photoUriString = selectedPhotoUri != null ? selectedPhotoUri.toString() : null;
+        btnChooseImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
 
-        Waypoint waypoint = new Waypoint(name, description, photoUriString, 0.0, 0.0); // location not yet set
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("WAYPOINT", waypoint);
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+        btnSave.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("id", id);
+            resultIntent.putExtra("name", etName.getText().toString());
+            resultIntent.putExtra("description", etDescription.getText().toString());
+            resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
+            resultIntent.putExtra("lat", lat);
+            resultIntent.putExtra("lng", lng);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
     }
 }
