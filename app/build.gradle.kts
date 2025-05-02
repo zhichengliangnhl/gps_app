@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.kapt)
+
+    id("com.android.application")
+    id("com.google.gms.google-services") // <-- Add this
+
 }
 
 android {
@@ -41,6 +45,11 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     implementation(libs.room.runtime)
+
+    implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+
     annotationProcessor(libs.room.compiler)
 
     testImplementation(libs.junit)
