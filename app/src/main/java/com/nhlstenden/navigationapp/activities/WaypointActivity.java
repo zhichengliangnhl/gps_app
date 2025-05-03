@@ -40,7 +40,6 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                     String imageUriString = data.getStringExtra("imageUri");
                     double lat = data.getDoubleExtra("lat", 0.0);
                     double lng = data.getDoubleExtra("lng", 0.0);
-                    Uri imageUri = imageUriString != null ? Uri.parse(imageUriString) : null;
 
                     Waypoint newWaypoint = new Waypoint(id, name, description, imageUriString, lat, lng);
                     boolean updated = false;
@@ -49,15 +48,19 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                         if (waypointList.get(i).getId().equals(id)) {
                             waypointList.set(i, newWaypoint);
                             updated = true;
+                            Toast.makeText(this, "Waypoint updated successfully", Toast.LENGTH_SHORT).show();
                             break;
                         }
                     }
 
                     if (!updated) {
                         waypointList.add(newWaypoint);
+                        Toast.makeText(this, "New waypoint added successfully", Toast.LENGTH_SHORT).show();
                     }
 
                     adapter.updateList(waypointList);
+                } else if (result.getResultCode() == RESULT_CANCELED) {
+                    Toast.makeText(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -105,7 +108,7 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                 .setPositiveButton("Yes", (dialog, which) -> {
                     waypointList.removeIf(w -> w.getId().equals(waypoint.getId()));
                     adapter.updateList(waypointList);
-                    Toast.makeText(this, "Waypoint deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Waypoint deleted successfully", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("No", null)
                 .show();
