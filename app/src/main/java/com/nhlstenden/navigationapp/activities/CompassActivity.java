@@ -1,6 +1,7 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
@@ -25,13 +29,14 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     private SensorManager sensorManager;
     private Sensor rotationSensor;
-
     private ImageView compassNeedle;
     private TextView distanceText, nameText;
 
-    private float currentDegree = 0f;
+    private FusedLocationProviderClient locationClient;
     private Waypoint targetWaypoint;
     private Location currentLocation;
+
+    private float currentAzimuth = 0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +48,27 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         nameText = findViewById(R.id.nameTextView);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
 
         targetWaypoint = (Waypoint) getIntent().getSerializableExtra("WAYPOINT");
-        if (targetWaypoint == null) {
-            Toast.makeText(this, "No waypoint provided", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+        if (targetWaypoint != null) {
+            nameText.setText(targetWaypoint.getName());
+        } else {
+            nameText.setText("No waypoint selected");
+            distanceText.setText("Distance: --");
         }
 
-        nameText.setText(targetWaypoint.getName());
+        findViewById(R.id.btnWaypointList).setOnClickListener(v -> {
+            Intent i = new Intent(this, WaypointActivity.class);
+            startActivity(i);
+        });
+
+        findViewById(R.id.btnCreateWaypoint).setOnClickListener(v -> {
+            Intent i = new Intent(this, CreateWaypointActivity.class);
+            startActivity(i);
+        });
 
         requestLocationAccess();
     }
@@ -66,27 +82,38 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void updateLocation() {
-        Location location = new Location("dummy");
-        location.setLatitude(52.0); // TODO: replace with real location
-        location.setLongitude(6.0);
-        this.currentLocation = location;
-
-        updateDistanceAndBearing();
+        try {
+            locationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        currentLocation = location;
+                        updateDistanceDisplay();
+                    }
+                }
+            });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void updateDistanceAndBearing() {
-        Location target = new Location("target");
-        target.setLatitude(targetWaypoint.getLat());
-        target.setLongitude(targetWaypoint.getLng());
+    private void updateDistanceDisplay() {
+        if (currentLocation != null && targetWaypoint != null) {
+            Location target = new Location("target");
+            target.setLatitude(targetWaypoint.getLat());
+            target.setLongitude(targetWaypoint.getLng());
 
-        float distance = currentLocation.distanceTo(target);
-        distanceText.setText(String.format("Distance: %.1f meters", distance));
+            float distance = currentLocation.distanceTo(target);
+            distanceText.setText(String.format("Distance: %.1f meters", distance));
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_UI);
+        if (rotationSensor != null)
+            sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_UI);
+        updateLocation();
     }
 
     @Override
@@ -97,18 +124,46 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float degree = Math.round(event.values[0]);
-        compassNeedle.setRotation(-degree);
-        currentDegree = degree;
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            float[] rotationMatrix = new float[9];
+            float[] orientation = new float[3];
+
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
+            SensorManager.getOrientation(rotationMatrix, orientation);
+
+            float azimuthRad = orientation[0];
+            float azimuthDeg = (float) Math.toDegrees(azimuthRad);
+            if (azimuthDeg < 0) azimuthDeg += 360;
+
+            currentAzimuth = azimuthDeg;
+            updateNeedleRotation();
+        }
+    }
+
+    private void updateNeedleRotation() {
+        if (currentLocation == null || targetWaypoint == null) return;
+
+        Location target = new Location("target");
+        target.setLatitude(targetWaypoint.getLat());
+        target.setLongitude(targetWaypoint.getLng());
+
+        float bearingTo = currentLocation.bearingTo(target);
+        float angle = (bearingTo - currentAzimuth + 360) % 360;
+
+        compassNeedle.setRotation(angle);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
+        // no-op
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             updateLocation();
         } else {
             Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();

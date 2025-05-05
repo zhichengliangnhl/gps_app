@@ -1,6 +1,8 @@
 package com.nhlstenden.navigationapp.models;
 
-public class Waypoint {
+import java.io.Serializable;
+
+public class Waypoint implements Serializable {
     private String id;
     private String name;
     private String description;
