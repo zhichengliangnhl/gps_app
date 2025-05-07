@@ -1,12 +1,16 @@
 package com.nhlstenden.navigationapp.models;
 
-public class Waypoint {
+import java.io.Serializable;
+
+public class Waypoint implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String id;
     private String name;
     private String description;
     private String imageUri;
     private double lat;
     private double lng;
+    private String date;
 
     public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
         this.id = id;
@@ -15,6 +19,7 @@ public class Waypoint {
         this.imageUri = imageUri;
         this.lat = lat;
         this.lng = lng;
+        this.date = "2025-04-24"; // Default date
     }
 
     public String getId() {
@@ -41,6 +46,10 @@ public class Waypoint {
         return lng;
     }
 
+    public String getDate() {
+        return date;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -63,5 +72,9 @@ public class Waypoint {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

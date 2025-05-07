@@ -78,6 +78,17 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
 
         btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
         btnAddWaypoint.setOnClickListener(v -> openCreateWaypoint());
+
+        Button btnNavigate = findViewById(R.id.btnNavigate);
+        btnNavigate.setOnClickListener(v -> {
+            if (!waypointList.isEmpty()) {
+                Intent intent = new Intent(WaypointActivity.this, NavigationActivity.class);
+                intent.putExtra("WAYPOINT", waypointList.get(0)); // Using first waypoint for navigation
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "No waypoints available for navigation", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void openCreateWaypoint() {
