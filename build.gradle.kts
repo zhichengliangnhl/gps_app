@@ -63,7 +63,6 @@ dependencies {
 
     // AppCompat (for backward compatibility)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.ui.graphics.android)
 
     // Testing Libraries
     testImplementation(libs.junit)

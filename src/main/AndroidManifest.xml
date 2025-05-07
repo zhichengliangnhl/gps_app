@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Google Maps API Key -->
+            <!-- I don't have a free api key, so it is not going into the repository -->
             <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="API_KEY"
