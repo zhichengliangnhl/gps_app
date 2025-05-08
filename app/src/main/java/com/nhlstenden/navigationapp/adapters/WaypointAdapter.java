@@ -51,7 +51,6 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
 
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
-        holder.dateTextView.setText(waypoint.getDate());
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
             holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
@@ -70,7 +69,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView nameTextView, descriptionTextView, dateTextView;
+        TextView nameTextView, descriptionTextView;
         ImageButton editButton, deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -78,7 +77,6 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
             imageView = itemView.findViewById(R.id.waypointImage);
             nameTextView = itemView.findViewById(R.id.waypointName);
             descriptionTextView = itemView.findViewById(R.id.waypointDescription);
-            dateTextView = itemView.findViewById(R.id.waypointDate);
             editButton = itemView.findViewById(R.id.btnEdit);
             deleteButton = itemView.findViewById(R.id.btnDelete);
         }
