@@ -89,6 +89,12 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                 Toast.makeText(this, "No waypoints available for navigation", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Button btnMap = findViewById(R.id.btnMap);
+        btnMap.setOnClickListener(v -> {
+            Intent intent = new Intent(WaypointActivity.this, MapActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void openCreateWaypoint() {
@@ -124,4 +130,5 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                 .setNegativeButton("No", null)
                 .show();
     }
+
 }
