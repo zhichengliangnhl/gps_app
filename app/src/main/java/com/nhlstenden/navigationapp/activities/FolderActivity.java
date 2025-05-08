@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +29,21 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
     private List<Folder> folderList;
     private Button addFolderButton;
     private EditText folderNameInput;
+
+    private final ActivityResultLauncher<Intent> folderResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Folder updatedFolder = (Folder) result.getData().getSerializableExtra("FOLDER");
+                    for (int i = 0; i < folderList.size(); i++) {
+                        if (folderList.get(i).getName().equals(updatedFolder.getName())) {
+                            folderList.set(i, updatedFolder);
+                            folderAdapter.notifyItemChanged(i);
+                            return;
+                        }
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +78,6 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
     public void onFolderClicked(Folder folder) {
         Intent intent = new Intent(this, WaypointActivity.class);
         intent.putExtra("FOLDER", folder);
-        startActivity(intent);
+        folderResultLauncher.launch(intent);
     }
 }

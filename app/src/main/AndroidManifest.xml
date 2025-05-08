@@ -19,8 +19,8 @@
         android:theme="@style/Theme.NavigationApp"
         tools:targetApi="31">
 
-        <!-- Launcher Activity (fixed) -->
-        <activity android:name=".MainActivity" android:exported="true">
+        <!-- Launcher Activity now set to CompassActivity -->
+        <activity android:name=".activities.CompassActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,8 +29,8 @@
 
         <activity android:name=".activities.WaypointActivity" />
         <activity android:name=".activities.CreateWaypointActivity" />
-        <activity android:name=".activities.CompassActivity" />
         <activity android:name=".activities.FolderActivity" />
+        <activity android:name=".MainActivity" />
 
     </application>
 

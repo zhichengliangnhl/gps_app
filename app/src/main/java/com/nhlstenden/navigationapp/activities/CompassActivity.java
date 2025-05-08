@@ -61,7 +61,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         }
 
         findViewById(R.id.btnWaypointList).setOnClickListener(v -> {
-            Intent i = new Intent(this, WaypointActivity.class);
+            Intent i = new Intent(this, FolderActivity.class);
             startActivity(i);
         });
 

@@ -146,4 +146,13 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         intent.putExtra("WAYPOINT", waypoint);
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("FOLDER", folder);
+        setResult(RESULT_OK, resultIntent);
+        super.onBackPressed();
+    }
+
 }

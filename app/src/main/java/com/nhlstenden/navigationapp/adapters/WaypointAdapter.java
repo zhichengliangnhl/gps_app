@@ -46,7 +46,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
 
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
-        holder.dateTextView.setText(waypoint.getDate());
+//        holder.dateTextView.setText(waypoint.getDate());
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
             holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
