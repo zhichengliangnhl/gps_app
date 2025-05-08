@@ -1,6 +1,5 @@
 package com.nhlstenden.navigationapp.adapters;
 
-import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,15 +17,10 @@ import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.util.List;
 
-public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHolder> {
+public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
 
     private List<Waypoint> waypointList;
     private final OnWaypointClickListener listener;
-
-    public interface OnWaypointClickListener {
-        void onEditClick(Waypoint waypoint);
-        void onDeleteClick(Waypoint waypoint);
-    }
 
     public WaypointAdapter(List<Waypoint> waypointList, OnWaypointClickListener listener) {
         this.waypointList = waypointList;
@@ -39,14 +34,14 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WaypointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_waypoint, parent, false);
-        return new ViewHolder(view);
+        return new WaypointViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WaypointAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WaypointViewHolder holder, int position) {
         Waypoint waypoint = waypointList.get(position);
 
         holder.nameTextView.setText(waypoint.getName());
@@ -56,11 +51,12 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
             holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
         } else {
-            holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
+            holder.imageView.setImageResource(R.drawable.ic_launcher_background);
         }
 
         holder.editButton.setOnClickListener(v -> listener.onEditClick(waypoint));
         holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(waypoint));
+        holder.navigateButton.setOnClickListener(v -> listener.onNavigateClick(waypoint));
     }
 
     @Override

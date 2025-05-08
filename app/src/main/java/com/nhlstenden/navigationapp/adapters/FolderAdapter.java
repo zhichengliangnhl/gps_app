@@ -16,10 +16,6 @@ import java.util.List;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderViewHolder> {
 
-    public interface OnFolderClickListener {
-        void onFolderClicked(Folder folder);
-    }
-
     private final List<Folder> folderList;
     private final OnFolderClickListener listener;
 
@@ -42,7 +38,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
 
         holder.itemView.setOnClickListener(v -> listener.onFolderClicked(folder));
         holder.shareButton.setOnClickListener(v -> {
-            // TODO: still need to implement sharing logic <---
+            // TODO: Implement share functionality later
         });
     }
 
@@ -51,7 +47,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         return folderList.size();
     }
 
-    public static class FolderViewHolder extends RecyclerView.ViewHolder {
+    static class FolderViewHolder extends RecyclerView.ViewHolder {
         TextView folderNameTextView;
         ImageButton shareButton;
 

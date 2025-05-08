@@ -15,19 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.adapters.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class WaypointActivity extends AppCompatActivity implements WaypointAdapter.OnWaypointClickListener {
+public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
 
     private RecyclerView recyclerView;
     private WaypointAdapter adapter;
     private List<Waypoint> waypointList;
     private Button btnAddWaypoint;
+    private Folder folder; // ✅ store the folder reference
 
     private final ActivityResultLauncher<Intent> createEditLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -58,6 +61,9 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                         Toast.makeText(this, "New waypoint added successfully", Toast.LENGTH_SHORT).show();
                     }
 
+                    folder.getWaypoints().clear();
+                    folder.getWaypoints().addAll(waypointList); // ✅ update folder reference if needed
+
                     adapter.updateList(waypointList);
                 } else if (result.getResultCode() == RESULT_CANCELED) {
                     Toast.makeText(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT).show();
@@ -69,10 +75,18 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
+        folder = (Folder) getIntent().getSerializableExtra("FOLDER");
+        if (folder == null) {
+            Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        waypointList = new ArrayList<>(folder.getWaypoints());
+
         recyclerView = findViewById(R.id.recyclerViewWaypoints);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        waypointList = new ArrayList<>();
         adapter = new WaypointAdapter(waypointList, this);
         recyclerView.setAdapter(adapter);
 
@@ -92,7 +106,7 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
     }
 
     private void openCreateWaypoint() {
-        Intent intent = new Intent(WaypointActivity.this, CreateWaypointActivity.class);
+        Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "create");
         intent.putExtra("id", UUID.randomUUID().toString());
         createEditLauncher.launch(intent);
@@ -100,7 +114,7 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
 
     @Override
     public void onEditClick(Waypoint waypoint) {
-        Intent intent = new Intent(WaypointActivity.this, CreateWaypointActivity.class);
+        Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "edit");
         intent.putExtra("id", waypoint.getId());
         intent.putExtra("name", waypoint.getName());
@@ -118,10 +132,18 @@ public class WaypointActivity extends AppCompatActivity implements WaypointAdapt
                 .setMessage("Are you sure you want to delete this waypoint?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     waypointList.removeIf(w -> w.getId().equals(waypoint.getId()));
+                    folder.getWaypoints().clear();
+                    folder.getWaypoints().addAll(waypointList); // ✅ update folder
                     adapter.updateList(waypointList);
                     Toast.makeText(this, "Waypoint deleted successfully", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
+    @Override
+    public void onNavigateClick(Waypoint waypoint) {
+        Intent intent = new Intent(this, CompassActivity.class);
+        intent.putExtra("WAYPOINT", waypoint);
+        startActivity(intent);
     }
 }

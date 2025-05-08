@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
+import com.nhlstenden.navigationapp.adapters.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderActivity extends AppCompatActivity implements FolderAdapter.OnFolderClickListener {
+public class FolderActivity extends AppCompatActivity implements OnFolderClickListener {
 
     private RecyclerView recyclerView;
     private FolderAdapter folderAdapter;
