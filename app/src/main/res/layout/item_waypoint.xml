@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,8 +11,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="164dp"
-        android:padding="16dp">
+        android:layout_height="180dp"
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/waypointImage"
@@ -69,7 +70,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Edit Waypoint"
             android:src="@android:drawable/ic_menu_edit"
-            android:tint="#FFFFFF" />
+            card_view:tint="#FFFFFF" />
 
         <ImageButton
             android:id="@+id/btnDelete"
@@ -81,15 +82,15 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Delete Waypoint"
             android:src="@android:drawable/ic_menu_delete"
-            android:tint="#FF5252" />
+            card_view:tint="#FF5252" />
 
         <LinearLayout
             android:id="@+id/navigateBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:gravity="start"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:gravity="start">
 
             <Button
                 android:id="@+id/btnNavigate"

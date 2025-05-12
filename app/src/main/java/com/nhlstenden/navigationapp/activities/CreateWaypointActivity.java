@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.models.Waypoint;
 
 public class CreateWaypointActivity extends AppCompatActivity {
 
@@ -58,12 +59,17 @@ public class CreateWaypointActivity extends AppCompatActivity {
         lng = intent.getDoubleExtra("lng", 0.0);
 
         if ("edit".equals(mode)) {
-            etName.setText(intent.getStringExtra("name"));
-            etDescription.setText(intent.getStringExtra("description"));
-            String imageUriString = intent.getStringExtra("imageUri");
-            if (imageUriString != null) {
-                imageUri = Uri.parse(imageUriString);
-                imagePreview.setImageURI(imageUri);
+            Waypoint wp = intent.getParcelableExtra("WAYPOINT");
+            if (wp != null) {
+                etName.setText(wp.getName());
+                etDescription.setText(wp.getDescription());
+                imageUri = wp.getImageUri() != null ? Uri.parse(wp.getImageUri()) : null;
+                if (imageUri != null) {
+                    imagePreview.setImageURI(imageUri);
+                }
+                id = wp.getId();
+                lat = wp.getLat();
+                lng = wp.getLng();
             }
         }
 
@@ -81,12 +87,17 @@ public class CreateWaypointActivity extends AppCompatActivity {
                 }
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("id", id);
-                resultIntent.putExtra("name", name);
-                resultIntent.putExtra("description", description);
-                resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
-                resultIntent.putExtra("lat", lat);
-                resultIntent.putExtra("lng", lng);
+
+                Waypoint resultWaypoint = new Waypoint(
+                        id,
+                        name,
+                        description,
+                        imageUri != null ? imageUri.toString() : null,
+                        lat,
+                        lng
+                );
+
+                resultIntent.putExtra("WAYPOINT", resultWaypoint);
                 setResult(RESULT_OK, resultIntent);
 
                 Toast.makeText(this, "Waypoint saved!", Toast.LENGTH_SHORT).show();

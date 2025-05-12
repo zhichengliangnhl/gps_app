@@ -5,11 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 
 import java.util.List;
@@ -38,13 +40,13 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
 
         holder.itemView.setOnClickListener(v -> listener.onFolderClicked(folder));
         holder.shareButton.setOnClickListener(v -> {
-            // TODO: Implement share functionality later
+            Toast.makeText(v.getContext(), "Sharing not implemented yet", Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
     public int getItemCount() {
-        return folderList.size();
+        return folderList != null ? folderList.size() : 0;
     }
 
     static class FolderViewHolder extends RecyclerView.ViewHolder {

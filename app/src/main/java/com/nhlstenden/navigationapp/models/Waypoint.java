@@ -1,9 +1,9 @@
 package com.nhlstenden.navigationapp.models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Waypoint implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Waypoint implements Parcelable {
     private String id;
     private String name;
     private String description;
@@ -21,6 +21,28 @@ public class Waypoint implements Serializable {
         this.lng = lng;
         this.date = "2025-04-24"; // Default date
     }
+
+    protected Waypoint(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        imageUri = in.readString();
+        lat = in.readDouble();
+        lng = in.readDouble();
+        date = in.readString();
+    }
+
+    public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
+        @Override
+        public Waypoint createFromParcel(Parcel in) {
+            return new Waypoint(in);
+        }
+
+        @Override
+        public Waypoint[] newArray(int size) {
+            return new Waypoint[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -76,5 +98,21 @@ public class Waypoint implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(imageUri);
+        dest.writeDouble(lat);
+        dest.writeDouble(lng);
+        dest.writeString(date);
     }
 }

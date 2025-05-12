@@ -9,14 +9,13 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
-import com.nhlstenden.navigationapp.adapters.OnFolderClickListener;
+import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 
 import java.util.ArrayList;
@@ -34,7 +33,9 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Folder updatedFolder = (Folder) result.getData().getSerializableExtra("FOLDER");
+                    Folder updatedFolder = result.getData().getParcelableExtra("FOLDER");
+                    if (updatedFolder == null) return;
+
                     for (int i = 0; i < folderList.size(); i++) {
                         if (folderList.get(i).getName().equals(updatedFolder.getName())) {
                             folderList.set(i, updatedFolder);
@@ -60,6 +61,11 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(folderAdapter);
 
+        findViewById(R.id.backToCompassButton).setOnClickListener(v -> {
+            Intent intent = new Intent(FolderActivity.this, CompassActivity.class);
+            startActivity(intent);
+        });
+
         addFolderButton.setOnClickListener(v -> {
             String folderName = folderNameInput.getText().toString().trim();
             if (TextUtils.isEmpty(folderName)) {
@@ -77,7 +83,7 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
     @Override
     public void onFolderClicked(Folder folder) {
         Intent intent = new Intent(this, WaypointActivity.class);
-        intent.putExtra("FOLDER", folder);
+        intent.putExtra("FOLDER", folder); // now using Parcelable
         folderResultLauncher.launch(intent);
     }
 }

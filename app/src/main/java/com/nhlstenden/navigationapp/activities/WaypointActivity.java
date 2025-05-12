@@ -1,7 +1,6 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
-import com.nhlstenden.navigationapp.adapters.OnWaypointClickListener;
+import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -94,6 +93,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         btnAddWaypoint.setOnClickListener(v -> openCreateWaypoint());
 
         Button btnNavigate = findViewById(R.id.btnNavigate);
+
         btnNavigate.setOnClickListener(v -> {
             if (!waypointList.isEmpty()) {
                 Intent intent = new Intent(WaypointActivity.this, NavigationActivity.class);
@@ -116,12 +116,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
     public void onEditClick(Waypoint waypoint) {
         Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "edit");
-        intent.putExtra("id", waypoint.getId());
-        intent.putExtra("name", waypoint.getName());
-        intent.putExtra("description", waypoint.getDescription());
-        intent.putExtra("imageUri", waypoint.getImageUri());
-        intent.putExtra("lat", waypoint.getLat());
-        intent.putExtra("lng", waypoint.getLng());
+        intent.putExtra("WAYPOINT", waypoint);
         createEditLauncher.launch(intent);
     }
 
