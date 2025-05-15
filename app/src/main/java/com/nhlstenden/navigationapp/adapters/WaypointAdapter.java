@@ -16,6 +16,7 @@ import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.util.List;
+import java.util.Locale;
 
 public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHolder> {
 
@@ -52,6 +53,13 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
         holder.dateTextView.setText(waypoint.getDate());
+        
+        // Format and display coordinates
+        String coordinates = String.format(Locale.getDefault(), 
+            "Lat: %.6f, Lng: %.6f", 
+            waypoint.getLat(), 
+            waypoint.getLng());
+        holder.coordinatesTextView.setText(coordinates);
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
             holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
@@ -70,7 +78,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView nameTextView, descriptionTextView, dateTextView;
+        TextView nameTextView, descriptionTextView, dateTextView, coordinatesTextView;
         ImageButton editButton, deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -79,6 +87,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
             nameTextView = itemView.findViewById(R.id.waypointName);
             descriptionTextView = itemView.findViewById(R.id.waypointDescription);
             dateTextView = itemView.findViewById(R.id.waypointDate);
+            coordinatesTextView = itemView.findViewById(R.id.waypointCoordinates);
             editButton = itemView.findViewById(R.id.btnEdit);
             deleteButton = itemView.findViewById(R.id.btnDelete);
         }
