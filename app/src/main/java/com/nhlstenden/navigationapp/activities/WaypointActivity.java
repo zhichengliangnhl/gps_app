@@ -103,6 +103,12 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 Toast.makeText(this, "No waypoints available for navigation", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Button btnMap = findViewById(R.id.btnMap);
+        btnMap.setOnClickListener(v -> {
+            Intent intent = new Intent(WaypointActivity.this, MapActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void openCreateWaypoint() {
@@ -135,6 +141,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 .setNegativeButton("No", null)
                 .show();
     }
+  
     @Override
     public void onNavigateClick(Waypoint waypoint) {
         Intent intent = new Intent(this, CompassActivity.class);

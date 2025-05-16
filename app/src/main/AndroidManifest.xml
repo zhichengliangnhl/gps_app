@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -29,8 +30,13 @@
 
         <activity android:name=".activities.WaypointActivity" />
         <activity android:name=".activities.CreateWaypointActivity" />
+        <activity android:name=".activities.CompassActivity" />
+        <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.FolderActivity" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="API_KEY"/>
     </application>
 
 </manifest>
