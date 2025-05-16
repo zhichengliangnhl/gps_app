@@ -75,6 +75,12 @@ public class CreateWaypointActivity extends AppCompatActivity {
 
         btnChooseImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
 
+        Button btnMap = findViewById(R.id.btnMap);
+        btnMap.setOnClickListener(v -> {
+            Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
+            startActivity(mapIntent);
+        });
+
         btnSave.setOnClickListener(v -> {
             if (validateInput()) {
                 String name = etName.getText().toString().trim();

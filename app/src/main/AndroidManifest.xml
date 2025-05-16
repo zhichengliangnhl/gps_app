@@ -30,13 +30,12 @@
 
         <activity android:name=".activities.WaypointActivity" />
         <activity android:name=".activities.CreateWaypointActivity" />
-        <activity android:name=".activities.CompassActivity" />
         <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.FolderActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="API_KEY"/>
+            android:value="AIzaSyDIUrNXd7lTcHdCIga66esJNjhVTRjd3cc" />
     </application>
 
 </manifest>
