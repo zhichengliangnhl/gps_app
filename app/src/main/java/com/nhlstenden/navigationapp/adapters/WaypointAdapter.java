@@ -1,31 +1,23 @@
 package com.nhlstenden.navigationapp.adapters;
 
-import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.util.List;
 
-public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHolder> {
+public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
 
     private List<Waypoint> waypointList;
     private final OnWaypointClickListener listener;
-
-    public interface OnWaypointClickListener {
-        void onEditClick(Waypoint waypoint);
-        void onDeleteClick(Waypoint waypoint);
-    }
 
     public WaypointAdapter(List<Waypoint> waypointList, OnWaypointClickListener listener) {
         this.waypointList = waypointList;
@@ -39,48 +31,36 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WaypointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_waypoint, parent, false);
-        return new ViewHolder(view);
+        return new WaypointViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WaypointAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WaypointViewHolder holder, int position) {
         Waypoint waypoint = waypointList.get(position);
-
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
         holder.dateTextView.setText(waypoint.getDate());
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-            holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
+            try {
+                holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
+            } catch (Exception e) {
+                holder.imageView.setImageResource(R.drawable.ic_launcher_background);
+            }
         } else {
-            holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
+            holder.imageView.setImageResource(R.drawable.ic_launcher_background);
         }
 
         holder.editButton.setOnClickListener(v -> listener.onEditClick(waypoint));
         holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(waypoint));
+        holder.navigateButton.setOnClickListener(v -> listener.onNavigateClick(waypoint));
     }
 
     @Override
     public int getItemCount() {
         return waypointList.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView nameTextView, descriptionTextView, dateTextView;
-        ImageButton editButton, deleteButton;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.waypointImage);
-            nameTextView = itemView.findViewById(R.id.waypointName);
-            descriptionTextView = itemView.findViewById(R.id.waypointDescription);
-            dateTextView = itemView.findViewById(R.id.waypointDate);
-            editButton = itemView.findViewById(R.id.btnEdit);
-            deleteButton = itemView.findViewById(R.id.btnDelete);
-        }
     }
 }

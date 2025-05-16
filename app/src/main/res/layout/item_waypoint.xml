@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="16dp"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="6dp"
     card_view:cardBackgroundColor="#1E1E1E">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="180dp"
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/waypointImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:scaleType="centerCrop"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_launcher_background"
             android:background="@drawable/image_background"
-            android:contentDescription="Waypoint Image" />
+            android:contentDescription="Waypoint Image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
 
         <TextView
             android:id="@+id/waypointName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/waypointImage"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="48dp"
+            android:layout_toEndOf="@id/waypointImage"
             android:text="Waypoint Name"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
@@ -37,11 +39,12 @@
 
         <TextView
             android:id="@+id/waypointDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/waypointName"
             android:layout_alignStart="@id/waypointName"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="48dp"
             android:text="Waypoint description goes here"
             android:textColor="#CCCCCC"
             android:textSize="14sp" />
@@ -62,13 +65,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="20dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Edit Waypoint"
             android:src="@android:drawable/ic_menu_edit"
-            android:tint="#FFFFFF" />
+            card_view:tint="#FFFFFF" />
 
         <ImageButton
             android:id="@+id/btnDelete"
@@ -80,6 +82,28 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Delete Waypoint"
             android:src="@android:drawable/ic_menu_delete"
-            android:tint="#FF5252" />
+            card_view:tint="#FF5252" />
+
+        <LinearLayout
+            android:id="@+id/navigateBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="16dp"
+            android:gravity="start">
+
+            <Button
+                android:id="@+id/btnNavigate"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="#4CAF50"
+                android:elevation="2dp"
+                android:paddingHorizontal="16dp"
+                android:text="Navigate"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
     </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

@@ -41,6 +41,9 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     implementation(libs.room.runtime)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     annotationProcessor(libs.room.compiler)
 
     // Glide for image loading
@@ -53,4 +56,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
+
 

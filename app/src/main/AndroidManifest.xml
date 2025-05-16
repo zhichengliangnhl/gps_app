@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -16,10 +20,8 @@
         android:theme="@style/Theme.NavigationApp"
         tools:targetApi="31">
 
-        <!-- Launcher Activity (fixed) -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+        <!-- Launcher Activity now set to CompassActivity -->
+        <activity android:name=".activities.CompassActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,6 +32,7 @@
         <activity android:name=".activities.CreateWaypointActivity" />
         <activity android:name=".activities.CompassActivity" />
         <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.FolderActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

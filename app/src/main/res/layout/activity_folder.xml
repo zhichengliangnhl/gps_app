@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#f8f5f0">
+    android:background="#f8f5f0"
+    android:textColor="@color/black">
 
     <EditText
         android:id="@+id/folderNameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="24dp"
         android:hint="Folder name"
         android:backgroundTint="#FF8C42"
         android:layout_marginBottom="8dp"/>
@@ -21,8 +23,18 @@
         android:layout_height="wrap_content"
         android:text="Add New Folder"
         android:backgroundTint="#34b3a0"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/backToCompassButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back to Compass"
+        android:backgroundTint="#3f51b5"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp"/>
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFolders"
