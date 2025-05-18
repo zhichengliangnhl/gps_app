@@ -29,7 +29,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
     private WaypointAdapter adapter;
     private List<Waypoint> waypointList;
     private Button btnAddWaypoint;
-    private Folder folder; // ✅ store the folder reference
+    private Folder folder;
 
     private final ActivityResultLauncher<Intent> createEditLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -93,7 +93,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
-        folder = (Folder) getIntent().getSerializableExtra("FOLDER");
+        folder = (Folder) getIntent().getParcelableExtra("FOLDER");
         if (folder == null) {
             Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
             finish();

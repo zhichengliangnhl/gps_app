@@ -7,7 +7,8 @@
     android:layout_marginBottom="16dp"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="6dp"
-    card_view:cardBackgroundColor="#1E1E1E">
+    card_view:cardBackgroundColor="#1E1E1E"
+    android:paddingTop="?attr/actionBarSize">
 
     <RelativeLayout
         android:layout_width="match_parent"

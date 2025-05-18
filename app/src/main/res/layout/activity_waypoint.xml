@@ -12,10 +12,26 @@
         android:padding="16dp"
         android:clipToPadding="false"/>
 
+    <!-- Map button: launches MapActivity -->
+    <Button
+        android:id="@+id/btnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Map"
+        android:textColor="@android:color/white"
+        android:background="@drawable/circular_button"
+        android:elevation="6dp"/>
+
+    <!-- Navigate button: use first waypoint for navigation -->
     <Button
         android:id="@+id/btnNavigate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/btnMap"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
@@ -24,6 +40,7 @@
         android:background="@drawable/circular_button"
         android:elevation="6dp"/>
 
+    <!-- Add waypoint button -->
     <Button
         android:id="@+id/btnAddWaypoint"
         android:layout_width="wrap_content"
