@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,133 +21,112 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.models.Waypoint;
 
-import java.util.Locale;
+import java.util.UUID;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private static final LatLng NHL_STENDEN_EMMEN = new LatLng(52.77813, 6.91259);
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-    private GoogleMap googleMap;
-    private Marker currentMarker;
-    private LatLng selectedLocation;
+    private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private boolean usingFallbackLocation = false;
+    private LatLng selectedLocation;
+    private Button btnSaveWaypoint;
+
+    private final ActivityResultLauncher<Intent> createWaypointLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    // Pass the result back to WaypointActivity
+                    setResult(RESULT_OK, result.getData());
+                    finish();
+                } else if (result.getResultCode() == RESULT_CANCELED) {
+                    Toast.makeText(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        // Initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Button saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(v -> saveLocation());
+        // Initialize location services
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Initialize save button
+        btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
+        btnSaveWaypoint.setEnabled(false);
+        btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
     }
 
     @Override
-    public void onMapReady(@NonNull GoogleMap map) {
-        googleMap = map;
-
-        googleMap.setOnMapClickListener(latLng -> {
-            placeMarker(latLng);
-            selectedLocation = latLng;
-            usingFallbackLocation = false; // User selected a location manually
-        });
-
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        
+        // Check for location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            enableLocationFeatures();
+            enableMyLocation();
         } else {
-            ActivityCompat.requestPermissions(
-                    this,
+            ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE
-            );
+                    LOCATION_PERMISSION_REQUEST_CODE);
         }
+
+        // Set up map click listener for waypoint creation
+        mMap.setOnMapClickListener(latLng -> {
+            selectedLocation = latLng;
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
+            btnSaveWaypoint.setEnabled(true);
+        });
     }
 
-    private void enableLocationFeatures() {
-        try {
-            googleMap.setMyLocationEnabled(true);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+    private void enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            
+            // Get current location and move camera
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
-                            LatLng currentLatLng = new LatLng(
-                                    location.getLatitude(),
-                                    location.getLongitude()
-                            );
-                            placeMarker(currentLatLng);
-                            selectedLocation = currentLatLng;
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
-                        } else {
-                            useFallbackLocation();
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
                         }
                     });
-        } catch (SecurityException e) {
-            useFallbackLocation();
-        }
-    }
-
-    private void useFallbackLocation() {
-        usingFallbackLocation = true;
-        placeMarker(NHL_STENDEN_EMMEN);
-        selectedLocation = NHL_STENDEN_EMMEN;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NHL_STENDEN_EMMEN, 15f));
-        Toast.makeText(this, "Using NHL Stenden as fallback location", Toast.LENGTH_SHORT).show();
-    }
-
-    private void placeMarker(LatLng position) {
-        if (currentMarker != null) {
-            currentMarker.remove();
-        }
-        currentMarker = googleMap.addMarker(new MarkerOptions()
-                .position(position)
-                .title(usingFallbackLocation ? "Default Location" : "Selected Location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-    }
-
-    private void saveLocation() {
-        if (selectedLocation != null) {
-            String locationType = usingFallbackLocation ? "Default" : "Selected";
-            String message = String.format(Locale.getDefault(),
-                    "Lat: %.6f\nLng: %.6f",
-                    locationType,
-                    selectedLocation.latitude,
-                    selectedLocation.longitude);
-
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
-            getSharedPreferences("Locations", MODE_PRIVATE)
-                    .edit()
-                    .putFloat("last_lat", (float) selectedLocation.latitude)
-                    .putFloat("last_lng", (float) selectedLocation.longitude)
-                    .putBoolean("was_fallback", usingFallbackLocation)
-                    .apply();
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                         @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                enableLocationFeatures();
+                enableMyLocation();
             } else {
-                useFallbackLocation();
+                Toast.makeText(this, "Location permission is required for this feature",
+                        Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void saveWaypoint() {
+        if (selectedLocation != null) {
+            Intent intent = new Intent(this, CreateWaypointActivity.class);
+            intent.putExtra("mode", "create");
+            intent.putExtra("id", UUID.randomUUID().toString());
+            intent.putExtra("lat", selectedLocation.latitude);
+            intent.putExtra("lng", selectedLocation.longitude);
+            createWaypointLauncher.launch(intent);
         }
     }
 }

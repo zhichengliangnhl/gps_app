@@ -69,6 +69,25 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 }
             });
 
+    private final ActivityResultLauncher<Intent> mapLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    String id = data.getStringExtra("id");
+                    String name = data.getStringExtra("name");
+                    String description = data.getStringExtra("description");
+                    String imageUriString = data.getStringExtra("imageUri");
+                    double lat = data.getDoubleExtra("lat", 0.0);
+                    double lng = data.getDoubleExtra("lng", 0.0);
+
+                    Waypoint newWaypoint = new Waypoint(id, name, description, imageUriString, lat, lng);
+                    waypointList.add(newWaypoint);
+                    adapter.updateList(waypointList);
+                    Toast.makeText(this, "New waypoint added successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +126,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         Button btnMap = findViewById(R.id.btnMap);
         btnMap.setOnClickListener(v -> {
             Intent intent = new Intent(WaypointActivity.this, MapActivity.class);
-            startActivity(intent);
+            mapLauncher.launch(intent);
         });
     }
 
