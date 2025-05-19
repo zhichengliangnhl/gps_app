@@ -1,58 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    tools:context=".activities.WaypointActivity">
 
+    <!-- RecyclerView showing waypoint cards -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewWaypoints"
+        android:id="@+id/rvWaypoints"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnAddWaypoint"
-        android:padding="16dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:paddingBottom="88dp"
+        tools:listitem="@layout/item_waypoint" />
 
-    <!-- Map button: launches MapActivity -->
-    <Button
-        android:id="@+id/btnMap"
-        android:layout_width="wrap_content"
+    <!-- Bottom navigation bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Map"
-        android:textColor="@android:color/white"
-        android:background="@drawable/circular_button"
-        android:elevation="6dp"/>
-
-    <!-- Navigate button: use first waypoint for navigation -->
-    <Button
-        android:id="@+id/btnNavigate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/btnMap"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Navigate"
-        android:textColor="@android:color/white"
-        android:background="@drawable/circular_button"
-        android:elevation="6dp"/>
-
-    <!-- Add waypoint button -->
-    <Button
-        android:id="@+id/btnAddWaypoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="+"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/circular_button"
-        android:elevation="6dp"/>
-
-</RelativeLayout>
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/selector_nav_item_color"
+        app:itemTextColor="@color/selector_nav_item_color"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:menu="@menu/navigation_menu" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Primary UI Colors -->
     <color name="colorPrimary">#121212</color> <!-- dark gray background -->
     <color name="colorPrimaryVariant">#1F1F1F</color> <!-- slightly lighter gray -->

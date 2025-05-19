@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,7 @@ import com.nhlstenden.navigationapp.R;
 public class WaypointViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     TextView nameTextView, descriptionTextView, dateTextView, coordinatesTextView;
-    ImageButton editButton, deleteButton, navigateButton;
+    ImageButton editButton, deleteButton;
 
     public WaypointViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -25,6 +24,5 @@ public class WaypointViewHolder extends RecyclerView.ViewHolder {
         coordinatesTextView = itemView.findViewById(R.id.waypointCoordinates);
         editButton = itemView.findViewById(R.id.btnEdit);
         deleteButton = itemView.findViewById(R.id.btnDelete);
-        navigateButton = itemView.findViewById(R.id.btnNavigate);
     }
 }

@@ -19,7 +19,7 @@ public class NavigationActivity extends AppCompatActivity {
 
         // Check if a waypoint was passed
         if (getIntent().hasExtra("WAYPOINT")) {
-            waypoint = (Waypoint) getIntent().getSerializableExtra("WAYPOINT");
+            waypoint = (Waypoint) getIntent().getParcelableExtra("WAYPOINT");
             Toast.makeText(this, "Navigating to: " + waypoint.getName(), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "No waypoint provided", Toast.LENGTH_SHORT).show();

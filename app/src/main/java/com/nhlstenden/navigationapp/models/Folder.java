@@ -58,4 +58,7 @@ public class Folder implements Parcelable {
         dest.writeString(name);
         dest.writeTypedList(waypoints);
     }
+    public void deleteWaypoint(Waypoint waypoint) {
+        this.waypoints.remove(waypoint);
+    }
 }

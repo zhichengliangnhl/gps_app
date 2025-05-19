@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/map"
+        android:title="@string/menu_map" />
+
+    <item
+        android:id="@+id/navigation_back"
+        android:title="Folder"
+        android:icon="@drawable/back" />
+    <item
+        android:id="@+id/navigation_add"
+        android:title="Add"
+        android:icon="@drawable/plus" />
+    <item
+        android:id="@+id/navigation_navigate"
+        android:title="Navigate"
+        android:icon="@drawable/compass" />
+
+</menu>

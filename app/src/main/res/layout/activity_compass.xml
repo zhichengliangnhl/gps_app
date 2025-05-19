@@ -3,7 +3,6 @@
     android:background="#f8f5f0"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize"
     android:gravity="center"
     android:padding="24dp">
 
@@ -14,7 +13,6 @@
         android:contentDescription="Compass Needle"
         android:src="@drawable/ic_compass_needle" />
 
-    <!-- ✅ Add missing TextView for waypoint name -->
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
@@ -25,7 +23,6 @@
         android:textColor="@color/black"
         android:layout_marginTop="16dp"/>
 
-    <!-- ✅ Add missing TextView for distance -->
     <TextView
         android:id="@+id/distanceTextView"
         android:layout_width="wrap_content"

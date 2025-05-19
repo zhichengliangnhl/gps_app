@@ -2,132 +2,116 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.nhlstenden.navigationapp.R;
-import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
 
+    private Folder folder;
     private RecyclerView recyclerView;
     private WaypointAdapter adapter;
     private List<Waypoint> waypointList;
-    private Button btnAddWaypoint;
-    private Folder folder;
 
-    private final ActivityResultLauncher<Intent> createEditLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Intent data = result.getData();
-                    String id = data.getStringExtra("id");
-                    String name = data.getStringExtra("name");
-                    String description = data.getStringExtra("description");
-                    String imageUriString = data.getStringExtra("imageUri");
-                    double lat = data.getDoubleExtra("lat", 0.0);
-                    double lng = data.getDoubleExtra("lng", 0.0);
-
-                    Waypoint newWaypoint = new Waypoint(id, name, description, imageUriString, lat, lng);
-                    boolean updated = false;
-
-                    for (int i = 0; i < waypointList.size(); i++) {
-                        if (waypointList.get(i).getId().equals(id)) {
-                            waypointList.set(i, newWaypoint);
-                            updated = true;
-                            Toast.makeText(this, "Waypoint updated successfully", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    }
-
-                    if (!updated) {
-                        waypointList.add(newWaypoint);
-                        Toast.makeText(this, "New waypoint added successfully", Toast.LENGTH_SHORT).show();
-                    }
-
-                    folder.getWaypoints().clear();
-                    folder.getWaypoints().addAll(waypointList); // ✅ update folder reference if needed
-
-                    adapter.updateList(waypointList);
-                } else if (result.getResultCode() == RESULT_CANCELED) {
-                    Toast.makeText(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-    private final ActivityResultLauncher<Intent> mapLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Intent data = result.getData();
-                    String id = data.getStringExtra("id");
-                    String name = data.getStringExtra("name");
-                    String description = data.getStringExtra("description");
-                    String imageUriString = data.getStringExtra("imageUri");
-                    double lat = data.getDoubleExtra("lat", 0.0);
-                    double lng = data.getDoubleExtra("lng", 0.0);
-
-                    Waypoint newWaypoint = new Waypoint(id, name, description, imageUriString, lat, lng);
-                    waypointList.add(newWaypoint);
-                    adapter.updateList(waypointList);
-                    Toast.makeText(this, "New waypoint added successfully", Toast.LENGTH_SHORT).show();
-                }
-            });
+    private ActivityResultLauncher<Intent> mapLauncher;
+    private ActivityResultLauncher<Intent> createEditLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
-        folder = (Folder) getIntent().getParcelableExtra("FOLDER");
+        // Get folder from intent
+        folder = getIntent().getParcelableExtra("FOLDER");
         if (folder == null) {
             Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        waypointList = new ArrayList<>(folder.getWaypoints());
-
-        recyclerView = findViewById(R.id.recyclerViewWaypoints);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        // Load waypoints
+        waypointList = folder.getWaypoints();
+        recyclerView = findViewById(R.id.rvWaypoints);
         adapter = new WaypointAdapter(waypointList, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
-        btnAddWaypoint.setOnClickListener(v -> openCreateWaypoint());
+        // Launcher for creating/editing waypoint
+        createEditLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
+                        String mode = result.getData().getStringExtra("mode");
 
-        Button btnNavigate = findViewById(R.id.btnNavigate);
+                        if (w != null) {
+                            if ("edit".equals(mode)) {
+                                adapter.updateWaypoint(w);
+                            } else {
+                                folder.addWaypoint(w);
+                                adapter.addWaypoint(w);
+                            }
+                        }
+                    }
+                });
 
-        btnNavigate.setOnClickListener(v -> {
-            if (!waypointList.isEmpty()) {
-                Intent intent = new Intent(WaypointActivity.this, NavigationActivity.class);
-                intent.putExtra("WAYPOINT", waypointList.get(0)); // Using first waypoint for navigation
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "No waypoints available for navigation", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Launcher to get location from map
+        mapLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        double lat = result.getData().getDoubleExtra("lat", 0);
+                        double lng = result.getData().getDoubleExtra("lng", 0);
+                        launchCreateWaypointWithLocation(lat, lng);
+                    }
+                });
 
-        Button btnMap = findViewById(R.id.btnMap);
-        btnMap.setOnClickListener(v -> {
-            Intent intent = new Intent(WaypointActivity.this, MapActivity.class);
-            mapLauncher.launch(intent);
-        });
+        // Setup bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation); // ID must match layout
+        if (bottomNav != null) {
+            bottomNav.setSelectedItemId(R.id.navigation_map);
+
+            bottomNav.setOnItemSelectedListener(item -> {
+                int id = item.getItemId();
+
+                if (id == R.id.navigation_back) {
+                    startActivity(new Intent(this, FolderActivity.class));
+                    finish();
+                    return true;
+
+                } else if (id == R.id.navigation_add) {
+                    openCreateWaypoint();
+                    return true;
+
+                } else if (id == R.id.navigation_navigate) {
+                    if (!waypointList.isEmpty()) {
+                        Intent navIntent = new Intent(this, CompassActivity.class);
+                        navIntent.putExtra("WAYPOINT", waypointList.get(0));
+                        startActivity(navIntent);
+                    } else {
+                        Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+
+                return false;
+            });
+        }
     }
 
     private void openCreateWaypoint() {
@@ -135,6 +119,22 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         intent.putExtra("mode", "create");
         intent.putExtra("id", UUID.randomUUID().toString());
         createEditLauncher.launch(intent);
+    }
+
+    private void launchCreateWaypointWithLocation(double lat, double lng) {
+        Intent intent = new Intent(this, CreateWaypointActivity.class);
+        intent.putExtra("mode", "create");
+        intent.putExtra("id", UUID.randomUUID().toString());
+        intent.putExtra("lat", lat);
+        intent.putExtra("lng", lng);
+        createEditLauncher.launch(intent);
+    }
+
+    @Override
+    public void onNavigateClick(Waypoint waypoint) {
+        Intent intent = new Intent(this, CompassActivity.class);
+        intent.putExtra("WAYPOINT", waypoint);
+        startActivity(intent);
     }
 
     @Override
@@ -147,33 +147,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Waypoint")
-                .setMessage("Are you sure you want to delete this waypoint?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    waypointList.removeIf(w -> w.getId().equals(waypoint.getId()));
-                    folder.getWaypoints().clear();
-                    folder.getWaypoints().addAll(waypointList); // ✅ update folder
-                    adapter.updateList(waypointList);
-                    Toast.makeText(this, "Waypoint deleted successfully", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("No", null)
-                .show();
+        folder.deleteWaypoint(waypoint);
+        adapter.removeWaypoint(waypoint);
     }
-  
-    @Override
-    public void onNavigateClick(Waypoint waypoint) {
-        Intent intent = new Intent(this, CompassActivity.class);
-        intent.putExtra("WAYPOINT", waypoint);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("FOLDER", folder);
-        setResult(RESULT_OK, resultIntent);
-        super.onBackPressed();
-    }
-
 }

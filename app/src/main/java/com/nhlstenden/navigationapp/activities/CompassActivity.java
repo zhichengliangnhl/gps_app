@@ -53,7 +53,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+        targetWaypoint = (Waypoint) getIntent().getSerializableExtra("WAYPOINT");
         if (targetWaypoint != null) {
             nameText.setText(targetWaypoint.getName());
         } else {
