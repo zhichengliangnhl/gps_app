@@ -42,15 +42,15 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Folder updatedFolder = result.getData().getParcelableExtra("FOLDER");
-                    if (updatedFolder == null) return;
-
-                    for (int i = 0; i < folderList.size(); i++) {
-                        if (folderList.get(i).getName().equals(updatedFolder.getName())) {
-                            folderList.set(i, updatedFolder);
-                            folderAdapter.notifyItemChanged(i);
-                            saveFolders();
-                            return;
+                    if (updatedFolder != null) {
+                        folderAdapter.updateFolder(updatedFolder);
+                        for (int i = 0; i < folderList.size(); i++) {
+                            if (folderList.get(i).getName().equals(updatedFolder.getName())) {
+                                folderList.set(i, updatedFolder);
+                                break;
+                            }
                         }
+                        saveFolders();
                     }
                 }
             });

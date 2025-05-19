@@ -8,6 +8,8 @@
     tools:context=".activities.WaypointActivity">
 
     <!-- RecyclerView showing waypoint cards -->
+
+    <!-- Bottom navigation bar -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWaypoints"
         android:layout_width="match_parent"
@@ -16,7 +18,6 @@
         android:paddingBottom="88dp"
         tools:listitem="@layout/item_waypoint" />
 
-    <!-- Bottom navigation bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"

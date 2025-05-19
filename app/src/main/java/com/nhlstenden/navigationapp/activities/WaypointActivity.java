@@ -19,7 +19,6 @@ import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.util.List;
-import java.util.UUID;
 
 public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
 
@@ -28,15 +27,14 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
     private WaypointAdapter adapter;
     private List<Waypoint> waypointList;
 
-    private ActivityResultLauncher<Intent> mapLauncher;
     private ActivityResultLauncher<Intent> createEditLauncher;
+    private ActivityResultLauncher<Intent> mapLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
-        // Get folder from intent
         folder = getIntent().getParcelableExtra("FOLDER");
         if (folder == null) {
             Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
@@ -44,71 +42,67 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
             return;
         }
 
-        // Load waypoints
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
         adapter = new WaypointAdapter(waypointList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Launcher for creating/editing waypoint
+        // Launcher to receive new/edit waypoint result
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
-                        String mode = result.getData().getStringExtra("mode");
-
                         if (w != null) {
+                            String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
-                                adapter.updateWaypoint(w);
+                                adapter.updateWaypoint(w); // Must be implemented
                             } else {
-                                folder.addWaypoint(w);
+                                folder.getWaypoints().add(w);
                                 adapter.addWaypoint(w);
                             }
                         }
                     }
                 });
 
-        // Launcher to get location from map
+        // Optional: if you use a map picker to return lat/lng
         mapLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         double lat = result.getData().getDoubleExtra("lat", 0);
                         double lng = result.getData().getDoubleExtra("lng", 0);
-                        launchCreateWaypointWithLocation(lat, lng);
+                        Intent intent = new Intent(this, CreateWaypointActivity.class);
+                        intent.putExtra("mode", "create");
+                        intent.putExtra("id", java.util.UUID.randomUUID().toString());
+                        intent.putExtra("lat", lat);
+                        intent.putExtra("lng", lng);
+                        createEditLauncher.launch(intent);
                     }
                 });
 
-        // Setup bottom navigation
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation); // ID must match layout
+        // Bottom nav (optional)
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         if (bottomNav != null) {
-            bottomNav.setSelectedItemId(R.id.navigation_map);
-
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
-
-                if (id == R.id.navigation_back) {
-                    startActivity(new Intent(this, FolderActivity.class));
-                    finish();
-                    return true;
-
-                } else if (id == R.id.navigation_add) {
+                if (id == R.id.navigation_add) {
                     openCreateWaypoint();
                     return true;
-
+                } else if (id == R.id.navigation_back) {
+                    onBackPressed(); // go back
+                    return true;
                 } else if (id == R.id.navigation_navigate) {
                     if (!waypointList.isEmpty()) {
-                        Intent navIntent = new Intent(this, CompassActivity.class);
-                        navIntent.putExtra("WAYPOINT", waypointList.get(0));
-                        startActivity(navIntent);
+                        Intent intent = new Intent(this, CompassActivity.class);
+                        intent.putExtra("WAYPOINT", waypointList.get(0));
+                        startActivity(intent);
                     } else {
                         Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
-
                 return false;
             });
         }
@@ -117,16 +111,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
     private void openCreateWaypoint() {
         Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "create");
-        intent.putExtra("id", UUID.randomUUID().toString());
-        createEditLauncher.launch(intent);
-    }
-
-    private void launchCreateWaypointWithLocation(double lat, double lng) {
-        Intent intent = new Intent(this, CreateWaypointActivity.class);
-        intent.putExtra("mode", "create");
-        intent.putExtra("id", UUID.randomUUID().toString());
-        intent.putExtra("lat", lat);
-        intent.putExtra("lng", lng);
+        intent.putExtra("id", java.util.UUID.randomUUID().toString());
         createEditLauncher.launch(intent);
     }
 
@@ -147,7 +132,15 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
-        folder.deleteWaypoint(waypoint);
+        folder.getWaypoints().remove(waypoint);
         adapter.removeWaypoint(waypoint);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("FOLDER", folder);
+        setResult(RESULT_OK, resultIntent);
+        super.onBackPressed();
     }
 }
