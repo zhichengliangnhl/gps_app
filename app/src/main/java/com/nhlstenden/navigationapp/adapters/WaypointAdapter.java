@@ -91,12 +91,21 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
     }
 
     public void removeWaypoint(Waypoint waypoint) {
+        int position = -1;
+        // Find the position of the waypoint to remove
         for (int i = 0; i < waypointList.size(); i++) {
             if (waypointList.get(i).getId().equals(waypoint.getId())) {
-                waypointList.remove(i);
-                notifyItemRemoved(i);
+                position = i;
                 break;
             }
+        }
+        
+        // Only remove if we found the waypoint
+        if (position != -1) {
+            waypointList.remove(position);
+            notifyItemRemoved(position);
+            // Notify any items after the removed position that they need to update their positions
+            notifyItemRangeChanged(position, waypointList.size() - position);
         }
     }
 

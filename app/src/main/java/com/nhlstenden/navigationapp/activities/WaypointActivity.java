@@ -57,9 +57,9 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                         if (w != null) {
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
-                                adapter.updateWaypoint(w); // Must be implemented
+                                adapter.updateWaypoint(w);
                             } else {
-                                folder.getWaypoints().add(w);
+                                // Only add through the adapter, which will update the UI
                                 adapter.addWaypoint(w);
                             }
                         }
@@ -132,8 +132,10 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
+        // Remove from folder's list first
         folder.getWaypoints().remove(waypoint);
-        adapter.removeWaypoint(waypoint);
+        // Then update the adapter
+        adapter.updateList(folder.getWaypoints());
     }
 
     @Override

@@ -27,6 +27,7 @@ public class CreateWaypointActivity extends AppCompatActivity {
     private String mode, id;
     private double lat, lng;
     private Uri imageUri = Uri.EMPTY;
+    private String originalDate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,9 +56,12 @@ public class CreateWaypointActivity extends AppCompatActivity {
                 lat = w.getLat();
                 lng = w.getLng();
                 imageUri = w.getImageUri() != null ? Uri.parse(w.getImageUri()) : Uri.EMPTY;
+                originalDate = w.getDate();
                 if (imageUri != Uri.EMPTY) {
                     Glide.with(this).load(imageUri).into(imagePreview);
                 }
+                btnMap.setEnabled(false);
+                btnMap.setAlpha(0.5f);
             }
         }
 
@@ -67,6 +71,10 @@ public class CreateWaypointActivity extends AppCompatActivity {
 
         btnMap.setOnClickListener(v -> {
             Intent mapIntent = new Intent(this, MapActivity.class);
+            if (lat != 0.0 && lng != 0.0) {
+                mapIntent.putExtra("lat", lat);
+                mapIntent.putExtra("lng", lng);
+            }
             mapLauncher.launch(mapIntent);
         });
 
@@ -80,6 +88,9 @@ public class CreateWaypointActivity extends AppCompatActivity {
                 }
                 Intent resultIntent = new Intent();
                 Waypoint resultWaypoint = new Waypoint(id, name, description, imageUri.toString(), lat, lng);
+                if ("edit".equals(mode) && originalDate != null) {
+                    resultWaypoint.setDate(originalDate);
+                }
                 resultIntent.putExtra("WAYPOINT", resultWaypoint);
                 resultIntent.putExtra("mode", mode);
                 setResult(RESULT_OK, resultIntent);
@@ -95,10 +106,12 @@ public class CreateWaypointActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etDescription.getText().toString().trim())) {
-            Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show();
+        
+        if (lat == 0.0 && lng == 0.0) {
+            Toast.makeText(this, "Please select a location on the map first", Toast.LENGTH_SHORT).show();
             return false;
         }
+        
         return true;
     }
 
@@ -114,9 +127,15 @@ public class CreateWaypointActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> mapLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (result.getResultCode() == RESULT_OK) {
-                            lat = result.getData().getDoubleExtra("lat", 0.0);
-                            lng = result.getData().getDoubleExtra("lng", 0.0);
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            if (data.hasExtra("lat") && data.hasExtra("lng")) {
+                                lat = data.getDoubleExtra("lat", 0.0);
+                                lng = data.getDoubleExtra("lng", 0.0);
+                                Toast.makeText(this, 
+                                    String.format("Location updated: %.6f, %.6f", lat, lng),
+                                    Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 }

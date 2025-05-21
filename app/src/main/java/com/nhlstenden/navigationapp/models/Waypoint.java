@@ -2,6 +2,9 @@ package com.nhlstenden.navigationapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Waypoint implements Parcelable {
     private String id;
@@ -19,7 +22,9 @@ public class Waypoint implements Parcelable {
         this.imageUri = imageUri;
         this.lat = lat;
         this.lng = lng;
-        this.date = "2025-04-24"; // Default date
+        // Set current date in yyyy-MM-dd format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        this.date = sdf.format(new Date());
     }
 
     protected Waypoint(Parcel in) {
