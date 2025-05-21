@@ -43,7 +43,8 @@ google-services.json
 # VSCode (if you use it for editing)
 .vscode/
 
-local.properties
+android/local.properties
+.android/local.properties
 
 # .env file
 *.env
