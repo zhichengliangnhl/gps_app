@@ -2,6 +2,10 @@ package com.nhlstenden.navigationapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
+
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -120,4 +124,46 @@ public class Waypoint implements Parcelable {
         dest.writeDouble(lng);
         dest.writeString(date);
     }
+
+    // Add this in Waypoint.java
+
+
+    public String encode() {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("id", id);
+            json.put("name", name);
+            json.put("description", description);
+            json.put("imageUri", imageUri != null ? imageUri : "");
+            json.put("lat", lat);
+            json.put("lng", lng);
+            json.put("date", date);
+
+            return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Waypoint decode(String encoded) {
+        try {
+            String jsonStr = new String(Base64.decode(encoded, Base64.NO_WRAP));
+            JSONObject json = new JSONObject(jsonStr);
+
+            return new Waypoint(
+                    json.getString("id"),
+                    json.getString("name"),
+                    json.getString("description"),
+                    json.optString("imageUri", ""),
+                    json.getDouble("lat"),
+                    json.getDouble("lng")
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
+

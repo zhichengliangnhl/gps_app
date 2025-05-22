@@ -28,4 +28,13 @@
         app:itemTextColor="@color/selector_nav_item_color"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:menu="@menu/navigation_menu" />
+
+    <Button
+        android:id="@+id/btnImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IMPORT"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="80dp"
+        android:layout_marginStart="0dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

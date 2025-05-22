@@ -2,11 +2,14 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -106,6 +109,9 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 return false;
             });
         }
+
+        Button btnImport = findViewById(R.id.btnImport);
+        btnImport.setOnClickListener(v -> showImportDialog());
     }
 
     private void openCreateWaypoint() {
@@ -145,4 +151,45 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         setResult(RESULT_OK, resultIntent);
         super.onBackPressed();
     }
+
+    @Override
+    public void onShareClick(Waypoint waypoint) {
+        String encoded = waypoint.encode();
+        if (encoded != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
+            startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+        } else {
+            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            try {
+                Waypoint wp = Waypoint.decode(code);
+                if (wp != null && wp.getName() != null) {
+                    waypointList.add(wp);
+                    adapter.updateList(waypointList);
+                    Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
 }

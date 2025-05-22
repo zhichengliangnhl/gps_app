@@ -68,6 +68,8 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         // Edit & delete
         holder.editButton.setOnClickListener(v -> listener.onEditClick(waypoint));
         holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(waypoint));
+        holder.shareButton.setOnClickListener(v -> listener.onShareClick(waypoint));
+
     }
 
     @Override
