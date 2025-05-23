@@ -53,10 +53,11 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         holder.coordinatesTextView.setText(coordinates);
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-            try {
-                holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
-            } catch (Exception e) {
-                holder.imageView.setImageResource(R.drawable.ic_launcher_background);
+            Uri uri = Uri.parse(waypoint.getImageUri());
+            if ("file".equals(uri.getScheme())) {
+                holder.imageView.setImageURI(uri);
+            } else {
+                holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
             }
         } else {
             holder.imageView.setImageResource(R.drawable.ic_launcher_background);
@@ -101,7 +102,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
                 break;
             }
         }
-        
+
         // Only remove if we found the waypoint
         if (position != -1) {
             waypointList.remove(position);
