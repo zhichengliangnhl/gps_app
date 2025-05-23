@@ -1,7 +1,9 @@
 package com.nhlstenden.navigationapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
@@ -190,6 +194,23 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
+    }
+
+    public static String decodeBase64ToImageFile(Context context, String base64Data) {
+        try {
+            byte[] imageBytes = Base64.decode(base64Data, Base64.NO_WRAP);
+            File file = new File(context.getFilesDir(), "shared_img_" + System.currentTimeMillis() + ".jpg");
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(imageBytes);
+                fos.flush();
+            }
+
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

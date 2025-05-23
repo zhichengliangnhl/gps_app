@@ -1,5 +1,7 @@
 package com.nhlstenden.navigationapp.models;
 
+import static com.nhlstenden.navigationapp.activities.WaypointActivity.decodeBase64ToImageFile;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +9,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -198,31 +201,28 @@ public class Waypoint implements Parcelable {
     public static String encodeImageFromPath(String imagePath) {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2; // Reduces resolution ~50%
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(imagePath, options);
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos); // Compress to 70% quality
-            byte[] bytes = baos.toByteArray();
-
-            return Base64.encodeToString(bytes, Base64.NO_WRAP);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String decodeBase64ToImageFile(Context context, String base64Data) {
-        try {
-            byte[] imageBytes = Base64.decode(base64Data, Base64.NO_WRAP);
-            File file = new File(context.getFilesDir(), "shared_img_" + System.currentTimeMillis() + ".jpg");
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                fos.write(imageBytes);
-                fos.flush();
+            // Determine scaling factor
+            int maxDim = 300;
+            int scale = 1;
+            while (options.outWidth / scale > maxDim || options.outHeight / scale > maxDim) {
+                scale *= 2;
             }
 
-            return file.getAbsolutePath();
+            options.inSampleSize = scale;
+            options.inJustDecodeBounds = false;
+            Bitmap resizedBitmap = BitmapFactory.decodeFile(imagePath, options);
+
+            if (resizedBitmap == null) return null;
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
+            resizedBitmap.recycle();
+
+            byte[] imageBytes = outputStream.toByteArray();
+            return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
