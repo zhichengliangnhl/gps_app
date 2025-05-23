@@ -1,6 +1,8 @@
 package com.nhlstenden.navigationapp.models;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +10,7 @@ import android.util.Base64;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -194,16 +197,16 @@ public class Waypoint implements Parcelable {
 
     public static String encodeImageFromPath(String imagePath) {
         try {
-            File file = new File(imagePath);
-            if (!file.exists()) return null;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2; // Reduces resolution ~50%
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
 
-            FileInputStream fis = new FileInputStream(file);
-            byte[] bytes = new byte[(int) file.length()];
-            fis.read(bytes);
-            fis.close();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos); // Compress to 70% quality
+            byte[] bytes = baos.toByteArray();
 
             return Base64.encodeToString(bytes, Base64.NO_WRAP);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
