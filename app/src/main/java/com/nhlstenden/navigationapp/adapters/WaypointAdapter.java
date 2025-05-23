@@ -1,6 +1,7 @@
 package com.nhlstenden.navigationapp.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +58,11 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
             if ("file".equals(uri.getScheme())) {
                 holder.imageView.setImageURI(uri);
             } else {
+                Log.e("WAYPOINT_IMAGE", "Failed to load image from URI ");
                 holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
             }
         } else {
+            Log.e("WAYPOINT_IMAGE", "Failed, supposedly, image URI is empty");
             holder.imageView.setImageResource(R.drawable.ic_launcher_background);
         }
 

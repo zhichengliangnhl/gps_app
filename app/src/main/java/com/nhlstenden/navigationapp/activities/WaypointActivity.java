@@ -175,7 +175,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         builder.setPositiveButton("Import", (dialog, which) -> {
             String code = input.getText().toString().trim();
             try {
-                Waypoint wp = Waypoint.decode(code);
+                Waypoint wp = Waypoint.decode(this, code);
                 if (wp != null && wp.getName() != null) {
                     waypointList.add(wp);
                     adapter.updateList(waypointList);
