@@ -3,10 +3,15 @@ package com.nhlstenden.navigationapp.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
+import android.widget.EditText;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,8 +29,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.R;
-import com.nhlstenden.navigationapp.models.Waypoint;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -53,12 +59,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         // Initialize the map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = new SupportMapFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.map_container, mapFragment)
+                .commit();
         mapFragment.getMapAsync(this);
+
 
         // Initialize location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Initialize search bar and set up listener for Enter
+        EditText searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                String locationName = searchEditText.getText().toString().trim();
+                if (!locationName.isEmpty()) {
+                    searchLocation(locationName);
+                }
+                return true;
+            }
+            return false;
+        });
 
         // Initialize save button
         btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
@@ -80,7 +103,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        
+
         // Check for location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -110,7 +133,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            
+
             // Get current location and move camera
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
@@ -145,4 +168,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             finish();
         }
     }
+
+    private void searchLocation(String locationName) {
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(locationName, 1);
+            if (addressList != null && !addressList.isEmpty()) {
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                selectedLocation = latLng;
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                btnSaveWaypoint.setEnabled(true);
+            } else {
+                Toast.makeText(this, "Address not found", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            Log.e("MapActivity", "Geocoder failed", e);
+            Toast.makeText(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
 }
