@@ -64,7 +64,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
         btnSaveWaypoint.setEnabled(false);
         btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
+
+        // Initialize back button
+        Button btnBack = findViewById(R.id.btnBackWaypoint);
+        btnBack.setOnClickListener(v -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
