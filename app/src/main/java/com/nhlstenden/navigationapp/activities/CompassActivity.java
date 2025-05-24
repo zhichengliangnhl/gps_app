@@ -65,10 +65,6 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             startActivity(new Intent(this, FolderActivity.class));
         });
 
-        findViewById(R.id.btnCreateWaypoint).setOnClickListener(v -> {
-            startActivity(new Intent(this, CreateWaypointActivity.class));
-        });
-
         requestLocationAccess();
     }
 

@@ -39,11 +39,4 @@
         android:text="Waypoints"
         android:layout_marginTop="32dp" />
 
-    <Button
-        android:id="@+id/btnCreateWaypoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Add New Waypoint" />
-
 </LinearLayout>
