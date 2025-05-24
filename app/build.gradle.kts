@@ -7,6 +7,7 @@ val apiKey = dotenv.getProperty("API_KEY") ?: ""
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.kapt)
+    id("com.google.gms.google-services") // Firebase plugin
 }
 
 android {
@@ -64,4 +65,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-analytics") // Optional but helpful
 }
