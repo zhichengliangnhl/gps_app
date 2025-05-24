@@ -19,6 +19,12 @@ import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.activities.MapActivity;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class CreateWaypointActivity extends AppCompatActivity {
     private static final int MAX_DESCRIPTION_LENGTH = 500;
 
@@ -27,11 +33,31 @@ public class CreateWaypointActivity extends AppCompatActivity {
     private String mode, id;
     private double lat, lng;
     private Uri imageUri = Uri.EMPTY;
+    private String originalDate;
+
+    private ActivityResultLauncher<String> imagePickerLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        imageUri = uri;
+
+                        // Copy to internal storage
+                        String internalPath = copyImageToInternalStorage(uri);
+                        if (internalPath != null) {
+                            imageUri = Uri.fromFile(new File(internalPath));
+                            imagePreview.setImageURI(imageUri);
+                        } else {
+                            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etDescription);
@@ -55,18 +81,25 @@ public class CreateWaypointActivity extends AppCompatActivity {
                 lat = w.getLat();
                 lng = w.getLng();
                 imageUri = w.getImageUri() != null ? Uri.parse(w.getImageUri()) : Uri.EMPTY;
+                originalDate = w.getDate();
                 if (imageUri != Uri.EMPTY) {
                     Glide.with(this).load(imageUri).into(imagePreview);
                 }
+                btnMap.setEnabled(false);
+                btnMap.setAlpha(0.5f);
             }
         }
 
         btnChooseImage.setOnClickListener(v -> {
-            selectImageLauncher.launch("image/*");
+            imagePickerLauncher.launch("image/*");
         });
 
         btnMap.setOnClickListener(v -> {
             Intent mapIntent = new Intent(this, MapActivity.class);
+            if (lat != 0.0 && lng != 0.0) {
+                mapIntent.putExtra("lat", lat);
+                mapIntent.putExtra("lng", lng);
+            }
             mapLauncher.launch(mapIntent);
         });
 
@@ -80,8 +113,12 @@ public class CreateWaypointActivity extends AppCompatActivity {
                 }
                 Intent resultIntent = new Intent();
                 Waypoint resultWaypoint = new Waypoint(id, name, description, imageUri.toString(), lat, lng);
+                if ("edit".equals(mode) && originalDate != null) {
+                    resultWaypoint.setDate(originalDate);
+                }
                 resultIntent.putExtra("WAYPOINT", resultWaypoint);
                 resultIntent.putExtra("mode", mode);
+                resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
@@ -95,11 +132,30 @@ public class CreateWaypointActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etDescription.getText().toString().trim())) {
-            Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show();
+
+        if (lat == 0.0 && lng == 0.0) {
+            Toast.makeText(this, "Please select a location on the map first", Toast.LENGTH_SHORT).show();
             return false;
         }
+
         return true;
+    }
+
+    private String copyImageToInternalStorage(Uri sourceUri) {
+        try (InputStream in = getContentResolver().openInputStream(sourceUri)) {
+            File file = new File(getFilesDir(), "img_" + System.currentTimeMillis() + ".jpg");
+            try (OutputStream out = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+            }
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private final ActivityResultLauncher<String> selectImageLauncher =
@@ -114,9 +170,15 @@ public class CreateWaypointActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> mapLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (result.getResultCode() == RESULT_OK) {
-                            lat = result.getData().getDoubleExtra("lat", 0.0);
-                            lng = result.getData().getDoubleExtra("lng", 0.0);
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            if (data.hasExtra("lat") && data.hasExtra("lng")) {
+                                lat = data.getDoubleExtra("lat", 0.0);
+                                lng = data.getDoubleExtra("lng", 0.0);
+                                Toast.makeText(this,
+                                        String.format("Location updated: %.6f, %.6f", lat, lng),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 }

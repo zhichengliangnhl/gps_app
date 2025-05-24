@@ -43,7 +43,7 @@ google-services.json
 # VSCode (if you use it for editing)
 .vscode/
 
-local.properties
+/local.properties
 
 # .env file
 *.env

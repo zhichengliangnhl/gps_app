@@ -1,6 +1,7 @@
 package com.nhlstenden.navigationapp.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +54,15 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         holder.coordinatesTextView.setText(coordinates);
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-            try {
-                holder.imageView.setImageURI(Uri.parse(waypoint.getImageUri()));
-            } catch (Exception e) {
-                holder.imageView.setImageResource(R.drawable.ic_launcher_background);
+            Uri uri = Uri.parse(waypoint.getImageUri());
+            if ("file".equals(uri.getScheme())) {
+                holder.imageView.setImageURI(uri);
+            } else {
+                Log.e("WAYPOINT_IMAGE", "Failed to load image from URI ");
+                holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
             }
         } else {
+            Log.e("WAYPOINT_IMAGE", "Failed, supposedly, image URI is empty");
             holder.imageView.setImageResource(R.drawable.ic_launcher_background);
         }
 
@@ -68,6 +72,8 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         // Edit & delete
         holder.editButton.setOnClickListener(v -> listener.onEditClick(waypoint));
         holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(waypoint));
+        holder.shareButton.setOnClickListener(v -> listener.onShareClick(waypoint));
+
     }
 
     @Override
@@ -91,12 +97,21 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
     }
 
     public void removeWaypoint(Waypoint waypoint) {
+        int position = -1;
+        // Find the position of the waypoint to remove
         for (int i = 0; i < waypointList.size(); i++) {
             if (waypointList.get(i).getId().equals(waypoint.getId())) {
-                waypointList.remove(i);
-                notifyItemRemoved(i);
+                position = i;
                 break;
             }
+        }
+
+        // Only remove if we found the waypoint
+        if (position != -1) {
+            waypointList.remove(position);
+            notifyItemRemoved(position);
+            // Notify any items after the removed position that they need to update their positions
+            notifyItemRangeChanged(position, waypointList.size() - position);
         }
     }
 

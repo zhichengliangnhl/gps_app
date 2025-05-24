@@ -65,14 +65,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnSaveWaypoint.setEnabled(false);
         btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
 
-        // Initialize back button
-        Button btnBack = findViewById(R.id.btnBackWaypoint);
-        btnBack.setOnClickListener(v -> {
-            setResult(RESULT_CANCELED);
-            finish();
-        });
+        // Check if we received coordinates to center the map
+        Intent intent = getIntent();
+        if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
+            double lat = intent.getDoubleExtra("lat", 0.0);
+            double lng = intent.getDoubleExtra("lng", 0.0);
+            if (lat != 0.0 && lng != 0.0) {
+                selectedLocation = new LatLng(lat, lng);
+                btnSaveWaypoint.setEnabled(true);
+            }
+        }
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -95,6 +98,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
             btnSaveWaypoint.setEnabled(true);
         });
+
+        // If we have a selected location from onCreate, show it on the map
+        if (selectedLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
+            mMap.addMarker(new MarkerOptions().position(selectedLocation).title("Selected Location"));
+        }
     }
 
     private void enableMyLocation() {
@@ -129,12 +138,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void saveWaypoint() {
         if (selectedLocation != null) {
-            Intent intent = new Intent(this, CreateWaypointActivity.class);
-            intent.putExtra("mode", "create");
-            intent.putExtra("id", UUID.randomUUID().toString());
-            intent.putExtra("lat", selectedLocation.latitude);
-            intent.putExtra("lng", selectedLocation.longitude);
-            createWaypointLauncher.launch(intent);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("lat", selectedLocation.latitude);
+            resultIntent.putExtra("lng", selectedLocation.longitude);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         }
     }
 }

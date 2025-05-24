@@ -7,4 +7,6 @@ public interface OnWaypointClickListener
     void onEditClick(Waypoint waypoint);
     void onDeleteClick(Waypoint waypoint);
     void onNavigateClick(Waypoint waypoint);
+
+    void onShareClick(Waypoint waypoint);
 }

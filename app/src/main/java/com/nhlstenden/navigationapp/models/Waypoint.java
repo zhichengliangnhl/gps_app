@@ -1,7 +1,26 @@
 package com.nhlstenden.navigationapp.models;
 
+import static com.nhlstenden.navigationapp.activities.WaypointActivity.decodeBase64ToImageFile;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
+import android.util.Log;
+
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Waypoint implements Parcelable {
     private String id;
@@ -19,7 +38,9 @@ public class Waypoint implements Parcelable {
         this.imageUri = imageUri;
         this.lat = lat;
         this.lng = lng;
-        this.date = "2025-04-24"; // Default date
+        // Set current date in yyyy-MM-dd format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        this.date = sdf.format(new Date());
     }
 
     protected Waypoint(Parcel in) {
@@ -115,4 +136,97 @@ public class Waypoint implements Parcelable {
         dest.writeDouble(lng);
         dest.writeString(date);
     }
+
+    // Add this in Waypoint.java
+
+
+    public String encode() {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("id", id);
+            json.put("name", name);
+            json.put("description", description);
+            json.put("imageUri", imageUri != null ? imageUri : "");
+            json.put("lat", lat);
+            json.put("lng", lng);
+            json.put("date", date);
+
+            // Encode actual image if it's a file URI
+            if (imageUri != null && imageUri.startsWith("file://")) {
+                String path = Uri.parse(imageUri).getPath();
+                String base64 = encodeImageFromPath(path);
+                if (base64 != null) {
+                    json.put("imageBase64", base64);
+                }
+            }
+
+            return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Waypoint decode(Context context, String encoded) {
+        try {
+            String jsonStr = new String(Base64.decode(encoded, Base64.NO_WRAP));
+            JSONObject json = new JSONObject(jsonStr);
+
+            String id = json.getString("id");
+            String name = json.getString("name");
+            String description = json.getString("description");
+            String imageUri = json.optString("imageUri", "");
+            double lat = json.getDouble("lat");
+            double lng = json.getDouble("lng");
+            String date = json.optString("date", null);
+
+            // Check if there's an embedded image
+            if (json.has("imageBase64")) {
+                String imageBase64 = json.getString("imageBase64");
+                String savedPath = decodeBase64ToImageFile(context, imageBase64);
+                if (savedPath != null) {
+                    imageUri = "file://" + savedPath;
+                }
+            }
+
+            Waypoint wp = new Waypoint(id, name, description, imageUri, lat, lng);
+            if (date != null) wp.setDate(date);
+            return wp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String encodeImageFromPath(String imagePath) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(imagePath, options);
+
+            // Determine scaling factor
+            int maxDim = 300;
+            int scale = 1;
+            while (options.outWidth / scale > maxDim || options.outHeight / scale > maxDim) {
+                scale *= 2;
+            }
+
+            options.inSampleSize = scale;
+            options.inJustDecodeBounds = false;
+            Bitmap resizedBitmap = BitmapFactory.decodeFile(imagePath, options);
+
+            if (resizedBitmap == null) return null;
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
+            resizedBitmap.recycle();
+
+            byte[] imageBytes = outputStream.toByteArray();
+            return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
+

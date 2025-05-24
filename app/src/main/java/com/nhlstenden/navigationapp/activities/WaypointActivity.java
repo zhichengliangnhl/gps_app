@@ -1,12 +1,17 @@
 package com.nhlstenden.navigationapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +23,8 @@ import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
@@ -57,9 +64,9 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                         if (w != null) {
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
-                                adapter.updateWaypoint(w); // Must be implemented
+                                adapter.updateWaypoint(w);
                             } else {
-                                folder.getWaypoints().add(w);
+                                // Only add through the adapter, which will update the UI
                                 adapter.addWaypoint(w);
                             }
                         }
@@ -106,6 +113,9 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 return false;
             });
         }
+
+        Button btnImport = findViewById(R.id.btnImport);
+        btnImport.setOnClickListener(v -> showImportDialog());
     }
 
     private void openCreateWaypoint() {
@@ -132,8 +142,10 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
+        // Remove from folder's list first
         folder.getWaypoints().remove(waypoint);
-        adapter.removeWaypoint(waypoint);
+        // Then update the adapter
+        adapter.updateList(folder.getWaypoints());
     }
 
     @Override
@@ -143,4 +155,62 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         setResult(RESULT_OK, resultIntent);
         super.onBackPressed();
     }
+
+    @Override
+    public void onShareClick(Waypoint waypoint) {
+        String encoded = waypoint.encode();
+        if (encoded != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
+            startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+        } else {
+            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            try {
+                Waypoint wp = Waypoint.decode(this, code);
+                if (wp != null && wp.getName() != null) {
+                    waypointList.add(wp);
+                    adapter.updateList(waypointList);
+                    Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    public static String decodeBase64ToImageFile(Context context, String base64Data) {
+        try {
+            byte[] imageBytes = Base64.decode(base64Data, Base64.NO_WRAP);
+            File file = new File(context.getFilesDir(), "shared_img_" + System.currentTimeMillis() + ".jpg");
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(imageBytes);
+                fos.flush();
+            }
+
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
