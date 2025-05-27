@@ -31,6 +31,7 @@
         <activity android:name=".activities.CreateWaypointActivity" />
         <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.FolderActivity" />
+        <activity android:name=".activities.AchievementActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

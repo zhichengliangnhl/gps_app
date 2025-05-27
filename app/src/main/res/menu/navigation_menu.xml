@@ -18,5 +18,9 @@
         android:id="@+id/navigation_navigate"
         android:title="Navigate"
         android:icon="@drawable/compass" />
+    <item
+        android:id="@+id/navigation_achievement"
+        android:title="Achievement"
+        android:icon="@drawable/trophy" />
 
 </menu>

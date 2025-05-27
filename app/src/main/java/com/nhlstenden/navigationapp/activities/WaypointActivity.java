@@ -93,6 +93,11 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 if (id == R.id.navigation_add) {
                     openCreateWaypoint();
                     return true;
+                } else if (id == R.id.navigation_achievement) {
+                    Toast.makeText(WaypointActivity.this, "Achievement pressed", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(WaypointActivity.this, AchievementActivity.class);
+                    startActivity(intent);
+                    return true;
                 } else if (id == R.id.navigation_back) {
                     onBackPressed(); // go back
                     return true;
