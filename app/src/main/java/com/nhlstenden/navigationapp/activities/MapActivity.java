@@ -32,7 +32,6 @@ import com.nhlstenden.navigationapp.R;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -45,7 +44,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    // Pass the result back to WaypointActivity
                     setResult(RESULT_OK, result.getData());
                     finish();
                 } else if (result.getResultCode() == RESULT_CANCELED) {
@@ -65,11 +63,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .commit();
         mapFragment.getMapAsync(this);
 
-
-        // Initialize location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Initialize search bar and set up listener for Enter
         EditText searchEditText = findViewById(R.id.searchEditText);
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
@@ -83,12 +78,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             return false;
         });
 
-        // Initialize save button
         btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
         btnSaveWaypoint.setEnabled(false);
         btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
 
-        // Check if we received coordinates to center the map
+        Button btnBackWaypoint = findViewById(R.id.btnBackWaypoint);
+        btnBackWaypoint.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("cancel_reason", "User pressed back on map");
+            setResult(RESULT_CANCELED, resultIntent);
+            finish();
+        });
+
+        // If coordinates were passed to center the map
         Intent intent = getIntent();
         if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
             double lat = intent.getDoubleExtra("lat", 0.0);
@@ -104,7 +106,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Check for location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             enableMyLocation();
@@ -114,7 +115,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        // Set up map click listener for waypoint creation
         mMap.setOnMapClickListener(latLng -> {
             selectedLocation = latLng;
             mMap.clear();
@@ -122,7 +122,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             btnSaveWaypoint.setEnabled(true);
         });
 
-        // If we have a selected location from onCreate, show it on the map
         if (selectedLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
             mMap.addMarker(new MarkerOptions().position(selectedLocation).title("Selected Location"));
@@ -133,8 +132,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-
-            // Get current location and move camera
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
@@ -147,7 +144,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                         @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -189,5 +186,4 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
 }
