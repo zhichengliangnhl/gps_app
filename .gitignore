@@ -47,3 +47,4 @@ google-services.json
 
 # .env file
 *.env
+.env
