@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,9 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
     private ImageView compassNeedle;
     private TextView distanceText, nameText;
 
+    private ImageView navBrush, navArrow, navTrophy;
+    private ImageView settingsIcon;
+
     private FusedLocationProviderClient locationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
@@ -44,10 +48,40 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
-        compassNeedle = findViewById(R.id.compassNeedleImageView);
-        distanceText = findViewById(R.id.distanceTextView);
-        nameText = findViewById(R.id.nameTextView);
+        // Arrow needle and waypoint info
+        compassNeedle = findViewById(R.id.arrowImage);
+        distanceText = findViewById(R.id.distanceText);
+        nameText = findViewById(R.id.waypointStatus);
 
+        // Buttons
+        Button waypointButton = findViewById(R.id.waypointsButton);
+        waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
+
+        // Header icon (no function yet)
+        settingsIcon = findViewById(R.id.settingsIcon);
+        settingsIcon.setOnClickListener(v -> {
+            // No function yet — placeholder
+            Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        // Bottom nav setup
+        navBrush = findViewById(R.id.navBrush);
+        navArrow = findViewById(R.id.navArrow);
+        navTrophy = findViewById(R.id.navTrophy);
+
+        navBrush.setOnClickListener(v -> {
+            Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        navArrow.setOnClickListener(v -> {
+            // Already in CompassActivity — do nothing or refresh
+        });
+
+        navTrophy.setOnClickListener(v -> {
+            Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        // Compass + location setup
         compassSensorManager = new CompassSensorManager(this);
         compassSensorManager.setCompassListener(this);
 
@@ -58,12 +92,8 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             nameText.setText(targetWaypoint.getName());
         } else {
             nameText.setText("No waypoint selected");
-            distanceText.setText("Distance: --");
+            distanceText.setText("Distance: -");
         }
-
-        findViewById(R.id.btnWaypointList).setOnClickListener(v -> {
-            startActivity(new Intent(this, FolderActivity.class));
-        });
 
         requestLocationAccess();
     }

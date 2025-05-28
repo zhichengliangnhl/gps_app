@@ -4,30 +4,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="?attr/actionBarSize"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
+    android:background="@android:color/transparent">
 
+    <!-- Folder Name -->
     <TextView
         android:id="@+id/folderNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Folder Name"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="#000000"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/shareFolderButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editFolderButton"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <!-- Edit Button -->
+    <ImageButton
+        android:id="@+id/editFolderButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/edit_icon"
+        android:scaleType="fitCenter"
+        android:contentDescription="Edit Folder"
+        app:layout_constraintEnd_toStartOf="@id/deleteFolderButton"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginEnd="8dp" />
 
+    <!-- Delete Button -->
+    <ImageButton
+        android:id="@+id/deleteFolderButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/delete_icon"
+        android:scaleType="fitCenter"
+        android:contentDescription="Delete Folder"
+        app:layout_constraintEnd_toStartOf="@id/shareFolderButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Share Button -->
     <ImageButton
         android:id="@+id/shareFolderButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_share"
-        android:contentDescription="Share"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/share_icon"
+        android:scaleType="fitCenter"
+        android:contentDescription="Share Folder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
