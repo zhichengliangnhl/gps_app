@@ -7,16 +7,16 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
-import com.nhlstenden.navigationapp.activities.MapActivity;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.io.File;
@@ -25,7 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CreateWaypointActivity extends AppCompatActivity {
+public class CreateWaypointActivity extends BaseActivity {
+
     private static final int MAX_DESCRIPTION_LENGTH = 500;
 
     private EditText etName, etDescription;
@@ -42,13 +43,18 @@ public class CreateWaypointActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
 
+        // ✅ Set title
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Create Waypoint");
+        }
+
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
                     if (uri != null) {
                         imageUri = uri;
 
-                        // Copy to internal storage
                         String internalPath = copyImageToInternalStorage(uri);
                         if (internalPath != null) {
                             imageUri = Uri.fromFile(new File(internalPath));
@@ -74,6 +80,10 @@ public class CreateWaypointActivity extends AppCompatActivity {
         lng = intent.getDoubleExtra("lng", 0.0);
 
         if ("edit".equals(mode)) {
+            if (headerTitle != null) {
+                headerTitle.setText("Edit Waypoint");
+            }
+
             Waypoint w = intent.getParcelableExtra("WAYPOINT");
             if (w != null) {
                 etName.setText(w.getName());
@@ -90,9 +100,7 @@ public class CreateWaypointActivity extends AppCompatActivity {
             }
         }
 
-        btnChooseImage.setOnClickListener(v -> {
-            imagePickerLauncher.launch("image/*");
-        });
+        btnChooseImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
 
         btnMap.setOnClickListener(v -> {
             Intent mapIntent = new Intent(this, MapActivity.class);
@@ -111,11 +119,13 @@ public class CreateWaypointActivity extends AppCompatActivity {
                     description = description.substring(0, MAX_DESCRIPTION_LENGTH);
                     Toast.makeText(this, "Description truncated to 500 characters", Toast.LENGTH_SHORT).show();
                 }
-                Intent resultIntent = new Intent();
+
                 Waypoint resultWaypoint = new Waypoint(id, name, description, imageUri.toString(), lat, lng);
                 if ("edit".equals(mode) && originalDate != null) {
                     resultWaypoint.setDate(originalDate);
                 }
+
+                Intent resultIntent = new Intent();
                 resultIntent.putExtra("WAYPOINT", resultWaypoint);
                 resultIntent.putExtra("mode", mode);
                 resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
@@ -157,15 +167,6 @@ public class CreateWaypointActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    private final ActivityResultLauncher<String> selectImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.GetContent(),
-                    uri -> {
-                        if (uri != null) {
-                            imageUri = uri;
-                            Glide.with(this).load(imageUri).into(imagePreview);
-                        }
-                    });
 
     private final ActivityResultLauncher<Intent> mapLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
