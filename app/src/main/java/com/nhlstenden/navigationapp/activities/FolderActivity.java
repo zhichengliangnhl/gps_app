@@ -6,17 +6,18 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
@@ -27,7 +28,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderActivity extends AppCompatActivity implements OnFolderClickListener {
+public class FolderActivity extends BaseActivity implements OnFolderClickListener {
 
     private RecyclerView recyclerView;
     private FolderAdapter folderAdapter;
@@ -60,6 +61,12 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folder);
 
+        // Set top bar title
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Treasure Collections");
+        }
+
         // Initialize views
         recyclerView = findViewById(R.id.recyclerViewFolders);
         addFolderButton = findViewById(R.id.addFolderButton);
@@ -87,44 +94,8 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
             saveFolders();
             folderNameInput.setText("");
 
-            onFolderClicked(folder); // open it right away
+            onFolderClicked(folder); // Open folder immediately
         });
-
-        // Bottom Navigation handling
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        if (bottomNav != null) {
-            bottomNav.setSelectedItemId(R.id.navigation_navigate); // highlight current
-
-            bottomNav.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-
-                if (id == R.id.navigation_back) {
-                    onBackPressed();
-                    return true;
-
-                } else if (id == R.id.navigation_map) {
-                    startActivity(new Intent(this, MapActivity.class));
-                    return true;
-
-                } else if (id == R.id.navigation_add) {
-                    startActivity(new Intent(this, CreateWaypointActivity.class));
-                    return true;
-
-                } else if (id == R.id.navigation_navigate) {
-                    if (!folderList.isEmpty() && !folderList.get(0).getWaypoints().isEmpty()) {
-                        Waypoint first = folderList.get(0).getWaypoints().get(0);
-                        Intent navIntent = new Intent(this, CompassActivity.class);
-                        navIntent.putExtra("WAYPOINT", first);
-                        startActivity(navIntent);
-                    } else {
-                        Toast.makeText(this, "No waypoints available to navigate", Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-
-                return false;
-            });
-        }
     }
 
     @Override
@@ -132,6 +103,50 @@ public class FolderActivity extends AppCompatActivity implements OnFolderClickLi
         Intent intent = new Intent(this, WaypointActivity.class);
         intent.putExtra("FOLDER", folder);
         folderResultLauncher.launch(intent);
+    }
+
+    @Override
+    public void onEditFolder(Folder folder) {
+        EditText input = new EditText(this);
+        input.setText(folder.getName());
+
+        new AlertDialog.Builder(this)
+                .setTitle("Rename Folder")
+                .setView(input)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newName = input.getText().toString().trim();
+                    if (!TextUtils.isEmpty(newName)) {
+                        folder.setName(newName);
+                        folderAdapter.notifyDataSetChanged();
+                        saveFolders();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    public void onDeleteFolder(Folder folder) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Folder")
+                .setMessage("Are you sure you want to delete \"" + folder.getName() + "\"?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    folderList.remove(folder);
+                    folderAdapter.notifyDataSetChanged();
+                    saveFolders();
+                    Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    public void onShareFolder(Folder folder) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Check out my folder");
+        intent.putExtra(Intent.EXTRA_TEXT, "Folder: " + folder.getName());
+        startActivity(Intent.createChooser(intent, "Share Folder via"));
     }
 
     private void loadFolders() {
