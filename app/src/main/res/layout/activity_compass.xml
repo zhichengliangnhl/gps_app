@@ -33,7 +33,6 @@
             android:contentDescription="Settings Icon"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true" />
-
     </RelativeLayout>
 
     <!-- Center Content -->
@@ -76,16 +75,18 @@
             android:textColor="#000000"
             android:layout_marginBottom="16dp" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/waypointsButton"
             android:layout_width="260dp"
-            android:layout_height="56dp"
-            android:background="@drawable/rounded_button_brown"
+            android:layout_height="wrap_content"
             android:text="WAYPOINTS"
             android:textAllCaps="true"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:backgroundTint="@null" />
+            android:background="@drawable/rounded_button_brown"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="14dp" />
     </LinearLayout>
 
     <!-- Bottom Nav Bar -->
