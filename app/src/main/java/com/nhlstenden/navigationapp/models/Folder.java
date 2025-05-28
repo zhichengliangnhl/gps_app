@@ -36,6 +36,11 @@ public class Folder implements Parcelable {
         return name;
     }
 
+    // ✅ Add this method so FolderActivity.java can compile:
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<Waypoint> getWaypoints() {
         return waypoints;
     }
@@ -48,6 +53,10 @@ public class Folder implements Parcelable {
         waypoints.remove(waypoint);
     }
 
+    public void deleteWaypoint(Waypoint waypoint) {
+        this.waypoints.remove(waypoint);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,8 +66,5 @@ public class Folder implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeTypedList(waypoints);
-    }
-    public void deleteWaypoint(Waypoint waypoint) {
-        this.waypoints.remove(waypoint);
     }
 }
