@@ -48,6 +48,12 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
+        // ✅ Set top bar title dynamically
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Treasure Finder");
+        }
+
         // Arrow needle and waypoint info
         compassNeedle = findViewById(R.id.arrowImage);
         distanceText = findViewById(R.id.distanceText);
@@ -60,7 +66,6 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         // Header icon (no function yet)
         settingsIcon = findViewById(R.id.settingsIcon);
         settingsIcon.setOnClickListener(v -> {
-            // No function yet — placeholder
             Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
         });
 
