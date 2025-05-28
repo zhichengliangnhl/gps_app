@@ -1,42 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="#f8f5f0"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="24dp">
+    android:orientation="vertical"
+    android:background="#E6B974"
+    tools:context=".activities.CompassActivity">
 
-    <ImageView
-        android:id="@+id/compassNeedleImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:contentDescription="Compass Needle"
-        android:src="@drawable/ic_compass_needle" />
+    <!-- Top Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#A86C00"
+        android:paddingHorizontal="16dp">
 
-    <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Waypoint Name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginTop="16dp"/>
+        <TextView
+            android:id="@+id/headerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Treasure Finder"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"
+            android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/distanceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Distance: --"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="8dp"/>
+        <ImageView
+            android:id="@+id/settingsIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/setting_icon"
+            android:contentDescription="Settings Icon"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
 
-    <Button
-        android:id="@+id/btnWaypointList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Waypoints"
-        android:layout_marginTop="32dp" />
+    </RelativeLayout>
 
+    <!-- Center Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/arrowImage"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/arrow_1"
+            android:contentDescription="Compass Arrow"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/waypointStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No waypoint selected"
+            android:textStyle="italic|bold"
+            android:textSize="22sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/distanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance: -"
+            android:textStyle="italic"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/waypointsButton"
+            android:layout_width="260dp"
+            android:layout_height="56dp"
+            android:background="@drawable/rounded_button_brown"
+            android:text="WAYPOINTS"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@null" />
+    </LinearLayout>
+
+    <!-- Bottom Nav Bar -->
+    <include layout="@layout/include_bottom_nav" />
 </LinearLayout>
