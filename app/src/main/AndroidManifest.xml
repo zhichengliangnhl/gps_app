@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
     <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
 
@@ -18,22 +17,39 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NavigationApp"
+        android:theme="@style/Theme.NavigationApp.Splash"
         tools:targetApi="31">
 
-        <!-- Launcher Activity now set to CompassActivity -->
-        <activity android:name=".activities.CompassActivity" android:exported="true">
+        <!-- Launcher Activity -->
+        <activity
+            android:name=".activities.AppLaunchActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.WaypointActivity" />
-        <activity android:name=".activities.CreateWaypointActivity" />
-        <activity android:name=".activities.MapActivity" />
-        <activity android:name=".activities.FolderActivity" />
+        <!-- Compass screen -->
+        <activity android:name=".activities.CompassActivity" />
 
+        <!-- Folder screen (resizes for keyboard) -->
+        <activity
+            android:name=".activities.FolderActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Waypoint list screen -->
+        <activity android:name=".activities.WaypointActivity" />
+
+        <!-- Create Waypoint screen (resizes for keyboard) -->
+        <activity
+            android:name=".activities.CreateWaypointActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Map screen -->
+        <activity android:name=".activities.MapActivity" />
+
+        <!-- Google Maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAIitSjryLAnzqZOsEL7_YsgwF4c7nNKXc"/>
