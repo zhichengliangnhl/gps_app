@@ -3,7 +3,8 @@ package com.nhlstenden.navigationapp.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
-import com.nhlstenden.navigationapp.viewholders.FolderViewHolder;
 
 import java.util.List;
 
-public class FolderAdapter extends RecyclerView.Adapter<FolderViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderViewHolder> {
 
     private final List<Folder> folderList;
     private final OnFolderClickListener listener;
@@ -38,14 +38,14 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderViewHolder> {
         holder.folderNameTextView.setText(folder.getName());
 
         holder.itemView.setOnClickListener(v -> listener.onFolderClicked(folder));
-        holder.shareButton.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Sharing not implemented yet", Toast.LENGTH_SHORT).show();
-        });
+        holder.editButton.setOnClickListener(v -> listener.onEditFolder(folder));
+        holder.deleteButton.setOnClickListener(v -> listener.onDeleteFolder(folder));
+        holder.shareButton.setOnClickListener(v -> listener.onShareFolder(folder));
     }
 
     @Override
     public int getItemCount() {
-        return folderList != null ? folderList.size() : 0;
+        return folderList.size();
     }
 
     public void updateFolder(Folder updatedFolder) {
@@ -55,6 +55,19 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderViewHolder> {
                 notifyItemChanged(i);
                 break;
             }
+        }
+    }
+
+    public static class FolderViewHolder extends RecyclerView.ViewHolder {
+        TextView folderNameTextView;
+        ImageButton editButton, deleteButton, shareButton;
+
+        public FolderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
+            editButton = itemView.findViewById(R.id.editFolderButton);
+            deleteButton = itemView.findViewById(R.id.deleteFolderButton);
+            shareButton = itemView.findViewById(R.id.shareFolderButton);
         }
     }
 }
