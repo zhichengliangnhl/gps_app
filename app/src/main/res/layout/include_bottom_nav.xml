@@ -1,13 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.bottomnavigation.BottomNavigationView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottom_navigation"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:background="?android:attr/windowBackground"
-    app:menu="@menu/navigation_menu"
-    app:itemIconTint="@color/selector_nav_item_color"
-    app:itemTextColor="@color/selector_nav_item_color"
-    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+    android:layout_height="88dp"
+    android:orientation="horizontal"
+    android:background="#A86C00"
+    android:gravity="center"
+    android:paddingHorizontal="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="12dp"
+    android:weightSum="3">
+
+    <!-- Brush Icon -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_ring_outer"
+            android:layout_gravity="center">
+
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ring_middle"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:padding="2dp">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_ring_inner"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/navBrush"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/brush_icon_nav"
+                        android:contentDescription="Brush Icon" />
+                </FrameLayout>
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Arrow Icon -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_ring_outer"
+            android:layout_gravity="center">
+
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ring_middle"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:padding="2dp">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_ring_inner"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/navArrow"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/navigate_icon_nav"
+                        android:contentDescription="Arrow Icon" />
+                </FrameLayout>
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Trophy Icon -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_ring_outer"
+            android:layout_gravity="center">
+
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_ring_middle"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:padding="2dp">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_ring_inner"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/navTrophy"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/achievement_icon_nav"
+                        android:contentDescription="Trophy Icon" />
+                </FrameLayout>
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

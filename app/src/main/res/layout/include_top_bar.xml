@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="#A86C00"
+    android:paddingHorizontal="16dp">
+
+    <TextView
+        android:id="@+id/headerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Default Title"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:gravity="center_vertical"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/settingsIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/setting_icon"
+        android:contentDescription="Settings Icon"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true" />
+</RelativeLayout>
