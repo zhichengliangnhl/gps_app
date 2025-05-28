@@ -12,11 +12,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
-public class WaypointActivity extends AppCompatActivity implements OnWaypointClickListener {
+public class WaypointActivity extends BaseActivity implements OnWaypointClickListener {
 
     private Folder folder;
     private RecyclerView recyclerView;
@@ -55,7 +55,6 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Launcher to receive new/edit waypoint result
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -66,14 +65,12 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                             if ("edit".equals(mode)) {
                                 adapter.updateWaypoint(w);
                             } else {
-                                // Only add through the adapter, which will update the UI
                                 adapter.addWaypoint(w);
                             }
                         }
                     }
                 });
 
-        // Optional: if you use a map picker to return lat/lng
         mapLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -89,32 +86,10 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                     }
                 });
 
-        // Bottom nav (optional)
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        if (bottomNav != null) {
-            bottomNav.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.navigation_add) {
-                    openCreateWaypoint();
-                    return true;
-                } else if (id == R.id.navigation_back) {
-                    onBackPressed(); // go back
-                    return true;
-                } else if (id == R.id.navigation_navigate) {
-                    if (!waypointList.isEmpty()) {
-                        Intent intent = new Intent(this, CompassActivity.class);
-                        intent.putExtra("WAYPOINT", waypointList.get(0));
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-                return false;
-            });
-        }
-
+        Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
         Button btnImport = findViewById(R.id.btnImport);
+
+        btnAddWaypoint.setOnClickListener(v -> openCreateWaypoint());
         btnImport.setOnClickListener(v -> showImportDialog());
     }
 
@@ -142,9 +117,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
-        // Remove from folder's list first
         folder.getWaypoints().remove(waypoint);
-        // Then update the adapter
         adapter.updateList(folder.getWaypoints());
     }
 
@@ -212,5 +185,4 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
             return null;
         }
     }
-
 }
