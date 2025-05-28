@@ -1,23 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Your main app theme -->
     <style name="Theme.NavigationApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary branding -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
-
-        <!-- Secondary (accent) -->
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
-
-        <!-- Surface & background -->
         <item name="android:colorBackground">@color/background</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
-
-        <!-- Default appearances -->
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button</item>
     </style>
+
+    <style name="Theme.NavigationApp.Splash" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Prevent native splash icon from showing -->
+        <item name="windowSplashScreenBackground">#E6B974</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+
+        <!-- Still compatible with AppCompatActivity -->
+        <item name="android:windowBackground">#E6B974</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.NavigationApp</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+
 </resources>
