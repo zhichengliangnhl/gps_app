@@ -46,7 +46,7 @@ public class CreateWaypointActivity extends BaseActivity {
         // ✅ Set title
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
-            headerTitle.setText("Create Waypoint");
+            headerTitle.setText("Treasure Creation");
         }
 
         imagePickerLauncher = registerForActivityResult(

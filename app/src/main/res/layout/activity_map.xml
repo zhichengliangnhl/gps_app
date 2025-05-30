@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:id="@+id/map_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <!-- Top Bar -->
+    <include
+        android:id="@+id/top_bar"
+        layout="@layout/include_top_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/searchEditText"
-        android:layout_width="328dp"
+        android:layout_width="256dp"
         android:layout_height="wrap_content"
-        android:hint="Search address"
+        android:hint="Search here"
         android:imeOptions="actionSearch"
         android:textColor="@color/black"
-        android:textColorHint="@color/black" />
+        android:textColorHint="@color/white"
+        android:background="@drawable/searchbar_background"
+        android:padding="10dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="72dp"/>
 
 
     <LinearLayout
@@ -32,16 +45,22 @@
 
         <Button
             android:id="@+id/btnBackWaypoint"
-            android:layout_width="0dp"
+            android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Back" />
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_button_red"
+            android:textColor="@color/white"
+            android:text="return" />
 
         <Button
             android:id="@+id/btnSaveWaypoint"
-            android:layout_width="0dp"
+            android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_button_black"
+            android:textColor="@color/white"
             android:text="Save Waypoint"
             android:enabled="false" />
     </LinearLayout>
