@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -41,6 +42,12 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
+
+        // Set top bar title
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Treasure Cove");
+        }
 
         folder = getIntent().getParcelableExtra("FOLDER");
         if (folder == null) {

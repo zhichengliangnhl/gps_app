@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Address;
 import android.location.Geocoder;
@@ -55,6 +56,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        // Set top bar title
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Loot land");
+        }
 
         // Initialize the map
         SupportMapFragment mapFragment = new SupportMapFragment();
