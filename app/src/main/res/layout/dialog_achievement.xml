@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/dialogText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Achievement Title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#222"
+        android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/dialogDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Achievement description"
+        android:textColor="#222"
+        android:textSize="15sp"
+        android:layout_marginTop="12dp"/>
+</LinearLayout>
