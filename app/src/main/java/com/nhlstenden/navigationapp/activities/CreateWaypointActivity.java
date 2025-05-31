@@ -3,183 +3,191 @@ package com.nhlstenden.navigationapp.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.nhlstenden.navigationapp.BaseActivity;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.R;
-import com.nhlstenden.navigationapp.models.Waypoint;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+public class CreateWaypointActivity extends AppCompatActivity {
 
-public class CreateWaypointActivity extends BaseActivity {
+    private MapView mapPreview;
+    private GoogleMap previewMap;
 
-    private static final int MAX_DESCRIPTION_LENGTH = 500;
+    private double lat = 0.0;
+    private double lng = 0.0;
 
     private EditText etName, etDescription;
+    private Button btnSaveWaypoint, btnCancel;
     private ImageView imagePreview;
-    private String mode, id;
-    private double lat, lng;
-    private Uri imageUri = Uri.EMPTY;
-    private String originalDate;
+    private View imageClickOverlay;
 
-    private ActivityResultLauncher<String> imagePickerLauncher;
+    private Uri imageUri = Uri.EMPTY;
+
+    // Launcher for picking an image from gallery
+    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    imageUri = uri;
+                    imagePreview.setImageURI(imageUri);
+                }
+            });
+
+    // Launcher for picking location on map
+    private final ActivityResultLauncher<Intent> mapLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (data.hasExtra("lat") && data.hasExtra("lng")) {
+                        lat = data.getDoubleExtra("lat", 0.0);
+                        lng = data.getDoubleExtra("lng", 0.0);
+
+                        Toast.makeText(this,
+                                String.format("Location selected: %.6f, %.6f", lat, lng),
+                                Toast.LENGTH_SHORT).show();
+
+                        updateMapPreview(lat, lng);
+                    }
+                }
+            });
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
 
-        // ✅ Set title
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
-            headerTitle.setText("Treasure Creation");
+            headerTitle.setText("Create Treasure");
         }
-
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.GetContent(),
-                uri -> {
-                    if (uri != null) {
-                        imageUri = uri;
-
-                        String internalPath = copyImageToInternalStorage(uri);
-                        if (internalPath != null) {
-                            imageUri = Uri.fromFile(new File(internalPath));
-                            imagePreview.setImageURI(imageUri);
-                        } else {
-                            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etDescription);
+        btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
+        btnCancel = findViewById(R.id.btnCancel);
+        mapPreview = findViewById(R.id.mapPreview);
         imagePreview = findViewById(R.id.imagePreview);
-        Button btnChooseImage = findViewById(R.id.btnChooseImage);
-        Button btnSave = findViewById(R.id.btnSaveWaypoint);
-        Button btnCancel = findViewById(R.id.btnCancel);
-        Button btnMap = findViewById(R.id.btnMap);
+        imageClickOverlay = findViewById(R.id.imageClickOverlay);
 
-        Intent intent = getIntent();
-        mode = intent.getStringExtra("mode");
-        id = intent.getStringExtra("id");
-        lat = intent.getDoubleExtra("lat", 0.0);
-        lng = intent.getDoubleExtra("lng", 0.0);
+        // MapView setup
+        mapPreview.onCreate(savedInstanceState);
+        mapPreview.getMapAsync(googleMap -> {
+            previewMap = googleMap;
+            previewMap.getUiSettings().setAllGesturesEnabled(false); // Disable interaction
+            updateMapPreview(lat, lng);
+        });
 
-        if ("edit".equals(mode)) {
-            if (headerTitle != null) {
-                headerTitle.setText("Edit Waypoint");
-            }
-
-            Waypoint w = intent.getParcelableExtra("WAYPOINT");
-            if (w != null) {
-                etName.setText(w.getName());
-                etDescription.setText(w.getDescription());
-                lat = w.getLat();
-                lng = w.getLng();
-                imageUri = w.getImageUri() != null ? Uri.parse(w.getImageUri()) : Uri.EMPTY;
-                originalDate = w.getDate();
-                if (imageUri != Uri.EMPTY) {
-                    Glide.with(this).load(imageUri).into(imagePreview);
-                }
-                btnMap.setEnabled(false);
-                btnMap.setAlpha(0.5f);
+        // Restore lst/lng
+        if (savedInstanceState != null) {
+            lat = savedInstanceState.getDouble("lat", 0.0);
+            lng = savedInstanceState.getDouble("lng", 0.0);
+        } else {
+            Intent intent = getIntent();
+            if (intent != null && intent.hasExtra("lat") && intent.hasExtra("lng")) {
+                lat = intent.getDoubleExtra("lat", 0.0);
+                lng = intent.getDoubleExtra("lng", 0.0);
             }
         }
 
-        btnChooseImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
-
-        btnMap.setOnClickListener(v -> {
-            Intent mapIntent = new Intent(this, MapActivity.class);
+        // Launch MapActivity when overlay is clicked
+        findViewById(R.id.mapClickOverlay).setOnClickListener(v -> {
+            Intent intent = new Intent(CreateWaypointActivity.this, MapActivity.class);
             if (lat != 0.0 && lng != 0.0) {
-                mapIntent.putExtra("lat", lat);
-                mapIntent.putExtra("lng", lng);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lng", lng);
             }
-            mapLauncher.launch(mapIntent);
+            mapLauncher.launch(intent);
         });
 
-        btnSave.setOnClickListener(v -> {
-            if (validateInput()) {
-                String name = etName.getText().toString().trim();
-                String description = etDescription.getText().toString().trim();
-                if (description.length() > MAX_DESCRIPTION_LENGTH) {
-                    description = description.substring(0, MAX_DESCRIPTION_LENGTH);
-                    Toast.makeText(this, "Description truncated to 500 characters", Toast.LENGTH_SHORT).show();
-                }
-
-                Waypoint resultWaypoint = new Waypoint(id, name, description, imageUri.toString(), lat, lng);
-                if ("edit".equals(mode) && originalDate != null) {
-                    resultWaypoint.setDate(originalDate);
-                }
-
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("WAYPOINT", resultWaypoint);
-                resultIntent.putExtra("mode", mode);
-                resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        imageClickOverlay.setOnClickListener(v -> {
+            imagePickerLauncher.launch("image/*");
         });
 
-        btnCancel.setOnClickListener(v -> finish());
-    }
-
-    private boolean validateInput() {
-        if (TextUtils.isEmpty(etName.getText().toString().trim())) {
-            Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (lat == 0.0 && lng == 0.0) {
-            Toast.makeText(this, "Please select a location on the map first", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
-    private String copyImageToInternalStorage(Uri sourceUri) {
-        try (InputStream in = getContentResolver().openInputStream(sourceUri)) {
-            File file = new File(getFilesDir(), "img_" + System.currentTimeMillis() + ".jpg");
-            try (OutputStream out = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4096];
-                int len;
-                while ((len = in.read(buffer)) > 0) {
-                    out.write(buffer, 0, len);
-                }
+        btnSaveWaypoint.setOnClickListener(v -> {
+            String name = etName.getText().toString().trim();
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Please enter a waypoint name", Toast.LENGTH_SHORT).show();
+                return;
             }
-            return file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            if (lat == 0.0 && lng == 0.0) {
+                Toast.makeText(this, "Please select a location on the map", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("name", name);
+            resultIntent.putExtra("description", etDescription.getText().toString().trim());
+            resultIntent.putExtra("lat", lat);
+            resultIntent.putExtra("lng", lng);
+
+            if (imageUri != Uri.EMPTY) {
+                resultIntent.putExtra("imageUri", imageUri.toString());
+            }
+
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
+        // Cancel button logic
+        btnCancel.setOnClickListener(v -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
+    }
+
+    private void updateMapPreview(double lat, double lng) {
+        if (previewMap == null) return;
+
+        previewMap.clear();
+        if (lat != 0.0 && lng != 0.0) {
+            LatLng location = new LatLng(lat, lng);
+            previewMap.addMarker(new MarkerOptions().position(location).title("Selected Location"));
+            previewMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
         }
     }
 
-    private final ActivityResultLauncher<Intent> mapLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            Intent data = result.getData();
-                            if (data.hasExtra("lat") && data.hasExtra("lng")) {
-                                lat = data.getDoubleExtra("lat", 0.0);
-                                lng = data.getDoubleExtra("lng", 0.0);
-                                Toast.makeText(this,
-                                        String.format("Location updated: %.6f, %.6f", lat, lng),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapPreview.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapPreview.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapPreview.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapPreview.onLowMemory();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapPreview.onSaveInstanceState(outState);
+        outState.putDouble("lat", lat);
+        outState.putDouble("lng", lng);
+    }
 }
