@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NavigationApp</string>
+    <string name="app_name"></string>
     <string name="menu_map">Map</string>
     <string name="menu_navigate">Navigate</string>
     <string name="menu_add">Add</string>

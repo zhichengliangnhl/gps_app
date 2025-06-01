@@ -24,4 +24,4 @@
         android:contentDescription="Settings Icon"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
-</RelativeLayout>
+</RelativeLayout> 
