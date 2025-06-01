@@ -48,7 +48,6 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
-        // ✅ Set top bar title dynamically
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Finder");
