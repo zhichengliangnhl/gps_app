@@ -2,10 +2,12 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +24,10 @@ import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
+import com.nhlstenden.navigationapp.utils.QRCodeUtils;
+import com.journeyapps.barcodescanner.ScanOptions;
+import com.journeyapps.barcodescanner.ScanContract;
+import androidx.activity.result.ActivityResultLauncher;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +42,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     private ActivityResultLauncher<Intent> createEditLauncher;
     private ActivityResultLauncher<Intent> mapLauncher;
+    private ActivityResultLauncher<ScanOptions> qrScanner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +61,45 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         adapter = new WaypointAdapter(waypointList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        Button btnShareQR = findViewById(R.id.btnShareQR);
+        btnShareQR.setOnClickListener(v -> {
+            if (!waypointList.isEmpty()) {
+                // You can select which waypoint to share, here it's just the first
+                Waypoint toShare = waypointList.get(0);
+
+                String qrString = toShare.encode();
+                Bitmap qrBitmap = QRCodeUtils.generateQRCode(qrString);
+
+                ImageView qrImage = new ImageView(this);
+                qrImage.setImageBitmap(qrBitmap);
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Waypoint QR Code")
+                        .setView(qrImage)
+                        .setPositiveButton("Close", null)
+                        .show();
+            } else {
+                Toast.makeText(this, "No waypoint to share", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        qrScanner = registerForActivityResult(
+                new ScanContract(),
+                result -> {
+                    if (result.getContents() != null) {
+                        String encodedWaypoint = result.getContents();
+                        Waypoint imported = Waypoint.decode(this, encodedWaypoint);
+                        if (imported != null && imported.getName() != null) {
+                            waypointList.add(imported);
+                            adapter.updateList(waypointList);
+                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
 
         // Launcher to receive new/edit waypoint result
         createEditLauncher = registerForActivityResult(

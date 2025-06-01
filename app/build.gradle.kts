@@ -38,6 +38,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -53,6 +56,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     annotationProcessor(libs.room.compiler)
 
     // Glide for image loading

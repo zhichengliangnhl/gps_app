@@ -30,7 +30,6 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
     private CompassSensorManager compassSensorManager;
     private ImageView compassNeedle;
     private TextView distanceText, nameText;
-
     private FusedLocationProviderClient locationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;

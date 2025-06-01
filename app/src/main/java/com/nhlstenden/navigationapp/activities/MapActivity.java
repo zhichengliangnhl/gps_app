@@ -65,7 +65,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .commit();
         mapFragment.getMapAsync(this);
 
-
         // Initialize location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
