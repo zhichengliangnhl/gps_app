@@ -7,7 +7,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class QRCodeUtils {
 
-    public Bitmap generateQRCode (String data)
+    public static Bitmap generateQRCode(String data)
     {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();

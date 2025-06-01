@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
@@ -27,7 +29,6 @@ import com.nhlstenden.navigationapp.models.Waypoint;
 import com.nhlstenden.navigationapp.utils.QRCodeUtils;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.journeyapps.barcodescanner.ScanContract;
-import androidx.activity.result.ActivityResultLauncher;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,27 +63,18 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        Button btnShareQR = findViewById(R.id.btnShareQR);
-        btnShareQR.setOnClickListener(v -> {
-            if (!waypointList.isEmpty()) {
-                // You can select which waypoint to share, here it's just the first
-                Waypoint toShare = waypointList.get(0);
-
-                String qrString = toShare.encode();
-                Bitmap qrBitmap = QRCodeUtils.generateQRCode(qrString);
-
-                ImageView qrImage = new ImageView(this);
-                qrImage.setImageBitmap(qrBitmap);
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Waypoint QR Code")
-                        .setView(qrImage)
-                        .setPositiveButton("Close", null)
-                        .show();
-            } else {
-                Toast.makeText(this, "No waypoint to share", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // --- OPTIONAL: Remove if you do NOT have this button in your layout ---
+        // Button btnShareQR = findViewById(R.id.btnShareQR);
+        // btnShareQR.setOnClickListener(v -> {
+        //     if (!waypointList.isEmpty()) {
+        //         Waypoint toShare = waypointList.get(0); // Or let user pick
+        //         String qrString = toShare.encode();
+        //         Bitmap qrBitmap = QRCodeUtils.generateQRCode(qrString);
+        //         showQrBottomSheet(qrBitmap);
+        //     } else {
+        //         Toast.makeText(this, "No waypoint to share", Toast.LENGTH_SHORT).show();
+        //     }
+        // });
 
         qrScanner = registerForActivityResult(
                 new ScanContract(),
@@ -101,7 +93,6 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                 }
         );
 
-        // Launcher to receive new/edit waypoint result
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -112,14 +103,12 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                             if ("edit".equals(mode)) {
                                 adapter.updateWaypoint(w);
                             } else {
-                                // Only add through the adapter, which will update the UI
                                 adapter.addWaypoint(w);
                             }
                         }
                     }
                 });
 
-        // Optional: if you use a map picker to return lat/lng
         mapLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -135,7 +124,6 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                     }
                 });
 
-        // Bottom nav (optional)
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         if (bottomNav != null) {
             bottomNav.setOnItemSelectedListener(item -> {
@@ -144,7 +132,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                     openCreateWaypoint();
                     return true;
                 } else if (id == R.id.navigation_back) {
-                    onBackPressed(); // go back
+                    onBackPressed();
                     return true;
                 } else if (id == R.id.navigation_navigate) {
                     if (!waypointList.isEmpty()) {
@@ -188,9 +176,7 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
-        // Remove from folder's list first
         folder.getWaypoints().remove(waypoint);
-        // Then update the adapter
         adapter.updateList(folder.getWaypoints());
     }
 
@@ -206,10 +192,8 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
         if (encoded != null) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
-            startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+            Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
+            showQrBottomSheet(qrBitmap);
         } else {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
         }
@@ -259,4 +243,23 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         }
     }
 
+    private void showQrBottomSheet(Bitmap qrBitmap) {
+        View sheetView = getLayoutInflater().inflate(R.layout.activity_qr, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(sheetView);
+
+        // Set the QR code image
+        ImageView qrImage = sheetView.findViewById(R.id.qrImage);
+        qrImage.setImageBitmap(qrBitmap);
+
+        // Hide manual entry fields for sharing
+        sheetView.findViewById(R.id.txtManual).setVisibility(View.GONE);
+        sheetView.findViewById(R.id.editLink).setVisibility(View.GONE);
+        sheetView.findViewById(R.id.btnInsertLink).setVisibility(View.GONE);
+
+        Button btnCancel = sheetView.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
+    }
 }
