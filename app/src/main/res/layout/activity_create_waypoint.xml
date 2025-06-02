@@ -138,7 +138,8 @@
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:layout_margin="8dp"
-                    android:layout_marginRight="16dp" />
+                    android:layout_marginRight="16dp"
+                    app:backgroundTint="@null"/>
 
                 <Button
                     android:id="@+id/btnSaveWaypoint"
@@ -150,7 +151,8 @@
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:layout_margin="8dp"
-                    android:layout_marginLeft="16dp" />
+                    android:layout_marginLeft="16dp"
+                    app:backgroundTint="@null"/>
             </LinearLayout>
 
         </LinearLayout>

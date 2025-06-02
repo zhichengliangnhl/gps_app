@@ -2,6 +2,8 @@
 
     <!-- Main app theme -->
     <style name="Theme.NavigationApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorButtonNormal">@null</item>
+        <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
@@ -17,6 +19,8 @@
     </style>
 
     <style name="Theme.NavigationApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorButtonNormal">@null</item>
+        <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
         <!-- Prevent native splash icon from showing -->
         <item name="windowSplashScreenBackground">#E6B974</item>
         <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
