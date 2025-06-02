@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Address;
@@ -17,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.R;
 
 import java.io.IOException;
@@ -52,10 +56,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             });
 
+    private final ActivityResultLauncher<ScanOptions> qrScanner =
+            registerForActivityResult(new com.journeyapps.barcodescanner.ScanContract(), result -> {
+                if (result.getContents() != null) {
+                    String encodedWaypoint = result.getContents();
+                    Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
+                    // Optional: Decode or handle it
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        ImageView settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        }
 
         // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
@@ -193,4 +211,46 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    private void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            Toast.makeText(this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
+            // Optionally decode and handle the code
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    private void showSettingsPanel() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog();
+        });
+
+        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan QR Code");
+            options.setBeepEnabled(true);
+            options.setOrientationLocked(false);
+            qrScanner.launch(options);
+        });
+
+        dialog.show();
+    }
+
 }
