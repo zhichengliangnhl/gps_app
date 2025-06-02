@@ -51,7 +51,8 @@
             android:layout_margin="10dp"
             android:background="@drawable/rounded_button_red"
             android:textColor="@color/white"
-            android:text="return" />
+            android:text="return"
+            app:backgroundTint="@null"/>
 
         <Button
             android:id="@+id/btnSaveWaypoint"
@@ -62,7 +63,8 @@
             android:background="@drawable/rounded_button_black"
             android:textColor="@color/white"
             android:text="Select"
-            android:enabled="false" />
+            android:enabled="false"
+            app:backgroundTint="@null"/>
     </LinearLayout>
 
 </FrameLayout>
