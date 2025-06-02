@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.nhlstenden.navigationapp.BaseThemedActivity;
 import com.nhlstenden.navigationapp.R;
 
 
-public class AppLaunchActivity extends AppCompatActivity {
+public class AppLaunchActivity extends BaseThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

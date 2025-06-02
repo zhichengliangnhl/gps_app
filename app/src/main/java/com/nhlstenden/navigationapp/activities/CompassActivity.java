@@ -20,6 +20,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.nhlstenden.navigationapp.BaseThemedActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.enums.ThemeMode;
 import com.nhlstenden.navigationapp.helpers.ThemeHelper;
@@ -27,7 +28,7 @@ import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
-public class CompassActivity extends AppCompatActivity implements CompassListener {
+public class CompassActivity extends BaseThemedActivity implements CompassListener {
 
     private static final int LOCATION_PERMISSION_REQUEST = 100;
 
@@ -66,18 +67,16 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
 
         findViewById(R.id.btnChangeTheme).setOnClickListener(v -> {
-            String[] options = {"Classic", "Retro", "Modern"};
-            ThemeMode[] values = ThemeMode.values();
-
+            String[] options = {"Classic", "Splash", "Retro"};
             new AlertDialog.Builder(this)
-                    .setTitle("Select Theme")
+                    .setTitle("Choose Theme")
                     .setItems(options, (dialog, which) -> {
-                        ThemeHelper.setTheme(this, values[which]);
-                        recreate(); // Reload activity with new theme
+                        ThemeMode selected = ThemeMode.values()[which];
+                        ThemeHelper.setTheme(this, selected);
+                        recreate(); // Restart activity to apply theme
                     })
                     .show();
         });
-
         waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
 
         // Header icon (no function yet)
