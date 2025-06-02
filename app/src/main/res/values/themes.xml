@@ -33,6 +33,9 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">#000000</item>
     </style>
-
+    <style name="Theme.NavigationApp.Retro" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/times</item>
+        <item name="colorPrimary">#241A09</item>
+    </style>
 
 </resources>

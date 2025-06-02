@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -20,6 +21,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.enums.ThemeMode;
+import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -60,6 +63,21 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
         // Buttons
         Button waypointButton = findViewById(R.id.waypointsButton);
+
+
+        findViewById(R.id.btnChangeTheme).setOnClickListener(v -> {
+            String[] options = {"Classic", "Retro", "Modern"};
+            ThemeMode[] values = ThemeMode.values();
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Select Theme")
+                    .setItems(options, (dialog, which) -> {
+                        ThemeHelper.setTheme(this, values[which]);
+                        recreate(); // Reload activity with new theme
+                    })
+                    .show();
+        });
+
         waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
 
         // Header icon (no function yet)
