@@ -63,8 +63,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- FIX: Replace this with a real ID inside the included layout -->
         <include
-            android:id="@+id/bottom_navigation"
             layout="@layout/include_bottom_nav" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

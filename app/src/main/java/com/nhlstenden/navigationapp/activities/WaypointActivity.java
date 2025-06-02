@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
@@ -111,29 +110,27 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                     }
                 });
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        if (bottomNav != null) {
-            bottomNav.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.navigation_add) {
-                    openCreateWaypoint();
-                    return true;
-                } else if (id == R.id.navigation_back) {
-                    onBackPressed();
-                    return true;
-                } else if (id == R.id.navigation_navigate) {
-                    if (!waypointList.isEmpty()) {
-                        Intent intent = new Intent(this, CompassActivity.class);
-                        intent.putExtra("WAYPOINT", waypointList.get(0));
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-                return false;
-            });
-        }
+        ImageView navBrush = findViewById(R.id.navBrush);
+        ImageView navArrow = findViewById(R.id.navArrow);
+        ImageView navTrophy = findViewById(R.id.navTrophy);
+
+        navBrush.setOnClickListener(v -> {
+            openCreateWaypoint();
+        });
+
+        navArrow.setOnClickListener(v -> {
+            if (!waypointList.isEmpty()) {
+                Intent intent = new Intent(this, CompassActivity.class);
+                intent.putExtra("WAYPOINT", waypointList.get(0));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        navTrophy.setOnClickListener(v -> {
+            onBackPressed();
+        });
 
         Button btnImport = findViewById(R.id.btnImport);
         btnImport.setOnClickListener(v -> showImportDialog());
@@ -186,17 +183,14 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
         }
     }
 
-    // Show QR as bottom sheet (called from onShareClick)
     private void showQrBottomSheet(Bitmap qrBitmap) {
         View sheetView = getLayoutInflater().inflate(R.layout.activity_qr, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(sheetView);
 
-        // Set QR image
         ImageView qrImage = sheetView.findViewById(R.id.qrImage);
         qrImage.setImageBitmap(qrBitmap);
 
-        // Hide manual entry fields (since this is for sharing only)
         sheetView.findViewById(R.id.txtManual).setVisibility(View.GONE);
         sheetView.findViewById(R.id.editLink).setVisibility(View.GONE);
         sheetView.findViewById(R.id.btnInsertLink).setVisibility(View.GONE);
