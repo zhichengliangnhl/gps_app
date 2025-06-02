@@ -13,6 +13,10 @@ public class CompassSensorManager implements SensorEventListener {
     private final Sensor accelSensor, magSensor;
     private final float[] accelVals = new float[3], magVals = new float[3];
     private final float[] rotationMatrix = new float[9], orientation = new float[3];
+
+    private static final int WINDOW = 5;
+    private final float[] azimuthHistory = new float[WINDOW];
+    private int azimuthIdx = 0;
     private CompassListener listener;
 
     public CompassSensorManager(Context ctx) {
@@ -49,8 +53,15 @@ public class CompassSensorManager implements SensorEventListener {
             float azimuthDeg = (float) Math.toDegrees(azimuthRad);
             if (azimuthDeg < 0) azimuthDeg += 360;
 
+            // --- Smoothing ---
+            azimuthHistory[azimuthIdx] = azimuthDeg;
+            azimuthIdx = (azimuthIdx + 1) % WINDOW;
+            float avgAzimuth = 0;
+            for (float a : azimuthHistory) avgAzimuth += a;
+            avgAzimuth /= WINDOW;
+
             if (listener != null) {
-                listener.onAzimuthChanged(azimuthDeg);
+                listener.onAzimuthChanged(avgAzimuth); // Only send the smoothed value!
             }
         }
     }

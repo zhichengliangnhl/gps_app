@@ -1,10 +1,12 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +55,6 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             registerForActivityResult(new ScanContract(), result -> {
                 if (result.getContents() != null) {
                     Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
-                    // TODO: handle the result if needed
                 }
             });
 
@@ -67,46 +68,40 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             headerTitle.setText("Treasure Finder");
         }
 
-        // Arrow needle and waypoint info
         compassNeedle = findViewById(R.id.arrowImage);
         distanceText = findViewById(R.id.distanceText);
         nameText = findViewById(R.id.waypointStatus);
 
-        // Buttons
         Button waypointButton = findViewById(R.id.waypointsButton);
         waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
 
-        // Header icon (no function yet)
         settingsIcon = findViewById(R.id.settingsIcon);
         settingsIcon.setOnClickListener(v -> showSettingsPanel());
 
-        // Bottom nav setup
         navBrush = findViewById(R.id.navBrush);
         navArrow = findViewById(R.id.navArrow);
         navTrophy = findViewById(R.id.navTrophy);
 
-        navBrush.setOnClickListener(v -> {
-            Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show();
-        });
+        navBrush.setOnClickListener(v -> Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show());
+        navArrow.setOnClickListener(v -> {});
+        navTrophy.setOnClickListener(v -> Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show());
 
-        navArrow.setOnClickListener(v -> {
-            // Already in CompassActivity — do nothing or refresh
-        });
-
-        navTrophy.setOnClickListener(v -> {
-            Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show();
-        });
-
-        // Compass + location setup
         compassSensorManager = new CompassSensorManager(this);
         compassSensorManager.setCompassListener(this);
 
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        targetWaypoint = (Waypoint) getIntent().getSerializableExtra("WAYPOINT");
+        // CORRECT: use Parcelable!
+        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
         if (targetWaypoint != null) {
+            Toast.makeText(this, "Waypoint: " + targetWaypoint.getName() +
+                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng(), Toast.LENGTH_LONG).show();
+            Log.d("CompassActivity", "Waypoint: " + targetWaypoint.getName() +
+                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng());
             nameText.setText(targetWaypoint.getName());
         } else {
+            Toast.makeText(this, "No waypoint!", Toast.LENGTH_LONG).show();
+            Log.d("CompassActivity", "No waypoint received!");
             nameText.setText("No waypoint selected");
             distanceText.setText("Distance: -");
         }
@@ -133,6 +128,8 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) return;
                 currentLocation = locationResult.getLastLocation();
+                Log.d("CompassActivity", "Location update: " +
+                        currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
                 updateDistanceDisplay();
                 updateNeedleRotation();
             }
@@ -153,12 +150,19 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             target.setLatitude(targetWaypoint.getLat());
             target.setLongitude(targetWaypoint.getLng());
             float distance = currentLocation.distanceTo(target);
+            Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
+        } else {
+            Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
+            distanceText.setText("Distance: -");
         }
     }
 
     private void updateNeedleRotation() {
-        if (currentLocation == null || targetWaypoint == null) return;
+        if (currentLocation == null || targetWaypoint == null) {
+            Log.d("CompassActivity", "updateNeedleRotation: currentLocation or targetWaypoint is null");
+            return;
+        }
 
         Location target = new Location("target");
         target.setLatitude(targetWaypoint.getLat());
@@ -167,7 +171,11 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         float bearingTo = currentLocation.bearingTo(target);
         float angle = (bearingTo - currentAzimuth + 360) % 360;
 
-        compassNeedle.setRotation(angle);
+        Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
+
+        ObjectAnimator.ofFloat(compassNeedle, "rotation", compassNeedle.getRotation(), angle)
+                .setDuration(300)
+                .start();
     }
 
     @Override
@@ -186,6 +194,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
     @Override
     public void onAzimuthChanged(float azimuth) {
+        Log.d("CompassActivity", "Azimuth changed: " + azimuth);
         this.currentAzimuth = azimuth;
         updateNeedleRotation();
     }
@@ -224,7 +233,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
         txtImport.setOnClickListener(v -> {
             dialog.dismiss();
-            showImportDialog(); // Optional – see below
+            showImportDialog();
         });
 
         dialog.show();
@@ -243,7 +252,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
                 Waypoint wp = Waypoint.decode(this, code);
                 if (wp != null && wp.getName() != null) {
                     Toast.makeText(this, "Imported: " + wp.getName(), Toast.LENGTH_SHORT).show();
-                    // If needed, pass the waypoint to another activity or update UI
+                    // Optionally update the waypoint here and refresh UI if desired
                 } else {
                     Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                 }
@@ -256,4 +265,16 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
         builder.show();
     }
 
+    // Optional: for live updates if you ever want to switch waypoint without re-launching activity
+    public void setWaypoint(Waypoint wp) {
+        this.targetWaypoint = wp;
+        if (wp != null) {
+            nameText.setText(wp.getName());
+            updateDistanceDisplay();
+            updateNeedleRotation();
+        } else {
+            nameText.setText("No waypoint selected");
+            distanceText.setText("Distance: -");
+        }
+    }
 }
