@@ -13,6 +13,7 @@ import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
@@ -59,6 +61,15 @@ public class CreateWaypointActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
                     }
+                }
+            });
+
+    private final ActivityResultLauncher<ScanOptions> qrScanner =
+            registerForActivityResult(new com.journeyapps.barcodescanner.ScanContract(), result -> {
+                if (result.getContents() != null) {
+                    String encodedWaypoint = result.getContents();
+                    Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
+                    // Optional: Decode or handle it
                 }
             });
 
@@ -103,6 +114,11 @@ public class CreateWaypointActivity extends AppCompatActivity {
         // Set appropriate title
         if (headerTitle != null) {
             headerTitle.setText("edit".equals(mode) ? "Edit Treasure" : "Create Treasure");
+        }
+
+        ImageView settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
         }
 
         // Restore state or initialize from intent
@@ -281,4 +297,46 @@ public class CreateWaypointActivity extends AppCompatActivity {
             outState.putString("imageUri", imageUri.toString());
         }
     }
+    private void showSettingsPanel() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        // Import link click
+        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog(); // this method should exist
+        });
+
+        // QR Code scan click
+        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan QR Code");
+            options.setBeepEnabled(true);
+            options.setOrientationLocked(false);
+            qrScanner.launch(options); // this should be initialized
+        });
+
+        dialog.show();
+    }
+    private void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            Toast.makeText(this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
+            // Optionally decode and handle the code
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
 }

@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
@@ -56,10 +59,24 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 }
             });
 
+    private final ActivityResultLauncher<ScanOptions> qrScanner =
+            registerForActivityResult(new com.journeyapps.barcodescanner.ScanContract(), result -> {
+                if (result.getContents() != null) {
+                    String encodedWaypoint = result.getContents();
+                    Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
+                    // Optional: Decode or handle it
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folder);
+
+        ImageView settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        }
 
         // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
@@ -167,4 +184,46 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 .putString(KEY_FOLDERS, json)
                 .apply();
     }
+
+    private void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            Toast.makeText(this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
+            // Optionally decode and handle the code
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    private void showSettingsPanel() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog();
+        });
+
+        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan QR Code");
+            options.setBeepEnabled(true);
+            options.setOrientationLocked(false);
+            qrScanner.launch(options);
+        });
+
+        dialog.show();
+    }
+
 }
