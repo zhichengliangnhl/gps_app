@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -19,6 +23,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
@@ -43,6 +49,14 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
     private float currentAzimuth = 0f;
 
+    private final ActivityResultLauncher<ScanOptions> qrScannerLauncher =
+            registerForActivityResult(new ScanContract(), result -> {
+                if (result.getContents() != null) {
+                    Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
+                    // TODO: handle the result if needed
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +78,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
         // Header icon (no function yet)
         settingsIcon = findViewById(R.id.settingsIcon);
-        settingsIcon.setOnClickListener(v -> {
-            Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
-        });
+        settingsIcon.setOnClickListener(v -> showSettingsPanel());
 
         // Bottom nav setup
         navBrush = findViewById(R.id.navBrush);
@@ -190,4 +202,58 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
             finish();
         }
     }
+
+    private void showSettingsPanel() {
+        View sheetView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sheetView)
+                .create();
+
+        TextView txtScanQR = sheetView.findViewById(R.id.txtQr);
+        TextView txtImport = sheetView.findViewById(R.id.txtImport);
+
+        txtScanQR.setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan a QR code");
+            options.setBeepEnabled(true);
+            options.setOrientationLocked(false);
+            qrScannerLauncher.launch(options);
+        });
+
+        txtImport.setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog(); // Optional – see below
+        });
+
+        dialog.show();
+    }
+
+    private void showImportDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            try {
+                Waypoint wp = Waypoint.decode(this, code);
+                if (wp != null && wp.getName() != null) {
+                    Toast.makeText(this, "Imported: " + wp.getName(), Toast.LENGTH_SHORT).show();
+                    // If needed, pass the waypoint to another activity or update UI
+                } else {
+                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
 }

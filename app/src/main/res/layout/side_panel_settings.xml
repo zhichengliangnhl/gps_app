@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sidePanelLayout"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF5E1"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/txtMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mode"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:paddingBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/txtImport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Import link"
+        android:textColor="#000000"
+        android:paddingBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/txtQr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scan QR Code"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+</LinearLayout>
