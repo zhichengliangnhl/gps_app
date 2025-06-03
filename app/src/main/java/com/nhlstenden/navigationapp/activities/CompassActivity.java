@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -19,12 +20,16 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.nhlstenden.navigationapp.BaseThemedActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.enums.ThemeMode;
+import com.nhlstenden.navigationapp.helpers.CoinManager;
+import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
-public class CompassActivity extends AppCompatActivity implements CompassListener {
+public class CompassActivity extends BaseThemedActivity implements CompassListener {
 
     private static final int LOCATION_PERMISSION_REQUEST = 100;
 
@@ -60,6 +65,32 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
 
         // Buttons
         Button waypointButton = findViewById(R.id.waypointsButton);
+
+
+        findViewById(R.id.btnChangeTheme).setOnClickListener(v -> {
+            String[] options = {"Classic", "Splash", "Retro"};
+            new AlertDialog.Builder(this)
+                    .setTitle("Choose Theme")
+                    .setItems(options, (dialog, which) -> {
+                        ThemeMode selected = ThemeMode.values()[which];
+                        ThemeHelper.setTheme(this, selected);
+                        recreate(); // Restart activity to apply theme
+                    })
+                    .show();
+        });
+
+        TextView coinText = findViewById(R.id.coinText);
+        Button btnEarn = findViewById(R.id.btnEarnCoins);
+
+// Display current coin count
+        coinText.setText("Coins: " + CoinManager.getCoins(this));
+
+// Add coin when button clicked
+        btnEarn.setOnClickListener(v -> {
+            CoinManager.addCoins(this, 1);
+            coinText.setText("Coins: " + CoinManager.getCoins(this));
+        });
+
         waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
 
         // Header icon (no function yet)

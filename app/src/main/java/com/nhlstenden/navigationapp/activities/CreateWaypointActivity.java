@@ -21,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.nhlstenden.navigationapp.BaseThemedActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
@@ -30,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CreateWaypointActivity extends AppCompatActivity {
+public class CreateWaypointActivity extends BaseThemedActivity {
 
     private MapView mapPreview;
     private GoogleMap previewMap;

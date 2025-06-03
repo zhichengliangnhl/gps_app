@@ -16,6 +16,7 @@
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="android:statusBarColor">#000000</item>
+        <item name="android:fontFamily">@font/arial</item>
     </style>
 
     <style name="Theme.NavigationApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -25,7 +26,7 @@
         <item name="windowSplashScreenBackground">#E6B974</item>
         <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
-
+        <item name="android:fontFamily">@font/comic</item>
         <!-- Still compatible with AppCompatActivity -->
         <item name="android:windowBackground">#E6B974</item>
 
@@ -33,6 +34,9 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">#000000</item>
     </style>
-
+    <style name="Theme.NavigationApp.Retro" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/times</item>
+        <item name="colorPrimary">#241A09</item>
+    </style>
 
 </resources>
