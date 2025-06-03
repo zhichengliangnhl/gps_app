@@ -48,7 +48,7 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
     private LocationRequest locationRequest;
     private Waypoint targetWaypoint;
     private Location currentLocation;
-
+    private float lastAnimatedAzimuth = 0f;
     private float currentAzimuth = 0f;
 
     private final ActivityResultLauncher<ScanOptions> qrScannerLauncher =
@@ -195,8 +195,11 @@ public class CompassActivity extends AppCompatActivity implements CompassListene
     @Override
     public void onAzimuthChanged(float azimuth) {
         Log.d("CompassActivity", "Azimuth changed: " + azimuth);
-        this.currentAzimuth = azimuth;
-        updateNeedleRotation();
+        if (Math.abs(azimuth - lastAnimatedAzimuth) > 2.0f) { // Only update if change > 2°
+            this.currentAzimuth = azimuth;
+            lastAnimatedAzimuth = azimuth;
+            updateNeedleRotation();
+        }
     }
 
     @Override
