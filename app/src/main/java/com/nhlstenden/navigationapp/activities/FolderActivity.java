@@ -79,6 +79,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         }
 
         // Set top bar title
+        View topBar = findViewById(R.id.top_bar);
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Collections");

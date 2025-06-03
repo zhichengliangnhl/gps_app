@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -56,6 +57,12 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
             return;
         }
 
+        View topBar = findViewById(R.id.top_bar);
+        TextView headerTitle = topBar.findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText(folder.getName());
+        }
+
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
         adapter = new WaypointAdapter(waypointList, this);
@@ -78,6 +85,14 @@ public class WaypointActivity extends AppCompatActivity implements OnWaypointCli
                     }
                 }
         );
+
+        Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
+        btnAddWaypoint.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CreateWaypointActivity.class);
+            intent.putExtra("mode", "create");
+            intent.putExtra("id", java.util.UUID.randomUUID().toString());
+            createEditLauncher.launch(intent);
+        });
 
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
