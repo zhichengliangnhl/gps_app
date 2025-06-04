@@ -77,10 +77,10 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         TextView coinText = findViewById(R.id.coinText);
         Button btnEarn = findViewById(R.id.btnEarnCoins);
 
-// Display current coin count
+        // Display current coin count
         coinText.setText("Coins: " + CoinManager.getCoins(this));
 
-// Add coin when button clicked
+        // Add coin when button clicked
         btnEarn.setOnClickListener(v -> {
             CoinManager.addCoins(this, 1);
             coinText.setText("Coins: " + CoinManager.getCoins(this));
