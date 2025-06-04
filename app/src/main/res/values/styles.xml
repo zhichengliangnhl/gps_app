@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RightSlideDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowAnimationStyle">@style/DialogSlideAnimation</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="DialogSlideAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_right</item>
+    </style>
+</resources>

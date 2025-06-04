@@ -2,10 +2,13 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,16 +16,20 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
+import com.nhlstenden.navigationapp.utils.QRCodeUtils;
+import com.journeyapps.barcodescanner.ScanOptions;
+import com.journeyapps.barcodescanner.ScanContract;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,17 +44,12 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
     private ActivityResultLauncher<Intent> createEditLauncher;
     private ActivityResultLauncher<Intent> mapLauncher;
+    private ActivityResultLauncher<ScanOptions> qrScanner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
-
-        // Set top bar title
-        TextView headerTitle = findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
-            headerTitle.setText("Treasure Cove");
-        }
 
         folder = getIntent().getParcelableExtra("FOLDER");
         if (folder == null) {
@@ -56,11 +58,42 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             return;
         }
 
+        View topBar = findViewById(R.id.top_bar);
+        TextView headerTitle = topBar.findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText(folder.getName());
+        }
+
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
         adapter = new WaypointAdapter(waypointList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        qrScanner = registerForActivityResult(
+                new ScanContract(),
+                result -> {
+                    if (result.getContents() != null) {
+                        String encodedWaypoint = result.getContents();
+                        Waypoint imported = Waypoint.decode(this, encodedWaypoint);
+                        if (imported != null && imported.getName() != null) {
+                            waypointList.add(imported);
+                            adapter.updateList(waypointList);
+                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
+        Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
+        btnAddWaypoint.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CreateWaypointActivity.class);
+            intent.putExtra("mode", "create");
+            intent.putExtra("id", java.util.UUID.randomUUID().toString());
+            createEditLauncher.launch(intent);
+        });
 
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -93,10 +126,29 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                     }
                 });
 
-        Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
-        Button btnImport = findViewById(R.id.btnImport);
+        ImageView navBrush = findViewById(R.id.navBrush);
+        ImageView navArrow = findViewById(R.id.navArrow);
+        ImageView navTrophy = findViewById(R.id.navTrophy);
 
-        btnAddWaypoint.setOnClickListener(v -> openCreateWaypoint());
+        navBrush.setOnClickListener(v -> {
+            openCreateWaypoint();
+        });
+
+        navArrow.setOnClickListener(v -> {
+            if (!waypointList.isEmpty()) {
+                Intent intent = new Intent(this, CompassActivity.class);
+                intent.putExtra("WAYPOINT", waypointList.get(0));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        navTrophy.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        Button btnImport = findViewById(R.id.btnImport);
         btnImport.setOnClickListener(v -> showImportDialog());
     }
 
@@ -140,13 +192,29 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
         if (encoded != null) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
-            startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+            Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
+            showQrBottomSheet(qrBitmap);
         } else {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showQrBottomSheet(Bitmap qrBitmap) {
+        View sheetView = getLayoutInflater().inflate(R.layout.activity_qr, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(sheetView);
+
+        ImageView qrImage = sheetView.findViewById(R.id.qrImage);
+        qrImage.setImageBitmap(qrBitmap);
+
+        sheetView.findViewById(R.id.txtManual).setVisibility(View.GONE);
+        sheetView.findViewById(R.id.editLink).setVisibility(View.GONE);
+        sheetView.findViewById(R.id.btnInsertLink).setVisibility(View.GONE);
+
+        Button btnCancel = sheetView.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
     }
 
     public void showImportDialog() {

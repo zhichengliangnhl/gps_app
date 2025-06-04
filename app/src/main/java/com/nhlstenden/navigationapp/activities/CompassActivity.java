@@ -1,17 +1,23 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -19,6 +25,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.enums.ThemeMode;
@@ -35,58 +43,92 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private CompassSensorManager compassSensorManager;
     private ImageView compassNeedle;
     private TextView distanceText, nameText;
+    private ImageView navBrush, navArrow, navTrophy;
+    private ImageView settingsIcon;
     private FusedLocationProviderClient locationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
     private Waypoint targetWaypoint;
     private Location currentLocation;
-
+    private float lastAnimatedAzimuth = 0f;
     private float currentAzimuth = 0f;
+
+    private final ActivityResultLauncher<ScanOptions> qrScannerLauncher =
+            registerForActivityResult(new ScanContract(), result -> {
+                if (result.getContents() != null) {
+                    Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
+        // Header title
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Finder");
         }
 
-        // Arrow needle and waypoint info
+        // Needle and waypoint info
         compassNeedle = findViewById(R.id.arrowImage);
         distanceText = findViewById(R.id.distanceText);
         nameText = findViewById(R.id.waypointStatus);
 
-        // Buttons
-        Button waypointButton = findViewById(R.id.waypointsButton);
-
-
-        findViewById(R.id.btnChangeTheme).setOnClickListener(v -> {
-            String[] options = {"Classic", "Splash", "Retro"};
-            new AlertDialog.Builder(this)
-                    .setTitle("Choose Theme")
-                    .setItems(options, (dialog, which) -> {
-                        ThemeMode selected = ThemeMode.values()[which];
-                        ThemeHelper.setTheme(this, selected);
-                        recreate(); // Restart activity to apply theme
-                    })
-                    .show();
-        });
-
+        // Coins
         TextView coinText = findViewById(R.id.coinText);
         Button btnEarn = findViewById(R.id.btnEarnCoins);
+        if (coinText != null) coinText.setText("Coins: " + CoinManager.getCoins(this));
+        if (btnEarn != null) {
+            btnEarn.setOnClickListener(v -> {
+                CoinManager.addCoins(this, 1);
+                coinText.setText("Coins: " + CoinManager.getCoins(this));
+            });
+        }
 
-// Display current coin count
-        coinText.setText("Coins: " + CoinManager.getCoins(this));
+        // Theme button
+        View themeBtn = findViewById(R.id.btnChangeTheme);
+        if (themeBtn != null) {
+            themeBtn.setOnClickListener(v -> {
+                String[] options = {"Classic", "Splash", "Retro"};
+                new AlertDialog.Builder(this)
+                        .setTitle("Choose Theme")
+                        .setItems(options, (dialog, which) -> {
+                            ThemeMode selected = ThemeMode.values()[which];
+                            ThemeHelper.setTheme(this, selected);
+                            recreate(); // Restart activity to apply theme
+                        })
+                        .show();
+            });
+        }
 
-// Add coin when button clicked
-        btnEarn.setOnClickListener(v -> {
-            CoinManager.addCoins(this, 1);
-            coinText.setText("Coins: " + CoinManager.getCoins(this));
-        });
+        // Waypoint button
+        Button waypointButton = findViewById(R.id.waypointsButton);
+        if (waypointButton != null) {
+            waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
+        }
 
-        waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
+        // Settings side panel
+        settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        }
+
+        // Bottom nav setup
+        navBrush = findViewById(R.id.navBrush);
+        navArrow = findViewById(R.id.navArrow);
+        navTrophy = findViewById(R.id.navTrophy);
+
+        if (navBrush != null) {
+            navBrush.setOnClickListener(v -> Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show());
+        }
+        if (navArrow != null) {
+            navArrow.setOnClickListener(v -> {});
+        }
+        if (navTrophy != null) {
+            navTrophy.setOnClickListener(v -> Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show());
+        }
 
         // Compass + location setup
         compassSensorManager = new CompassSensorManager(this);
@@ -94,10 +136,17 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        targetWaypoint = (Waypoint) getIntent().getSerializableExtra("WAYPOINT");
+        // Use Parcelable!
+        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
         if (targetWaypoint != null) {
+            Toast.makeText(this, "Waypoint: " + targetWaypoint.getName() +
+                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng(), Toast.LENGTH_LONG).show();
+            Log.d("CompassActivity", "Waypoint: " + targetWaypoint.getName() +
+                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng());
             nameText.setText(targetWaypoint.getName());
         } else {
+            Toast.makeText(this, "No waypoint!", Toast.LENGTH_LONG).show();
+            Log.d("CompassActivity", "No waypoint received!");
             nameText.setText("No waypoint selected");
             distanceText.setText("Distance: -");
         }
@@ -124,6 +173,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) return;
                 currentLocation = locationResult.getLastLocation();
+                Log.d("CompassActivity", "Location update: " +
+                        currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
                 updateDistanceDisplay();
                 updateNeedleRotation();
             }
@@ -144,12 +195,19 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             target.setLatitude(targetWaypoint.getLat());
             target.setLongitude(targetWaypoint.getLng());
             float distance = currentLocation.distanceTo(target);
+            Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
+        } else {
+            Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
+            distanceText.setText("Distance: -");
         }
     }
 
     private void updateNeedleRotation() {
-        if (currentLocation == null || targetWaypoint == null) return;
+        if (currentLocation == null || targetWaypoint == null) {
+            Log.d("CompassActivity", "updateNeedleRotation: currentLocation or targetWaypoint is null");
+            return;
+        }
 
         Location target = new Location("target");
         target.setLatitude(targetWaypoint.getLat());
@@ -158,7 +216,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         float bearingTo = currentLocation.bearingTo(target);
         float angle = (bearingTo - currentAzimuth + 360) % 360;
 
-        compassNeedle.setRotation(angle);
+        Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
+
+        ObjectAnimator.ofFloat(compassNeedle, "rotation", compassNeedle.getRotation(), angle)
+                .setDuration(300)
+                .start();
     }
 
     @Override
@@ -177,8 +239,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     @Override
     public void onAzimuthChanged(float azimuth) {
-        this.currentAzimuth = azimuth;
-        updateNeedleRotation();
+        Log.d("CompassActivity", "Azimuth changed: " + azimuth);
+        if (Math.abs(azimuth - lastAnimatedAzimuth) > 2.0f) { // Only update if change > 2°
+            this.currentAzimuth = azimuth;
+            lastAnimatedAzimuth = azimuth;
+            updateNeedleRotation();
+        }
     }
 
     @Override
@@ -191,6 +257,73 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         } else {
             Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();
             finish();
+        }
+    }
+
+    // Settings panel
+    private void showSettingsPanel() {
+        View sheetView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sheetView)
+                .create();
+
+        TextView txtScanQR = sheetView.findViewById(R.id.txtQr);
+        TextView txtImport = sheetView.findViewById(R.id.txtImport);
+
+        txtScanQR.setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan a QR code");
+            options.setBeepEnabled(true);
+            options.setOrientationLocked(false);
+            qrScannerLauncher.launch(options);
+        });
+
+        txtImport.setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog();
+        });
+
+        dialog.show();
+    }
+
+    private void showImportDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint Code");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Import", (dialog, which) -> {
+            String code = input.getText().toString().trim();
+            try {
+                Waypoint wp = Waypoint.decode(this, code);
+                if (wp != null && wp.getName() != null) {
+                    Toast.makeText(this, "Imported: " + wp.getName(), Toast.LENGTH_SHORT).show();
+                    // Optionally update the waypoint here and refresh UI if desired
+                } else {
+                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    // Optional: for live updates if you ever want to switch waypoint without re-launching activity
+    public void setWaypoint(Waypoint wp) {
+        this.targetWaypoint = wp;
+        if (wp != null) {
+            nameText.setText(wp.getName());
+            updateDistanceDisplay();
+            updateNeedleRotation();
+        } else {
+            nameText.setText("No waypoint selected");
+            distanceText.setText("Distance: -");
         }
     }
 }

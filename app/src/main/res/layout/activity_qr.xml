@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:background="@drawable/rounded_dialog_bg">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Scan QR code"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="#7B3F00"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/qrImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:contentDescription="QR code"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#D2B48C"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toBottomOf="@id/qrImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtManual"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Or enter the link manually"
+        android:textColor="#888888"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/editLink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Paste or enter code"
+        android:padding="12dp"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/txtManual"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnInsertLink"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Insert Link"
+        android:textColor="#7B3F00"
+        android:backgroundTint="#80D8A6"
+        android:layout_marginTop="14dp"
+        app:layout_constraintTop_toBottomOf="@id/editLink"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="#FFF"
+        android:backgroundTint="#F25D5D"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/btnInsertLink"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
