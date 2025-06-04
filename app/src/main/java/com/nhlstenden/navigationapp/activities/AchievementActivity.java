@@ -14,6 +14,7 @@ import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.BaseActivity;
 import java.util.Arrays;
 import java.util.List;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
 
 public class AchievementActivity extends BaseActivity {
 
@@ -48,8 +49,12 @@ public class AchievementActivity extends BaseActivity {
             headerTitle.setText("Treasure Trophies");
         }
 
+        // Get actual progress for First Steps achievement
+        int firstStepsProgress = AchievementManager.getFirstStepsProgress(this);
+
         List<Achievement> achievements = Arrays.asList(
-                new Achievement("First steps", "Create a waypoint", Difficulty.ONE_STAR, "Progress:0/1"),
+                new Achievement("First steps", "Create a waypoint", Difficulty.ONE_STAR, 
+                    String.format("Progress: %d/1", firstStepsProgress)),
                 new Achievement("Runner I", "Complete a waypoint", Difficulty.ONE_STAR, "Progress: 0/1"),
                 new Achievement("Theme I", "Unlock your first theme", Difficulty.ONE_STAR, "Progress: 0/1"),
                 new Achievement("Runner II", "Complete 5 waypoints", Difficulty.TWO_STAR, "Progress: 0/5"),
@@ -76,6 +81,16 @@ public class AchievementActivity extends BaseActivity {
             ((TextView) card.findViewById(R.id.achievementTitle)).setText(achievement.title);
             ((ImageView) card.findViewById(R.id.achievementTrophy)).setImageResource(R.drawable.trophy);
             ((ImageView) card.findViewById(R.id.achievementStars)).setImageResource(achievement.difficulty.starResId);
+            
+            // Show checkmark if achievement is completed
+            ImageView checkmark = card.findViewById(R.id.checked);
+            if (achievement.title.equals("First steps")) {
+                int progress = AchievementManager.getFirstStepsProgress(this);
+                checkmark.setVisibility(progress >= 1 ? View.VISIBLE : View.GONE);
+            } else {
+                checkmark.setVisibility(View.GONE);
+            }
+            
             card.setOnClickListener(v -> showAchievementDialog(achievement));
             container.addView(card);
         }
@@ -87,7 +102,15 @@ public class AchievementActivity extends BaseActivity {
         ((TextView) dialogView.findViewById(R.id.dialogDesc)).setText(achievement.description);
         ((TextView) dialogView.findViewById(R.id.dialogProgress)).setText(achievement.progress);
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
-        progressBar.setProgress(0);
+        
+        // Set progress based on achievement type
+        if (achievement.title.equals("First steps")) {
+            int progress = AchievementManager.getFirstStepsProgress(this);
+            progressBar.setProgress(progress * 100); // Convert to percentage
+        } else {
+            progressBar.setProgress(0);
+        }
+        
         Button okButton = dialogView.findViewById(R.id.okButton);
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setView(dialogView)

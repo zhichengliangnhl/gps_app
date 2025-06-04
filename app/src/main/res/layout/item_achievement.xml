@@ -8,19 +8,40 @@
     android:gravity="center"
     android:layout_margin="12dp"
     android:background="@drawable/rounded_card_bg">
+
     <TextView
         android:id="@+id/achievementTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:textStyle=""
         android:textSize="15sp"
         android:textColor="#222"
-        android:layout_marginBottom="8dp"/>
-    <ImageView
-        android:id="@+id/achievementTrophy"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/trophy"/>
+        android:layout_marginBottom="8dp"
+        android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:id="@+id/achievementTrophy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/trophy"/>
+
+        <ImageView
+            android:id="@+id/checked"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/check"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="50dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/achievementStars"
         android:layout_width="50dp"
