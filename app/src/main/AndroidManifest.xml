@@ -41,6 +41,9 @@
         <!-- Waypoint list screen -->
         <activity android:name=".activities.WaypointActivity" />
 
+        <!-- Achievement activity -->
+        <activity android:name=".activities.AchievementActivity" />
+
         <!-- Create Waypoint screen (resizes for keyboard) -->
         <activity
             android:name=".activities.CreateWaypointActivity"

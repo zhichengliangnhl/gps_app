@@ -22,7 +22,6 @@ import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
 import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
-import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

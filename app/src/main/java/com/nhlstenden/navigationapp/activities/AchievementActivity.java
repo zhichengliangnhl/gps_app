@@ -8,15 +8,21 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import com.nhlstenden.navigationapp.R;
 
-public class AchievementActivity extends AppCompatActivity {
+import com.nhlstenden.navigationapp.BaseActivity;
+
+public class AchievementActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
+
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Treasure Trophy");
+        }
 
         setupCard(R.id.card1, "Runner III", "Complete 10 waypoints", "Progress: 0/10");
         setupCard(R.id.card2, "Runner II", "Complete 5 waypoints", "Progress: 0/5");

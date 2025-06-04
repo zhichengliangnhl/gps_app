@@ -8,9 +8,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nhlstenden.navigationapp.activities.AchievementActivity;
 import com.nhlstenden.navigationapp.activities.CompassActivity;
+import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 
-public abstract class BaseActivity extends BaseThemedActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -33,9 +35,16 @@ public abstract class BaseActivity extends BaseThemedActivity {
         }
 
         if (navTrophy != null) {
-            navTrophy.setOnClickListener(v ->
-                    Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show()
-            );
+            navTrophy.setOnClickListener(v -> {
+                Intent intent = new Intent(this, AchievementActivity.class);
+                startActivity(intent);
+            });
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setTheme(ThemeHelper.getThemeResId(ThemeHelper.getTheme(this)));
+        super.onCreate(savedInstanceState);
     }
 }

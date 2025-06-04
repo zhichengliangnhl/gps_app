@@ -3,13 +3,12 @@ package com.nhlstenden.navigationapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.nhlstenden.navigationapp.BaseThemedActivity;
+import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 
 
-public class AppLaunchActivity extends BaseThemedActivity {
+public class AppLaunchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

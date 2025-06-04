@@ -1,4 +1,4 @@
-package com.nhlstenden.navigationapp.viewholders;
+package com.nhlstenden.navigationapp.adapters;
 
 import android.view.View;
 import android.widget.ImageButton;

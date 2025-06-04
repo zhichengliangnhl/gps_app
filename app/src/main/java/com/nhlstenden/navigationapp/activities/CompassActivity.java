@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -20,7 +19,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.nhlstenden.navigationapp.BaseThemedActivity;
+import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.enums.ThemeMode;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
@@ -29,17 +28,13 @@ import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
-public class CompassActivity extends BaseThemedActivity implements CompassListener {
+public class CompassActivity extends BaseActivity implements CompassListener {
 
     private static final int LOCATION_PERMISSION_REQUEST = 100;
 
     private CompassSensorManager compassSensorManager;
     private ImageView compassNeedle;
     private TextView distanceText, nameText;
-
-    private ImageView navBrush, navArrow, navTrophy;
-    private ImageView settingsIcon;
-
     private FusedLocationProviderClient locationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
@@ -92,29 +87,6 @@ public class CompassActivity extends BaseThemedActivity implements CompassListen
         });
 
         waypointButton.setOnClickListener(v -> startActivity(new Intent(this, FolderActivity.class)));
-
-        // Header icon (no function yet)
-        settingsIcon = findViewById(R.id.settingsIcon);
-        settingsIcon.setOnClickListener(v -> {
-            Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
-        });
-
-        // Bottom nav setup
-        navBrush = findViewById(R.id.navBrush);
-        navArrow = findViewById(R.id.navArrow);
-        navTrophy = findViewById(R.id.navTrophy);
-
-        navBrush.setOnClickListener(v -> {
-            Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show();
-        });
-
-        navArrow.setOnClickListener(v -> {
-            // Already in CompassActivity — do nothing or refresh
-        });
-
-        navTrophy.setOnClickListener(v -> {
-            Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_SHORT).show();
-        });
 
         // Compass + location setup
         compassSensorManager = new CompassSensorManager(this);
