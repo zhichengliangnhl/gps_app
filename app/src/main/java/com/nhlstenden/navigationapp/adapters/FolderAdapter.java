@@ -40,7 +40,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         holder.itemView.setOnClickListener(v -> listener.onFolderClicked(folder));
         holder.editButton.setOnClickListener(v -> listener.onEditFolder(folder));
         holder.deleteButton.setOnClickListener(v -> listener.onDeleteFolder(folder));
-        holder.shareButton.setOnClickListener(v -> listener.onShareFolder(folder));
     }
 
     @Override
@@ -67,7 +66,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
             folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
             editButton = itemView.findViewById(R.id.editFolderButton);
             deleteButton = itemView.findViewById(R.id.deleteFolderButton);
-            shareButton = itemView.findViewById(R.id.shareFolderButton);
         }
     }
 }

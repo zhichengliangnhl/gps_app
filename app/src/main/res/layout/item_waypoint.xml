@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -26,8 +27,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/image_background"
             android:contentDescription="Waypoint Image"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background" />
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/waypointName"
@@ -79,38 +79,27 @@
             android:id="@+id/btnEdit"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:scaleType="fitXY"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="15dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
             android:src="@drawable/edit_icon"
-            card_view:tint="#FFFFFF" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageButton
             android:id="@+id/btnDelete"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:scaleType="fitXY"
             android:layout_below="@id/btnEdit"
             android:layout_alignEnd="@id/btnEdit"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="-2dp"
             android:layout_marginBottom="1dp"
-            android:layout_marginTop="1dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/delete_icon"
-            card_view:tint="#FF0000" />
-
-        <ImageButton
-            android:id="@+id/btnShare"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
             android:scaleType="fitXY"
-            android:layout_below="@id/btnDelete"
-            android:layout_alignEnd="@id/btnDelete"
-            android:layout_marginTop="0dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/share_icon"
-            card_view:tint="#000000" />
+            android:src="@drawable/delete_icon"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 
     </RelativeLayout>

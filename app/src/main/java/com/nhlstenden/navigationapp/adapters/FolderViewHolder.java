@@ -16,6 +16,5 @@ public class FolderViewHolder extends RecyclerView.ViewHolder {
     public FolderViewHolder(@NonNull View itemView) {
         super(itemView);
         folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
-        shareButton = itemView.findViewById(R.id.shareFolderButton);
     }
 }
