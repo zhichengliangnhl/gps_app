@@ -65,15 +65,6 @@
             android:paddingVertical="14dp" />
 
         <Button
-            android:id="@+id/btnChangeTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Theme"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:layout_centerHorizontal="true"/>
-
-        <Button
             android:id="@+id/btnEarnCoins"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
