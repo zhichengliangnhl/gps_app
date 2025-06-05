@@ -30,21 +30,24 @@
             android:gravity="center_vertical"
             android:layout_marginEnd="16dp">
 
+            <TextView
+                android:id="@+id/coinCounter"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="sp"
+                android:textAlignment="textEnd"
+                android:layout_marginEnd="5dp"/>
+
             <ImageView
                 android:id="@+id/coinIcon"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:adjustViewBounds="true"
+                android:src="@drawable/coin"
                 android:scaleType="fitCenter"
-                android:src="@drawable/coin" />
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:id="@+id/coinText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:layout_marginStart="4dp" />
         </LinearLayout>
 
         <ImageView

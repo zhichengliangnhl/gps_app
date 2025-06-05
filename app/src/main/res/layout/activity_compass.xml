@@ -7,45 +7,9 @@
     android:background="#E6B974"
     tools:context=".activities.CompassActivity">
 
-    <!-- Top Bar -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#A86C00"
-        android:paddingHorizontal="16dp">
-
-        <TextView
-            android:id="@+id/headerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Treasure Finder"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:gravity="center_vertical"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:id="@+id/coinText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="250dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:textColor="@android:color/white"
-            android:text="Coins: 0"
-            android:textSize="20sp"
-            android:layout_alignParentStart="true"/>
-
-        <ImageView
-            android:id="@+id/settingsIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/setting_icon"
-            android:contentDescription="Settings Icon"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
-    </RelativeLayout>
+    <include
+        android:id="@+id/topBar"
+        layout="@layout/include_top_bar" />
 
     <!-- Center Content -->
     <LinearLayout
