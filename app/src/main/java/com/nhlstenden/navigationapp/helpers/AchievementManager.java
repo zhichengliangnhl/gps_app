@@ -9,6 +9,9 @@ public class AchievementManager {
     private static final String KEY_RUNNER_I = "runner_i_progress";
     private static final String KEY_RUNNER_II = "runner_ii_progress";
     private static final String KEY_RUNNER_III = "runner_iii_progress";
+    private static final String KEY_GRINDER_I = "grinder_i_progress";
+    private static final String KEY_GRINDER_II = "grinder_ii_progress";
+    private static final String KEY_GRINDER_III = "grinder_iii_progress";
     private static final float COMPLETION_DISTANCE = 10.0f; // 10 meters
 
     public static void updateFirstStepsProgress(Context context) {
@@ -57,6 +60,40 @@ public class AchievementManager {
     public static int getRunnerIIIProgress(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getInt(KEY_RUNNER_III, 0);
+    }
+
+    public static void updateGrinderProgress(Context context, int coins) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        
+        // Update Grinder I (1000 coins)
+        if (coins >= 1000) {
+            prefs.edit().putInt(KEY_GRINDER_I, 1).apply();
+        }
+        
+        // Update Grinder II (10000 coins)
+        if (coins >= 10000) {
+            prefs.edit().putInt(KEY_GRINDER_II, 1).apply();
+        }
+        
+        // Update Grinder III (100000 coins)
+        if (coins >= 100000) {
+            prefs.edit().putInt(KEY_GRINDER_III, 1).apply();
+        }
+    }
+
+    public static int getGrinderIProgress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_GRINDER_I, 0);
+    }
+
+    public static int getGrinderIIProgress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_GRINDER_II, 0);
+    }
+
+    public static int getGrinderIIIProgress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_GRINDER_III, 0);
     }
 
     public static void resetAchievements(Context context) {

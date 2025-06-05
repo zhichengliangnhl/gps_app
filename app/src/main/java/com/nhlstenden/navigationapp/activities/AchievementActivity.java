@@ -15,6 +15,7 @@ import com.nhlstenden.navigationapp.BaseActivity;
 import java.util.Arrays;
 import java.util.List;
 import com.nhlstenden.navigationapp.helpers.AchievementManager;
+import com.nhlstenden.navigationapp.helpers.CoinManager;
 
 public class AchievementActivity extends BaseActivity {
 
@@ -57,13 +58,16 @@ public class AchievementActivity extends BaseActivity {
                     String.format("Progress: %d/1", firstStepsProgress)),
                 new Achievement("Runner I", "Complete a waypoint", Difficulty.ONE_STAR, 
                     String.format("Progress: %d/1", AchievementManager.getRunnerIProgress(this))),
-                new Achievement("Theme I", "Unlock your first theme", Difficulty.ONE_STAR, "Progress: 0/1"),
+                new Achievement("Grinder I", "Earn 1000 coins", Difficulty.ONE_STAR, 
+                    String.format("Progress: %d/1000", CoinManager.getCoins(this))),
                 new Achievement("Runner II", "Complete 5 waypoints", Difficulty.TWO_STAR, 
                     String.format("Progress: %d/5", AchievementManager.getRunnerIIProgress(this))),
-                new Achievement("Theme II", "Unlock two achievement themes", Difficulty.TWO_STAR, "Progress: 0/2"),
+                new Achievement("Grinder II", "Earn 10.000 coins", Difficulty.TWO_STAR,
+                    String.format("Progress: %d/10000", CoinManager.getCoins(this))),
                 new Achievement("Runner III", "Complete 10 waypoints", Difficulty.THREE_STAR, 
                     String.format("Progress: %d/10", AchievementManager.getRunnerIIIProgress(this))),
-                new Achievement("Theme III", "Unlock all coin purchased themes", Difficulty.THREE_STAR, "Progress: 0/"),
+                new Achievement("Grinder III", "Earn 100.000 coins", Difficulty.THREE_STAR,
+                    String.format("Progress: %d/100000", CoinManager.getCoins(this))),
                 new Achievement("Collectionista", "Collect all achievements", Difficulty.THREE_STAR, "Progress: 0/6")
         );
 
@@ -99,6 +103,15 @@ public class AchievementActivity extends BaseActivity {
             } else if (achievement.title.equals("Runner III")) {
                 int progress = AchievementManager.getRunnerIIIProgress(this);
                 checkmark.setVisibility(progress >= 10 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Grinder I")) {
+                int coins = CoinManager.getCoins(this);
+                checkmark.setVisibility(coins >= 1000 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Grinder II")) {
+                int coins = CoinManager.getCoins(this);
+                checkmark.setVisibility(coins >= 10000 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Grinder III")) {
+                int coins = CoinManager.getCoins(this);
+                checkmark.setVisibility(coins >= 100000 ? View.VISIBLE : View.GONE);
             } else {
                 checkmark.setVisibility(View.GONE);
             }
@@ -128,6 +141,15 @@ public class AchievementActivity extends BaseActivity {
         } else if (achievement.title.equals("Runner III")) {
             int progress = AchievementManager.getRunnerIIIProgress(this);
             progressBar.setProgress((progress * 100) / 10); // Convert to percentage (out of 10)
+        } else if (achievement.title.equals("Grinder I")) {
+            int coins = CoinManager.getCoins(this);
+            progressBar.setProgress((coins * 100) / 1000); // Convert to percentage (out of 1000)
+        } else if (achievement.title.equals("Grinder II")) {
+            int coins = CoinManager.getCoins(this);
+            progressBar.setProgress((coins * 100) / 10000); // Convert to percentage (out of 10000)
+        } else if (achievement.title.equals("Grinder III")) {
+            int coins = CoinManager.getCoins(this);
+            progressBar.setProgress((coins * 100) / 100000); // Convert to percentage (out of 100000)
         } else {
             progressBar.setProgress(0);
         }

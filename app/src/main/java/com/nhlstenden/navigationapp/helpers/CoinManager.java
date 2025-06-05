@@ -10,7 +10,11 @@ public class CoinManager {
     public static void addCoins(Context context, int amount) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         int current = prefs.getInt(KEY_COIN_COUNT, 0);
-        prefs.edit().putInt(KEY_COIN_COUNT, current + amount).apply();
+        int newTotal = current + amount;
+        prefs.edit().putInt(KEY_COIN_COUNT, newTotal).apply();
+        
+        // Update Grinder achievements
+        AchievementManager.updateGrinderProgress(context, newTotal);
     }
 
     public static int getCoins(Context context) {
