@@ -36,7 +36,6 @@ public class Folder implements Parcelable {
         return name;
     }
 
-    // ✅ Add this method so FolderActivity.java can compile:
     public void setName(String name) {
         this.name = name;
     }
