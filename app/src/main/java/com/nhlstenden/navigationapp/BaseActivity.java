@@ -7,10 +7,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nhlstenden.navigationapp.activities.AchievementActivity;
 import com.nhlstenden.navigationapp.activities.CompassActivity;
+import com.nhlstenden.navigationapp.enums.ThemeMode;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
 import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 
@@ -26,13 +28,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         ImageView navBrush = findViewById(R.id.navBrush);
+
         ImageView navArrow = findViewById(R.id.navArrow);
         ImageView navTrophy = findViewById(R.id.navTrophy);
 
         if (navBrush != null) {
-            navBrush.setOnClickListener(v ->
-                    Toast.makeText(this, "Brush feature coming soon", Toast.LENGTH_SHORT).show()
-            );
+            navBrush.setOnClickListener(v -> {
+                String[] options = {"Classic", "Splash", "Retro"};
+                new AlertDialog.Builder(this)
+                        .setTitle("Choose Theme")
+                        .setItems(options, (dialog, which) -> {
+                            ThemeMode selected = ThemeMode.values()[which];
+                            ThemeHelper.setTheme(this, selected);
+                            recreate(); // Restart activity to apply theme
+                        })
+                        .show();
+            });
         }
 
         if (navArrow != null) {

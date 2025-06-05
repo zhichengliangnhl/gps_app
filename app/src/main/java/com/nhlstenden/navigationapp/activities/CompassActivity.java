@@ -88,22 +88,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             });
         }
 
-        // Theme button
-        View themeBtn = findViewById(R.id.btnChangeTheme);
-        if (themeBtn != null) {
-            themeBtn.setOnClickListener(v -> {
-                String[] options = {"Classic", "Splash", "Retro"};
-                new AlertDialog.Builder(this)
-                        .setTitle("Choose Theme")
-                        .setItems(options, (dialog, which) -> {
-                            ThemeMode selected = ThemeMode.values()[which];
-                            ThemeHelper.setTheme(this, selected);
-                            recreate(); // Restart activity to apply theme
-                        })
-                        .show();
-            });
-        }
-
         // Waypoint button
         Button waypointButton = findViewById(R.id.waypointsButton);
         if (waypointButton != null) {
