@@ -36,7 +36,7 @@
                 android:layout_height="20dp"
                 android:text="0"
                 android:textColor="@android:color/white"
-                android:textSize="sp"
+                android:textSize="18sp"
                 android:textAlignment="textEnd"
                 android:layout_marginEnd="5dp"/>
 
