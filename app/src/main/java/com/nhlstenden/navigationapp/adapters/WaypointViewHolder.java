@@ -24,5 +24,6 @@ public class WaypointViewHolder extends RecyclerView.ViewHolder {
         coordinatesTextView = itemView.findViewById(R.id.waypointCoordinates);
         editButton = itemView.findViewById(R.id.btnEdit);
         deleteButton = itemView.findViewById(R.id.btnDelete);
+        shareButton = itemView.findViewById(R.id.btnShare);
     }
 }

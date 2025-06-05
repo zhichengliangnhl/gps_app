@@ -93,14 +93,27 @@
             android:layout_height="30dp"
             android:layout_below="@id/btnEdit"
             android:layout_alignEnd="@id/btnEdit"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="-2dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/delete_icon"
             tools:ignore="SpeakableTextPresentCheck" />
 
+        <ImageButton
+            android:id="@+id/btnShare"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/btnDelete"
+            android:layout_alignEnd="@id/btnDelete"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="0dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            android:src="@drawable/share_icon"
+            card_view:tint="#000000"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
