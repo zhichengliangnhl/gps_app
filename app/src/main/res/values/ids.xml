@@ -2,4 +2,5 @@
 <resources>
     <item name="dialogText" type="id" />
     <item name="progressBar" type="id" />
+    <item name="achievementContainer" type="id" />
 </resources>
