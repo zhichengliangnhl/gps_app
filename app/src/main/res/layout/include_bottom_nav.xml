@@ -80,10 +80,11 @@
 
                     <ImageView
                         android:id="@+id/navArrow"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:scaleType="fitXY"
                         android:layout_gravity="center"
-                        android:src="@drawable/navigate_icon_nav"
+                        android:src="@drawable/compass"
                         android:contentDescription="Arrow Icon" />
                 </FrameLayout>
             </FrameLayout>

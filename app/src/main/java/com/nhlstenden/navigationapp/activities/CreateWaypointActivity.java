@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.io.File;
@@ -181,6 +182,9 @@ public class CreateWaypointActivity extends BaseActivity {
 
             if ("edit".equals(mode)) {
                 resultWaypoint.setDate(originalDate);
+            } else {
+                // Update First Steps achievement when creating a new waypoint
+                AchievementManager.updateFirstStepsProgress(this);
             }
 
             Intent resultIntent = new Intent();

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,15 +39,23 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (navArrow != null) {
             navArrow.setOnClickListener(v -> {
-                Intent intent = new Intent(this, CompassActivity.class);
-                startActivity(intent);
+                if (!(this instanceof CompassActivity)) {
+                    Intent intent = new Intent(this, CompassActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
             });
         }
 
         if (navTrophy != null) {
             navTrophy.setOnClickListener(v -> {
-                Intent intent = new Intent(this, AchievementActivity.class);
-                startActivity(intent);
+                if (!(this instanceof AchievementActivity)) {
+                    Intent intent = new Intent(this, AchievementActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
             });
         }
     }

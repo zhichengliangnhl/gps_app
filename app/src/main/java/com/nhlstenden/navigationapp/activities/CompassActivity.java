@@ -35,6 +35,7 @@ import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
 
 public class CompassActivity extends BaseActivity implements CompassListener {
 
