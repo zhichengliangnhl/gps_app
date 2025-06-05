@@ -55,11 +55,14 @@ public class AchievementActivity extends BaseActivity {
         List<Achievement> achievements = Arrays.asList(
                 new Achievement("First steps", "Create a waypoint", Difficulty.ONE_STAR, 
                     String.format("Progress: %d/1", firstStepsProgress)),
-                new Achievement("Runner I", "Complete a waypoint", Difficulty.ONE_STAR, "Progress: 0/1"),
+                new Achievement("Runner I", "Complete a waypoint", Difficulty.ONE_STAR, 
+                    String.format("Progress: %d/1", AchievementManager.getRunnerIProgress(this))),
                 new Achievement("Theme I", "Unlock your first theme", Difficulty.ONE_STAR, "Progress: 0/1"),
-                new Achievement("Runner II", "Complete 5 waypoints", Difficulty.TWO_STAR, "Progress: 0/5"),
+                new Achievement("Runner II", "Complete 5 waypoints", Difficulty.TWO_STAR, 
+                    String.format("Progress: %d/5", AchievementManager.getRunnerIIProgress(this))),
                 new Achievement("Theme II", "Unlock two achievement themes", Difficulty.TWO_STAR, "Progress: 0/2"),
-                new Achievement("Runner III", "Complete 10 waypoints", Difficulty.THREE_STAR, "Progress: 0/10"),
+                new Achievement("Runner III", "Complete 10 waypoints", Difficulty.THREE_STAR, 
+                    String.format("Progress: %d/10", AchievementManager.getRunnerIIIProgress(this))),
                 new Achievement("Theme III", "Unlock all coin purchased themes", Difficulty.THREE_STAR, "Progress: 0/"),
                 new Achievement("Collectionista", "Collect all achievements", Difficulty.THREE_STAR, "Progress: 0/6")
         );
@@ -87,6 +90,15 @@ public class AchievementActivity extends BaseActivity {
             if (achievement.title.equals("First steps")) {
                 int progress = AchievementManager.getFirstStepsProgress(this);
                 checkmark.setVisibility(progress >= 1 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Runner I")) {
+                int progress = AchievementManager.getRunnerIProgress(this);
+                checkmark.setVisibility(progress >= 1 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Runner II")) {
+                int progress = AchievementManager.getRunnerIIProgress(this);
+                checkmark.setVisibility(progress >= 5 ? View.VISIBLE : View.GONE);
+            } else if (achievement.title.equals("Runner III")) {
+                int progress = AchievementManager.getRunnerIIIProgress(this);
+                checkmark.setVisibility(progress >= 10 ? View.VISIBLE : View.GONE);
             } else {
                 checkmark.setVisibility(View.GONE);
             }
@@ -107,6 +119,15 @@ public class AchievementActivity extends BaseActivity {
         if (achievement.title.equals("First steps")) {
             int progress = AchievementManager.getFirstStepsProgress(this);
             progressBar.setProgress(progress * 100); // Convert to percentage
+        } else if (achievement.title.equals("Runner I")) {
+            int progress = AchievementManager.getRunnerIProgress(this);
+            progressBar.setProgress(progress * 100); // Convert to percentage
+        } else if (achievement.title.equals("Runner II")) {
+            int progress = AchievementManager.getRunnerIIProgress(this);
+            progressBar.setProgress((progress * 100) / 5); // Convert to percentage (out of 5)
+        } else if (achievement.title.equals("Runner III")) {
+            int progress = AchievementManager.getRunnerIIIProgress(this);
+            progressBar.setProgress((progress * 100) / 10); // Convert to percentage (out of 10)
         } else {
             progressBar.setProgress(0);
         }

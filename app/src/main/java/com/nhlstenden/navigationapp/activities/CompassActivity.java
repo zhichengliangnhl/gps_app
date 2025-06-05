@@ -27,6 +27,7 @@ import com.nhlstenden.navigationapp.helpers.ThemeHelper;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
 
 public class CompassActivity extends BaseActivity implements CompassListener {
 
@@ -145,6 +146,9 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             target.setLongitude(targetWaypoint.getLng());
             float distance = currentLocation.distanceTo(target);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
+            
+            // Check if waypoint is reached and update achievements
+            AchievementManager.checkWaypointCompletion(this, distance);
         }
     }
 
