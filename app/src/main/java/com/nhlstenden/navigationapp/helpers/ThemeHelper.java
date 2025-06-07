@@ -21,13 +21,4 @@ public class ThemeHelper {
                 .getString(KEY_THEME, ThemeMode.CLASSIC.name());
         return ThemeMode.valueOf(name);
     }
-
-    public static int getThemeResId(ThemeMode mode) {
-        switch (mode) {
-            case RETRO: return R.style.Theme_NavigationApp_Retro;
-            case SPLASH: return R.style.Theme_NavigationApp_Splash;
-            case CLASSIC: return R.style.Theme_NavigationApp;
-            default: return R.style.Theme_NavigationApp;
-        }
-    }
 }

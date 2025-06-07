@@ -38,6 +38,9 @@
             android:name=".activities.FolderActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Brush Activity -->
+        <activity android:name=".activities.BrushActivity" />
+
         <!-- Waypoint list screen -->
         <activity android:name=".activities.WaypointActivity" />
 
