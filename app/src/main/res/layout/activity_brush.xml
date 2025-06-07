@@ -30,6 +30,7 @@
                 android:useDefaultMargins="true">
 
                 <LinearLayout
+                    android:id="@+id/theme1"
                     android:layout_width="10dp"
                     android:layout_height="110dp"
                     android:layout_columnWeight="1"
@@ -40,14 +41,12 @@
                     android:background="@drawable/rounded_card_bg">
 
                     <TextView
-                        android:id="@+id/theme1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Classic"
                         android:textSize="15sp"
                         android:textColor="#222"
-                        android:layout_marginBottom="8dp"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_marginBottom="8dp"/>
 
                     <ImageView
                         android:layout_width="50dp"
@@ -56,6 +55,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/theme2"
                     android:layout_width="10dp"
                     android:layout_height="110dp"
                     android:layout_columnWeight="1"
@@ -66,14 +66,12 @@
                     android:background="@drawable/rounded_card_bg">
 
                     <TextView
-                        android:id="@+id/theme2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Macha"
                         android:textSize="15sp"
                         android:textColor="#222"
-                        android:layout_marginBottom="8dp"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_marginBottom="8dp" />
 
                     <ImageView
                         android:layout_width="50dp"
@@ -83,6 +81,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/theme3"
                     android:layout_width="10dp"
                     android:layout_height="110dp"
                     android:layout_columnWeight="1"
@@ -93,14 +92,12 @@
                     android:background="@drawable/rounded_card_bg">
 
                     <TextView
-                        android:id="@+id/theme3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Cream Cookie"
                         android:textSize="15sp"
                         android:textColor="#222"
-                        android:layout_marginBottom="8dp"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_marginBottom="8dp" />
 
                     <ImageView
                         android:layout_width="50dp"
