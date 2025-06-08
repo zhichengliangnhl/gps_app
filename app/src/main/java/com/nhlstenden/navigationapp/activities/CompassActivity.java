@@ -47,7 +47,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private Location currentLocation;
     private float lastAnimatedAzimuth = 0f;
     private float currentAzimuth = 0f;
-
+    private long lastUpdateTime = 0;
+    private static final long MIN_UPDATE_INTERVAL_MS = 100; // e.g. 100ms, adjust as needed
+    private static final int AZIMUTH_AVG_WINDOW = 5;
+    private final float[] azimuthBuffer = new float[AZIMUTH_AVG_WINDOW];
+    private int azimuthBufferIdx = 0;
     private final ActivityResultLauncher<ScanOptions> qrScannerLauncher =
             registerForActivityResult(new ScanContract(), result -> {
                 if (result.getContents() != null) {
@@ -173,7 +177,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         target.setLongitude(targetWaypoint.getLng());
 
         float bearingTo = currentLocation.bearingTo(target);
-        float angle = (bearingTo - currentAzimuth + 360) % 360;
+        float angle = (bearingTo - currentAzimuth + 540) % 360;
 
         Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
 
@@ -198,13 +202,21 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     @Override
     public void onAzimuthChanged(float azimuth) {
-        Log.d("CompassActivity", "Azimuth changed: " + azimuth);
-        if (Math.abs(azimuth - lastAnimatedAzimuth) > 2.0f) { // Only update if change > 2°
-            this.currentAzimuth = azimuth;
-            lastAnimatedAzimuth = azimuth;
+        long now = System.currentTimeMillis();
+        azimuthBuffer[azimuthBufferIdx] = azimuth;
+        azimuthBufferIdx = (azimuthBufferIdx + 1) % AZIMUTH_AVG_WINDOW;
+        float avgAzimuth = 0;
+        for (float a : azimuthBuffer) avgAzimuth += a;
+        avgAzimuth /= AZIMUTH_AVG_WINDOW;
+
+        if (Math.abs(avgAzimuth - lastAnimatedAzimuth) > 2.0f && (now - lastUpdateTime > MIN_UPDATE_INTERVAL_MS)) {
+            this.currentAzimuth = avgAzimuth;
+            lastAnimatedAzimuth = avgAzimuth;
+            lastUpdateTime = now;
             updateNeedleRotation();
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
