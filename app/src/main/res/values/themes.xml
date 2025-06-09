@@ -16,6 +16,12 @@
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="android:statusBarColor">#000000</item>
+        <item name="darkColor">@color/classic_primary</item>
+        <item name="secondDarkest">@color/classic_secondary</item>
+        <item name="secondLightest">@color/classic_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/classic_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon</item>
     </style>
 
     <style name="Theme.NavigationApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -31,6 +37,33 @@
         <item name="postSplashScreenTheme">@style/Theme.NavigationApp</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">#000000</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Classic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="darkColor">@color/classic_primary</item>
+        <item name="secondDarkest">@color/classic_secondary</item>
+        <item name="secondLightest">@color/classic_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/classic_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Macha" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/macha_primary</item>
+        <item name="secondDarkest">@color/macha_secondary</item>
+        <item name="secondLightest">@color/macha_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/macha_lightest</item>
+        <item name="logo">@drawable/logo_panda_with_bambo</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+    </style>
+
+    <style name="Theme.NavigationApp.CookieCream" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/cookiecream_primary</item>
+        <item name="secondDarkest">@color/cookiecream_secondary</item>
+        <item name="secondLightest">@color/cookiecream_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/cookiecream_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon</item>
     </style>
 
 </resources>

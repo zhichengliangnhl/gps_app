@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6B974"
+    android:background="?attr/secondLightest"
     android:fitsSystemWindows="true">
 
     <!-- Top Bar -->
@@ -51,7 +51,7 @@
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:background="@drawable/rounded_button_brown"
+        android:background="@drawable/rounded_button"
         android:paddingHorizontal="48dp"
         android:paddingVertical="16dp"
         app:layout_constraintTop_toBottomOf="@id/folderNameInput"

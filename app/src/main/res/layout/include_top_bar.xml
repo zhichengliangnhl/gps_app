@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:background="#A86C00"
+    android:background="?attr/darkColor"
     android:paddingHorizontal="16dp">
 
     <TextView
@@ -54,7 +54,7 @@
             android:id="@+id/settingsIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/setting_icon"
+            android:src="?attr/settingsIcon"
             android:contentDescription="Settings Icon" />
 
     </LinearLayout>

@@ -1,7 +1,9 @@
 package com.nhlstenden.navigationapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +15,16 @@ import com.nhlstenden.navigationapp.activities.BrushActivity;
 import com.nhlstenden.navigationapp.activities.CompassActivity;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class BaseActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        applyDynamicTheme(); // apply early
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -69,6 +80,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         TextView coinCounter = findViewById(R.id.coinCounter);
         if (coinCounter != null) {
             CoinManager.updateCoinDisplay(this, coinCounter);
+        }
+    }
+
+    private void applyDynamicTheme() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String selectedTheme = prefs.getString("selected_theme", "classic");
+
+        Map<String, Integer> themeMap = new HashMap<>();
+        themeMap.put("classic", R.style.Theme_NavigationApp_Classic);
+        themeMap.put("macha", R.style.Theme_NavigationApp_Macha);
+        themeMap.put("cookieCream", R.style.Theme_NavigationApp_CookieCream); // your third theme
+
+        Integer themeResId = themeMap.get(selectedTheme);
+        if (themeResId != null) {
+            setTheme(themeResId);
+        } else {
+            setTheme(R.style.Theme_NavigationApp_Classic); // fallback
         }
     }
 }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#E6B974"
+    android:background="?attr/secondLightest"
     tools:context=".activities.CompassActivity">
 
     <include
@@ -60,7 +60,7 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:background="@drawable/rounded_button_brown"
+            android:background="@drawable/rounded_button"
             android:paddingHorizontal="32dp"
             android:paddingVertical="14dp" />
 

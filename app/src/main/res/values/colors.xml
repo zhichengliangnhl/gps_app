@@ -22,4 +22,22 @@
     <!-- Other common colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+
+    <!-- Classic Theme Colors -->
+    <color name="classic_primary">#a86c00</color>
+    <color name="classic_secondary">#c98b36</color>
+    <color name="classic_2ndLightest">#EFC37B</color>
+    <color name="classic_lightest">#ffe7a1</color>
+
+    <!-- Macha Theme Colors -->
+    <color name="macha_primary">#687351</color>
+    <color name="macha_secondary">#9ba17f</color>
+    <color name="macha_2ndLightest">#c9c1ae</color>
+    <color name="macha_lightest">#e8e4db</color>
+
+    <!-- Cookie and Cream -->
+    <color name="cookiecream_primary">#252422</color>
+    <color name="cookiecream_secondary">#403d39</color>
+    <color name="cookiecream_2ndLightest">#ccc5b9</color>
+    <color name="cookiecream_lightest">#fffcf2</color>
 </resources>

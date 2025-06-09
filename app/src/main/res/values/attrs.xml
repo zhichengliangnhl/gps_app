@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Theme">
+        <attr name="darkColor" format="color"/>
+        <attr name="settingsIcon" format="reference"/>
+        <attr name="lightBackgroundColor" format="color"/>
+        <attr name="logo" format="reference"/>
+        <attr name="secondLightest" format="color"/>
+        <attr name="secondDarkest" format="color"/>
+    </declare-styleable>
+</resources>
