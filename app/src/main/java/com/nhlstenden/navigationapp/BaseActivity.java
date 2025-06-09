@@ -87,16 +87,37 @@ public abstract class BaseActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         String selectedTheme = prefs.getString("selected_theme", "classic");
 
-        Map<String, Integer> themeMap = new HashMap<>();
-        themeMap.put("classic", R.style.Theme_NavigationApp_Classic);
-        themeMap.put("macha", R.style.Theme_NavigationApp_Macha);
-        themeMap.put("cookieCream", R.style.Theme_NavigationApp_CookieCream); // your third theme
-
-        Integer themeResId = themeMap.get(selectedTheme);
-        if (themeResId != null) {
-            setTheme(themeResId);
-        } else {
-            setTheme(R.style.Theme_NavigationApp_Classic); // fallback
+        switch (selectedTheme) {
+            case "macha":
+                setTheme(R.style.Theme_NavigationApp_Macha);
+                break;
+            case "savana":
+                setTheme(R.style.Theme_NavigationApp_Savana);
+                break;
+            case "aqua":
+                setTheme(R.style.Theme_NavigationApp_Aqua);
+                break;
+            case "lavander":
+                setTheme(R.style.Theme_NavigationApp_Lavander);
+                break;
+            case "sunset":
+                setTheme(R.style.Theme_NavigationApp_Sunset);
+                break;
+            case "navy":
+                setTheme(R.style.Theme_NavigationApp_Navy);
+                break;
+            case "fakeHolland":
+                setTheme(R.style.Theme_NavigationApp_FakeHolland);
+                break;
+            case "macchiato":
+                setTheme(R.style.Theme_NavigationApp_Macchiato);
+                break;
+            case "cookieCream":
+                setTheme(R.style.Theme_NavigationApp_CookieCream);
+                break;
+            default:
+                setTheme(R.style.Theme_NavigationApp_Classic);
+                break;
         }
     }
 }

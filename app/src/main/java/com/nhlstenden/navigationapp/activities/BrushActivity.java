@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BrushActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,24 +24,28 @@ public class BrushActivity extends BaseActivity {
             headerTitle.setText("Treasure Themes");
         }
 
-        LinearLayout themeClassic = findViewById(R.id.theme1);
-        LinearLayout themeMacha = findViewById(R.id.theme2);
-        LinearLayout themeCookieCream = findViewById(R.id.theme3);
+        Map<Integer, String> themeMap = new HashMap<>();
+        themeMap.put(R.id.theme1, "classic");
+        themeMap.put(R.id.theme2, "macha");
+        themeMap.put(R.id.theme3, "savana");
+        themeMap.put(R.id.theme4, "aqua");
+        themeMap.put(R.id.theme5, "lavander");
+        themeMap.put(R.id.theme6, "sunset");
+        themeMap.put(R.id.theme7, "navy");
+        themeMap.put(R.id.theme8, "fakeHolland");
+        themeMap.put(R.id.theme9, "macchiato");
+        themeMap.put(R.id.theme10, "cookieCream");
 
-        themeClassic.setOnClickListener(v -> {
-            saveTheme("classic");
-            recreate(); // or redirect to MainActivity
-        });
-
-        themeMacha.setOnClickListener(v -> {
-            saveTheme("macha");
-            recreate(); // or redirect to MainActivity
-        });
-
-        themeCookieCream.setOnClickListener(v -> {
-            saveTheme("cookieCream");
-            recreate(); // or redirect to MainActivity
-        });
+        for (Map.Entry<Integer, String> entry : themeMap.entrySet()) {
+            LinearLayout layout = findViewById(entry.getKey());
+            String themeName = entry.getValue();
+            if (layout != null) {
+                layout.setOnClickListener(v -> {
+                    saveTheme(themeName);
+                    recreate();
+                });
+            }
+        }
     }
 
     private void saveTheme(String themeName) {

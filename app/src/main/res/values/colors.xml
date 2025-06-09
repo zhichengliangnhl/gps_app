@@ -35,9 +35,49 @@
     <color name="macha_2ndLightest">#c9c1ae</color>
     <color name="macha_lightest">#e8e4db</color>
 
+    <color name="savana_primary">#EA2F14</color>
+    <color name="savana_secondary">#E6521F</color>
+    <color name="savana_2ndLightest">#FB9E3A</color>
+    <color name="savana_lightest">#FCEF91</color>
+
+    <color name="aqua_primary">#4300FF</color>
+    <color name="aqua_secondary">#0065F8</color>
+    <color name="aqua_2ndLightest">#00CAFF</color>
+    <color name="aqua_lightest">#00FFDE</color>
+
+
+    <color name="lavander_primary">#441752</color>
+    <color name="lavander_secondary">#8174A0</color>
+    <color name="lavander_2ndLightest">#A888B5</color>
+    <color name="lavander_lightest">#EFB6C8</color>
+
+
+    <color name="sunset_primary">#4C3A51</color>
+    <color name="sunset_secondary">#774360</color>
+    <color name="sunset_2ndLightest">#B25068</color>
+    <color name="sunset_lightest">#E7AB79</color>
+
+
+    <color name="navy_primary">#183B4E</color>
+    <color name="navy_secondary">#27548A</color>
+    <color name="navy_2ndLightest">#DDA853</color>
+    <color name="navy_lightest">#F3F3E0</color>
+
+
+    <color name="fakeholland_primary">#000000</color>
+    <color name="fakeholland_secondary">#273F4F</color>
+    <color name="fakeholland_2ndLightest">#FE7743</color>
+    <color name="fakeholland_lightest">#EFEEEA</color>
+
+    <color name="macchiato_primary">#3B3030</color>
+    <color name="macchiato_secondary">#664343</color>
+    <color name="macchiato_2ndLightest">#795757</color>
+    <color name="macchiato_lightest">#FFF0D1 </color>
+
     <!-- Cookie and Cream -->
     <color name="cookiecream_primary">#252422</color>
     <color name="cookiecream_secondary">#403d39</color>
     <color name="cookiecream_2ndLightest">#ccc5b9</color>
     <color name="cookiecream_lightest">#fffcf2</color>
+
 </resources>
