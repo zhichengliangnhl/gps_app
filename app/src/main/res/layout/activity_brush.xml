@@ -77,7 +77,6 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme2"/>
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -94,7 +93,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cream Cookie"
+                        android:text="Savanna"
                         android:textSize="15sp"
                         android:textColor="#222"
                         android:layout_marginBottom="8dp" />
@@ -103,8 +102,183 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme3"/>
-
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme4"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aqua"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme4"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme5"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lavender"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme5"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme6"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sunset"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme6"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme7"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Navy"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme7"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme8"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fake Holland"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme8"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme9"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Macchiato"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme9"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/theme10"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cookie &amp; Cream"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/theme10"/>
+                </LinearLayout>
+
             </GridLayout>
 
             <GridLayout
