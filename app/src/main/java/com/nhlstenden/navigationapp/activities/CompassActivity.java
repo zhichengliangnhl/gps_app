@@ -64,6 +64,13 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private long navigationStartTime = 0L;
     private static final float COMPLETION_DISTANCE = 10.0f; // meters
 
+    // --- Enhanced stats tracking ---
+    private float totalDistanceTraveled = 0f;
+    private Location lastLocation = null;
+    private int compassCorrections = 0;
+    private float lastCompassAzimuth = 0f;
+    private static final float COMPASS_CORRECTION_THRESHOLD = 30f; // degrees
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +152,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 if (locationResult == null)
                     return;
                 currentLocation = locationResult.getLastLocation();
+                // Track total distance traveled
+                if (lastLocation != null) {
+                    totalDistanceTraveled += lastLocation.distanceTo(currentLocation);
+                }
+                lastLocation = new Location(currentLocation);
                 Log.d("CompassActivity", "Location update: " +
                         currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
                 updateDistanceDisplay();
@@ -226,6 +238,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         for (float a : azimuthBuffer)
             avgAzimuth += a;
         avgAzimuth /= AZIMUTH_AVG_WINDOW;
+
+        // Track compass corrections
+        if (Math.abs(avgAzimuth - lastCompassAzimuth) > COMPASS_CORRECTION_THRESHOLD) {
+            compassCorrections++;
+            lastCompassAzimuth = avgAzimuth;
+        }
 
         if (Math.abs(avgAzimuth - lastAnimatedAzimuth) > 2.0f && (now - lastUpdateTime > MIN_UPDATE_INTERVAL_MS)) {
             this.currentAzimuth = avgAzimuth;
@@ -330,17 +348,21 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         // Calculate stats
         String waypointName = targetWaypoint != null ? targetWaypoint.getName() : "-";
         float directDistance = 0f;
-        if (targetWaypoint != null) {
+        if (targetWaypoint != null && lastLocation != null) {
             Location start = new Location("start");
             start.setLatitude(targetWaypoint.getLat());
             start.setLongitude(targetWaypoint.getLng());
-            directDistance = start.distanceTo(currentLocation);
+            directDistance = start.distanceTo(lastLocation);
         }
         long timeTakenMillis = System.currentTimeMillis() - navigationStartTime;
         String timeTaken = formatDuration(timeTakenMillis);
+        float efficiency = (totalDistanceTraveled > 0) ? (directDistance / totalDistanceTraveled) * 100f : 0f;
 
         String stats = "Waypoint: " + waypointName + "\n" +
                 "Direct distance: " + String.format("%.1f m", distance) + "\n" +
+                "Total traveled: " + String.format("%.1f m", totalDistanceTraveled) + "\n" +
+                "Efficiency: " + String.format("%.0f%%", efficiency) + "\n" +
+                "Compass corrections: " + compassCorrections + "\n" +
                 "Time taken: " + timeTaken + "\n";
         statsText.setText(stats);
 
