@@ -39,13 +39,19 @@
         <item name="android:statusBarColor">#000000</item>
     </style>
 
-    <style name="Theme.NavigationApp.Classic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.NavigationApp.Classic" parent="Theme.NavigationApp">
         <item name="darkColor">@color/classic_primary</item>
         <item name="secondDarkest">@color/classic_secondary</item>
         <item name="secondLightest">@color/classic_2ndLightest</item>
         <item name="lightBackgroundColor">@color/classic_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon</item>
+        <item name="colorPrimary">@color/classic_primary</item>
+        <item name="colorPrimaryVariant">@color/classic_secondary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/classic_secondary</item>
+        <item name="colorSecondaryVariant">@color/classic_2ndLightest</item>
+        <item name="colorOnSecondary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Macha" parent="Theme.NavigationApp">
@@ -53,7 +59,6 @@
         <item name="secondDarkest">@color/macha_secondary</item>
         <item name="secondLightest">@color/macha_2ndLightest</item>
         <item name="lightBackgroundColor">@color/macha_lightest</item>
-        <item name="logo">@drawable/logo_panda_with_bambo</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
     </style>
 

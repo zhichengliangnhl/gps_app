@@ -6,9 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.helpers.ThemePurchaseManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +43,55 @@ public class BrushActivity extends BaseActivity {
             LinearLayout layout = findViewById(entry.getKey());
             String themeName = entry.getValue();
             if (layout != null) {
-                layout.setOnClickListener(v -> {
-                    saveTheme(themeName);
-                    recreate();
-                });
+                updateThemeCardUI(layout, themeName);
+                layout.setOnClickListener(v -> handleThemeClick(themeName));
+            }
+        }
+    }
+
+    private void updateThemeCardUI(LinearLayout layout, String themeName) {
+        RelativeLayout priceLayout = null;
+        TextView priceText = null;
+        
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof RelativeLayout) {
+                priceLayout = (RelativeLayout) child;
+                for (int j = 0; j < priceLayout.getChildCount(); j++) {
+                    View grandChild = priceLayout.getChildAt(j);
+                    if (grandChild instanceof TextView) {
+                        priceText = (TextView) grandChild;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if (priceLayout != null && priceText != null) {
+            if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
+                priceLayout.setVisibility(View.GONE);
+                layout.setAlpha(1.0f);
+            } else {
+                priceLayout.setVisibility(View.VISIBLE);
+                int price = ThemePurchaseManager.getThemePrice(themeName);
+                priceText.setText(String.valueOf(price));
+                layout.setAlpha(0.7f);
+            }
+        }
+    }
+
+    private void handleThemeClick(String themeName) {
+        if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
+            saveTheme(themeName);
+            recreate();
+        } else {
+            if (ThemePurchaseManager.purchaseTheme(this, themeName)) {
+                Toast.makeText(this, "Theme purchased successfully!", Toast.LENGTH_SHORT).show();
+                saveTheme(themeName);
+                recreate();
+            } else {
+                Toast.makeText(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -51,6 +99,6 @@ public class BrushActivity extends BaseActivity {
     private void saveTheme(String themeName) {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         prefs.edit().putString("selected_theme", themeName).apply();
-        Log.println(Log.DEBUG, "SELECTED_THEME",themeName);
+        Log.println(Log.DEBUG, "SELECTED_THEME", themeName);
     }
 }

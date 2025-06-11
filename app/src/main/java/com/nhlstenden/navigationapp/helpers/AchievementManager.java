@@ -12,6 +12,7 @@ public class AchievementManager {
     private static final String KEY_GRINDER_I = "grinder_i_progress";
     private static final String KEY_GRINDER_II = "grinder_ii_progress";
     private static final String KEY_GRINDER_III = "grinder_iii_progress";
+    private static final String PREFIX_CLAIMED = "claimed_";
     private static final float COMPLETION_DISTANCE = 10.0f; // 10 meters
 
     public static void updateFirstStepsProgress(Context context) {
@@ -99,5 +100,15 @@ public class AchievementManager {
     public static void resetAchievements(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
+    }
+
+    public static boolean isRewardClaimed(Context context, String achievementTitle) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(PREFIX_CLAIMED + achievementTitle, false);
+    }
+
+    public static void markRewardClaimed(Context context, String achievementTitle) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(PREFIX_CLAIMED + achievementTitle, true).apply();
     }
 } 

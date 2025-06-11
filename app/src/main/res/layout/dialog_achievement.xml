@@ -51,16 +51,55 @@
         android:max="100"
         android:progress="0"/>
 
-    <Button
-        android:id="@+id/okButton"
-        android:layout_width="65dp"
-        android:layout_height="50dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/transparent"
-        android:text="OK"
-        android:textColor="#000"
-        android:textStyle="bold"
-        android:textSize="19sp"/>
+    <RelativeLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:text="Reward:"
+            android:layout_marginTop="20dp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="19sp"/>
+
+        <ImageView
+            android:id="@+id/coinIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/coin"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+
+        <TextView
+            android:id="@+id/coinReward"
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="22dp"
+            android:text="0"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="19sp"
+            android:layout_marginEnd="5dp"/>
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="65dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="250dp"
+            android:background="@android:color/transparent"
+            android:text="OK"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="19sp"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

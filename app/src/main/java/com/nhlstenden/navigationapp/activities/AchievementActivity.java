@@ -32,11 +32,13 @@ public class AchievementActivity extends BaseActivity {
         public String description;
         public Difficulty difficulty;
         public String progress;
-        public Achievement(String title, String description, Difficulty difficulty, String progress) {
+        public int reward;
+        public Achievement(String title, String description, Difficulty difficulty, String progress, int reward) {
             this.title = title;
             this.description = description;
             this.difficulty = difficulty;
             this.progress = progress;
+            this.reward = reward;
         }
     }
 
@@ -55,20 +57,20 @@ public class AchievementActivity extends BaseActivity {
 
         List<Achievement> achievements = Arrays.asList(
                 new Achievement("First steps", "Create a waypoint", Difficulty.ONE_STAR, 
-                    String.format("Progress: %d/1", firstStepsProgress)),
+                    String.format("Progress: %d/1", firstStepsProgress), 100),
                 new Achievement("Runner I", "Complete a waypoint", Difficulty.ONE_STAR, 
-                    String.format("Progress: %d/1", AchievementManager.getRunnerIProgress(this))),
+                    String.format("Progress: %d/1", AchievementManager.getRunnerIProgress(this)), 200),
                 new Achievement("Grinder I", "Earn 1000 coins", Difficulty.ONE_STAR, 
-                    String.format("Progress: %d/1000", CoinManager.getCoins(this))),
+                    String.format("Progress: %d/1000", CoinManager.getCoins(this)), 500),
                 new Achievement("Runner II", "Complete 5 waypoints", Difficulty.TWO_STAR, 
-                    String.format("Progress: %d/5", AchievementManager.getRunnerIIProgress(this))),
+                    String.format("Progress: %d/5", AchievementManager.getRunnerIIProgress(this)), 1000),
                 new Achievement("Grinder II", "Earn 10.000 coins", Difficulty.TWO_STAR,
-                    String.format("Progress: %d/10000", CoinManager.getCoins(this))),
+                    String.format("Progress: %d/10000", CoinManager.getCoins(this)), 2000),
                 new Achievement("Runner III", "Complete 10 waypoints", Difficulty.THREE_STAR, 
-                    String.format("Progress: %d/10", AchievementManager.getRunnerIIIProgress(this))),
+                    String.format("Progress: %d/10", AchievementManager.getRunnerIIIProgress(this)), 5000),
                 new Achievement("Grinder III", "Earn 100.000 coins", Difficulty.THREE_STAR,
-                    String.format("Progress: %d/100000", CoinManager.getCoins(this))),
-                new Achievement("Collectionista", "Collect all achievements", Difficulty.THREE_STAR, "Progress: 0/6")
+                    String.format("Progress: %d/100000", CoinManager.getCoins(this)), 10000),
+                new Achievement("Collectionista", "Collect all achievements", Difficulty.THREE_STAR, "Progress: 0/6", 10000)
         );
 
         GridLayout container = findViewById(R.id.achievementContainer);
@@ -129,30 +131,42 @@ public class AchievementActivity extends BaseActivity {
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         
         // Set progress based on achievement type
+        boolean isCompleted = false;
         if (achievement.title.equals("First steps")) {
             int progress = AchievementManager.getFirstStepsProgress(this);
             progressBar.setProgress(progress * 100); // Convert to percentage
+            isCompleted = progress >= 1;
         } else if (achievement.title.equals("Runner I")) {
             int progress = AchievementManager.getRunnerIProgress(this);
             progressBar.setProgress(progress * 100); // Convert to percentage
+            isCompleted = progress >= 1;
         } else if (achievement.title.equals("Runner II")) {
             int progress = AchievementManager.getRunnerIIProgress(this);
             progressBar.setProgress((progress * 100) / 5); // Convert to percentage (out of 5)
+            isCompleted = progress >= 5;
         } else if (achievement.title.equals("Runner III")) {
             int progress = AchievementManager.getRunnerIIIProgress(this);
             progressBar.setProgress((progress * 100) / 10); // Convert to percentage (out of 10)
+            isCompleted = progress >= 10;
         } else if (achievement.title.equals("Grinder I")) {
             int coins = CoinManager.getCoins(this);
             progressBar.setProgress((coins * 100) / 1000); // Convert to percentage (out of 1000)
+            isCompleted = coins >= 1000;
         } else if (achievement.title.equals("Grinder II")) {
             int coins = CoinManager.getCoins(this);
             progressBar.setProgress((coins * 100) / 10000); // Convert to percentage (out of 10000)
+            isCompleted = coins >= 10000;
         } else if (achievement.title.equals("Grinder III")) {
             int coins = CoinManager.getCoins(this);
             progressBar.setProgress((coins * 100) / 100000); // Convert to percentage (out of 100000)
+            isCompleted = coins >= 100000;
         } else {
             progressBar.setProgress(0);
         }
+        
+        // Set reward text
+        TextView coinReward = dialogView.findViewById(R.id.coinReward);
+        coinReward.setText(String.valueOf(achievement.reward));
         
         Button okButton = dialogView.findViewById(R.id.okButton);
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -161,7 +175,20 @@ public class AchievementActivity extends BaseActivity {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-        okButton.setOnClickListener(v -> dialog.dismiss());
+        
+        // If achievement is completed, add reward when OK is clicked
+        if (isCompleted) {
+            okButton.setOnClickListener(v -> {
+                if (!AchievementManager.isRewardClaimed(this, achievement.title)) {
+                    CoinManager.addCoins(this, achievement.reward);
+                    AchievementManager.markRewardClaimed(this, achievement.title);
+                }
+                dialog.dismiss();
+            });
+        } else {
+            okButton.setOnClickListener(v -> dialog.dismiss());
+        }
+        
         dialog.show();
     }
 }
