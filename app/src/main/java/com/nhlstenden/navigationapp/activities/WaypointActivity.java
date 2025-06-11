@@ -2,6 +2,7 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
@@ -117,6 +118,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         double lat = result.getData().getDoubleExtra("lat", 0);
                         double lng = result.getData().getDoubleExtra("lng", 0);
+
                         Intent intent = new Intent(this, CreateWaypointActivity.class);
                         intent.putExtra("mode", "create");
                         intent.putExtra("id", java.util.UUID.randomUUID().toString());
@@ -161,6 +163,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
     @Override
     public void onNavigateClick(Waypoint waypoint) {
+        saveSelectedWaypoint(waypoint);
         Intent intent = new Intent(this, CompassActivity.class);
         intent.putExtra("WAYPOINT", waypoint);
         startActivity(intent);
@@ -197,6 +200,15 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         } else {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveSelectedWaypoint(Waypoint waypoint) {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        prefs.edit().putString("selected_wp_id", waypoint.getId())
+                .putString("selected_wp_name", waypoint.getName())
+                .putString("selected_wp_lat", String.valueOf(waypoint.getLat()))
+                .putString("selected_wp_lng", String.valueOf(waypoint.getLng()))
+                .apply();
     }
 
     private void showQrBottomSheet(Bitmap qrBitmap) {
