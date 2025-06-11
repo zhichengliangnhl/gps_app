@@ -52,12 +52,17 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private static final int AZIMUTH_AVG_WINDOW = 5;
     private final float[] azimuthBuffer = new float[AZIMUTH_AVG_WINDOW];
     private int azimuthBufferIdx = 0;
-    private final ActivityResultLauncher<ScanOptions> qrScannerLauncher =
-            registerForActivityResult(new ScanContract(), result -> {
+    private final ActivityResultLauncher<ScanOptions> qrScannerLauncher = registerForActivityResult(new ScanContract(),
+            result -> {
                 if (result.getContents() != null) {
                     Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
                 }
             });
+
+    // --- Add for waypoint reached dialog ---
+    private boolean waypointReachedShown = false;
+    private long navigationStartTime = 0L;
+    private static final float COMPLETION_DISTANCE = 10.0f; // meters
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +84,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         Button btnEarn = findViewById(R.id.btnEarnCoins);
         if (btnEarn != null) {
             btnEarn.setOnClickListener(v -> {
-                CoinManager.addCoins(this, 1);
+                CoinManager.addCoins(this, 100);
                 TextView coinCounter = findViewById(R.id.coinCounter);
                 if (coinCounter != null) {
                     CoinManager.updateCoinDisplay(this, coinCounter);
@@ -113,12 +118,16 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             distanceText.setText("Distance: -");
         }
 
+        navigationStartTime = System.currentTimeMillis();
+
         requestLocationAccess();
     }
 
     private void requestLocationAccess() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                    LOCATION_PERMISSION_REQUEST);
         } else {
             startLocationUpdates();
         }
@@ -133,7 +142,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) return;
+                if (locationResult == null)
+                    return;
                 currentLocation = locationResult.getLastLocation();
                 Log.d("CompassActivity", "Location update: " +
                         currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
@@ -142,7 +152,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
         }
     }
@@ -159,6 +170,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             float distance = currentLocation.distanceTo(target);
             Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
+
+            // Show dialog if reached and not already shown
+            if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
+                waypointReachedShown = true;
+                showWaypointReachedDialog(distance);
+            }
         } else {
             Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
             distanceText.setText("Distance: -");
@@ -178,7 +195,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         float bearingTo = currentLocation.bearingTo(target);
         float angle = (bearingTo - currentAzimuth + 540) % 360;
 
-        Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
+        Log.d("CompassActivity",
+                "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
 
         ObjectAnimator.ofFloat(compassNeedle, "rotation", compassNeedle.getRotation(), angle)
                 .setDuration(300)
@@ -205,7 +223,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         azimuthBuffer[azimuthBufferIdx] = azimuth;
         azimuthBufferIdx = (azimuthBufferIdx + 1) % AZIMUTH_AVG_WINDOW;
         float avgAzimuth = 0;
-        for (float a : azimuthBuffer) avgAzimuth += a;
+        for (float a : azimuthBuffer)
+            avgAzimuth += a;
         avgAzimuth /= AZIMUTH_AVG_WINDOW;
 
         if (Math.abs(avgAzimuth - lastAnimatedAzimuth) > 2.0f && (now - lastUpdateTime > MIN_UPDATE_INTERVAL_MS)) {
@@ -216,10 +235,9 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST && grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -284,7 +302,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         builder.show();
     }
 
-    // Optional: for live updates if you ever want to switch waypoint without re-launching activity
+    // Optional: for live updates if you ever want to switch waypoint without
+    // re-launching activity
     public void setWaypoint(Waypoint wp) {
         this.targetWaypoint = wp;
         if (wp != null) {
@@ -294,6 +313,56 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         } else {
             nameText.setText("No waypoint selected");
             distanceText.setText("Distance: -");
+        }
+    }
+
+    private void showWaypointReachedDialog(float distance) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_waypoint_reached, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        TextView statsText = dialogView.findViewById(R.id.dialogStats);
+        TextView titleText = dialogView.findViewById(R.id.dialogTitle);
+        Button doneButton = dialogView.findViewById(R.id.dialogDoneButton);
+
+        // Calculate stats
+        String waypointName = targetWaypoint != null ? targetWaypoint.getName() : "-";
+        float directDistance = 0f;
+        if (targetWaypoint != null) {
+            Location start = new Location("start");
+            start.setLatitude(targetWaypoint.getLat());
+            start.setLongitude(targetWaypoint.getLng());
+            directDistance = start.distanceTo(currentLocation);
+        }
+        long timeTakenMillis = System.currentTimeMillis() - navigationStartTime;
+        String timeTaken = formatDuration(timeTakenMillis);
+
+        String stats = "Waypoint: " + waypointName + "\n" +
+                "Direct distance: " + String.format("%.1f m", distance) + "\n" +
+                "Time taken: " + timeTaken + "\n";
+        statsText.setText(stats);
+
+        doneButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            finish(); // Optionally finish activity
+        });
+
+        dialog.show();
+    }
+
+    private String formatDuration(long millis) {
+        long seconds = millis / 1000;
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        if (hours > 0) {
+            return String.format("%dh %dm %ds", hours, minutes, secs);
+        } else if (minutes > 0) {
+            return String.format("%dm %ds", minutes, secs);
+        } else {
+            return String.format("%ds", secs);
         }
     }
 }
