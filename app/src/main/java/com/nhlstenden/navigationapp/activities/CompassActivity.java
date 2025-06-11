@@ -64,6 +64,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     // --- Add for waypoint reached dialog ---
     private boolean waypointReachedShown = false;
     private long navigationStartTime = 0L;
+    private long elapsedTimeBeforePause = 0L;
     private static final float COMPLETION_DISTANCE = 10.0f; // meters
 
     // --- Enhanced stats tracking ---
@@ -99,6 +100,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         distanceText = findViewById(R.id.distanceText);
         nameText = findViewById(R.id.waypointStatus);
         timerText = findViewById(R.id.timerText);
+
+        // Set top bar title
+        TextView headerTitle = findViewById(R.id.headerTitle);
+        if (headerTitle != null) {
+            headerTitle.setText("Treasure Finder");
+        }
 
         // Earn coins button
         Button btnEarn = findViewById(R.id.btnEarnCoins);
@@ -144,6 +151,15 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         requestLocationAccess();
 
         updateWaypointStatusText();
+
+        // Restore timer state if available
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        elapsedTimeBeforePause = prefs
+                .getLong("timer_elapsed_" + (targetWaypoint != null ? targetWaypoint.getId() : ""), 0L);
+        if (targetWaypoint != null) {
+            navigationStartTime = System.currentTimeMillis() - elapsedTimeBeforePause;
+            startLiveTimer();
+        }
     }
 
     private void requestLocationAccess() {
@@ -279,6 +295,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         super.onPause();
         compassSensorManager.stop();
         stopLocationUpdates();
+        // Save timer state
+        if (targetWaypoint != null && navigationStartTime > 0) {
+            long elapsed = System.currentTimeMillis() - navigationStartTime;
+            SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+            prefs.edit().putLong("timer_elapsed_" + targetWaypoint.getId(), elapsed).apply();
+            // Save to waypoint in folder list
+            saveTimerToWaypoint(targetWaypoint.getId(), elapsed);
+        }
     }
 
     @Override
@@ -429,9 +453,16 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         statsText.setText(stats);
 
         doneButton.setOnClickListener(v -> {
+            // Save final timer to waypoint and clear timer state
+            if (targetWaypoint != null && navigationStartTime > 0) {
+                long elapsed = System.currentTimeMillis() - navigationStartTime;
+                saveTimerToWaypoint(targetWaypoint.getId(), elapsed);
+                SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                prefs.edit().remove("timer_elapsed_" + targetWaypoint.getId()).apply();
+            }
             clearSelectedWaypoint();
             dialog.dismiss();
-            finish(); // Optionally finish activity
+            finish();
         });
 
         dialog.show();
@@ -500,6 +531,33 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             nameText.setText(waypointName);
         } else {
             nameText.setText("");
+        }
+    }
+
+    private void saveTimerToWaypoint(String waypointId, long elapsedMillis) {
+        // Save timer to waypoint in folder list in SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE);
+        String json = prefs.getString("folders_json", null);
+        if (json != null) {
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<java.util.List<com.nhlstenden.navigationapp.models.Folder>>() {
+            }.getType();
+            java.util.List<com.nhlstenden.navigationapp.models.Folder> folderList = new com.google.gson.Gson()
+                    .fromJson(json, type);
+            boolean updated = false;
+            for (com.nhlstenden.navigationapp.models.Folder folder : folderList) {
+                for (com.nhlstenden.navigationapp.models.Waypoint wp : folder.getWaypoints()) {
+                    if (wp.getId().equals(waypointId)) {
+                        wp.setNavigationTimeMillis(elapsedMillis);
+                        updated = true;
+                        break;
+                    }
+                }
+                if (updated)
+                    break;
+            }
+            if (updated) {
+                prefs.edit().putString("folders_json", new com.google.gson.Gson().toJson(folderList)).apply();
+            }
         }
     }
 }

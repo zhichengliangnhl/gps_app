@@ -48,6 +48,15 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         holder.descriptionTextView.setText(waypoint.getDescription());
         holder.dateTextView.setText(waypoint.getDate());
 
+        // Show navigation timer
+        TextView timerTextView = holder.itemView.findViewById(R.id.waypointTimer);
+        long navTime = waypoint.getNavigationTimeMillis();
+        if (navTime > 0) {
+            timerTextView.setText("Timer: " + formatTimer(navTime));
+        } else {
+            timerTextView.setText("Timer: --");
+        }
+
         String coordinates = String.format(Locale.getDefault(),
                 "Lat: %.6f, Lng: %.6f",
                 waypoint.getLat(), waypoint.getLng());
@@ -109,8 +118,21 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         if (position != -1) {
             waypointList.remove(position);
             notifyItemRemoved(position);
-            // Notify any items after the removed position that they need to update their positions
+            // Notify any items after the removed position that they need to update their
+            // positions
             notifyItemRangeChanged(position, waypointList.size() - position);
+        }
+    }
+
+    private String formatTimer(long millis) {
+        long seconds = millis / 1000;
+        long minutes = (seconds % 3600) / 60;
+        long hours = seconds / 3600;
+        long secs = seconds % 60;
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, secs);
+        } else {
+            return String.format("%02d:%02d", minutes, secs);
         }
     }
 

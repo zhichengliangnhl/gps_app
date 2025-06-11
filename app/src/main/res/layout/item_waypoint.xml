@@ -42,6 +42,17 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/waypointTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/waypointName"
+            android:layout_alignStart="@id/waypointName"
+            android:layout_marginTop="2dp"
+            android:text="Timer: 00:00"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/waypointDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
