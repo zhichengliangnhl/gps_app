@@ -482,4 +482,9 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         super.onDestroy();
         stopLiveTimer();
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
 }
