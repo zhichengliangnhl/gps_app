@@ -75,10 +75,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
         Waypoint selectedWaypoint = loadSelectedWaypoint();
         if (selectedWaypoint == null) {
-            Log.e("WAYPOINT", "Selected waypoint is null after loading. Cannot proceed.");
-            Toast.makeText(this, "No saved waypoint found", Toast.LENGTH_LONG).show();
-            finish();
-            return;
+            Log.e("WAYPOINT", "No selected waypoint yet");
         }
 
 // Only use intent data if available, otherwise use loaded waypoint
