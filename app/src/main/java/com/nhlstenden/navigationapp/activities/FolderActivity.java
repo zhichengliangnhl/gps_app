@@ -103,13 +103,17 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 Toast.makeText(this, "Please enter a folder name", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            for (Folder f : folderList) {
+                if (f.getName().equalsIgnoreCase(folderName)) {
+                    Toast.makeText(this, "Folder name must be unique", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Folder folder = new Folder(folderName);
             folderList.add(folder);
             folderAdapter.notifyItemInserted(folderList.size() - 1);
             saveFolders();
             folderNameInput.setText("");
-
             onFolderClicked(folder); // Open folder immediately
         });
     }

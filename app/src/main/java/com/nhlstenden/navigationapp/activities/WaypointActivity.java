@@ -108,10 +108,19 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
                                 adapter.updateWaypoint(w);
+                                saveFolderToPrefs(folder);
                             } else {
+                                // Check for duplicate waypoint name in this folder
+                                for (Waypoint wp : folder.getWaypoints()) {
+                                    if (wp.getName().equalsIgnoreCase(w.getName())) {
+                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
                                 adapter.addWaypoint(w);
+                                saveFolderToPrefs(folder);
                             }
-                            saveFolderToPrefs(folder);
                         }
                     }
                 });
@@ -168,6 +177,9 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     @Override
     public void onNavigateClick(Waypoint waypoint) {
         saveSelectedWaypoint(waypoint);
+        // Save selected folder name for CompassActivity display
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        prefs.edit().putString("selected_folder_name", folder.getName()).apply();
         Intent intent = new Intent(this, CompassActivity.class);
         intent.putExtra("WAYPOINT", waypoint);
         startActivity(intent);

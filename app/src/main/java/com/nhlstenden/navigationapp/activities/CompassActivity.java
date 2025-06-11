@@ -142,6 +142,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         }
 
         requestLocationAccess();
+
+        updateWaypointStatusText();
     }
 
     private void requestLocationAccess() {
@@ -486,5 +488,18 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     public void finish() {
         super.finish();
+    }
+
+    private void updateWaypointStatusText() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String folderName = prefs.getString("selected_folder_name", null);
+        String waypointName = targetWaypoint != null ? targetWaypoint.getName() : null;
+        if (folderName != null && waypointName != null) {
+            nameText.setText("Folder: " + folderName + " | Waypoint: " + waypointName);
+        } else if (waypointName != null) {
+            nameText.setText(waypointName);
+        } else {
+            nameText.setText("");
+        }
     }
 }
