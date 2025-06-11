@@ -384,6 +384,15 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         }
     }
 
+    private void clearSelectedWaypoint() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        prefs.edit().remove("selected_wp_id")
+                .remove("selected_wp_name")
+                .remove("selected_wp_lat")
+                .remove("selected_wp_lng")
+                .apply();
+    }
+
     private void showWaypointReachedDialog(float distance) {
         stopLiveTimer();
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_waypoint_reached, null);
@@ -418,6 +427,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         statsText.setText(stats);
 
         doneButton.setOnClickListener(v -> {
+            clearSelectedWaypoint();
             dialog.dismiss();
             finish(); // Optionally finish activity
         });
