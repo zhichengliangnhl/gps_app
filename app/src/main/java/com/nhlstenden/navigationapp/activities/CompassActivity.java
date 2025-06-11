@@ -546,7 +546,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         String folderName = prefs.getString("selected_folder_name", null);
         String waypointName = targetWaypoint != null ? targetWaypoint.getName() : null;
         if (folderName != null && waypointName != null) {
-            nameText.setText("Folder: " + folderName + " | Waypoint: " + waypointName);
+            nameText.setText(folderName + " | " + waypointName);
         } else if (waypointName != null) {
             nameText.setText(waypointName);
         } else {
