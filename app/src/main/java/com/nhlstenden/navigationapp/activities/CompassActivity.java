@@ -242,7 +242,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         target.setLongitude(targetWaypoint.getLng());
 
         float bearingTo = currentLocation.bearingTo(target);
-        float angle = (bearingTo - currentAzimuth + 540) % 360;
+        float angle = (bearingTo - currentAzimuth + 3600) % 360;
 
         Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
 
