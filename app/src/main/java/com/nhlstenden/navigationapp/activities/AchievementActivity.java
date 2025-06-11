@@ -179,7 +179,10 @@ public class AchievementActivity extends BaseActivity {
         // If achievement is completed, add reward when OK is clicked
         if (isCompleted) {
             okButton.setOnClickListener(v -> {
-                CoinManager.addCoins(this, achievement.reward);
+                if (!AchievementManager.isRewardClaimed(this, achievement.title)) {
+                    CoinManager.addCoins(this, achievement.reward);
+                    AchievementManager.markRewardClaimed(this, achievement.title);
+                }
                 dialog.dismiss();
             });
         } else {

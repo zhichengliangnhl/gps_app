@@ -43,16 +43,13 @@ public class BrushActivity extends BaseActivity {
             LinearLayout layout = findViewById(entry.getKey());
             String themeName = entry.getValue();
             if (layout != null) {
-                // Update UI based on purchase status
                 updateThemeCardUI(layout, themeName);
-                
                 layout.setOnClickListener(v -> handleThemeClick(themeName));
             }
         }
     }
 
     private void updateThemeCardUI(LinearLayout layout, String themeName) {
-        // Find the price RelativeLayout and TextView
         RelativeLayout priceLayout = null;
         TextView priceText = null;
         
@@ -73,26 +70,22 @@ public class BrushActivity extends BaseActivity {
 
         if (priceLayout != null && priceText != null) {
             if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
-                // Theme is purchased - hide the price layout
                 priceLayout.setVisibility(View.GONE);
                 layout.setAlpha(1.0f);
             } else {
-                // Theme is not purchased - show the price
                 priceLayout.setVisibility(View.VISIBLE);
                 int price = ThemePurchaseManager.getThemePrice(themeName);
                 priceText.setText(String.valueOf(price));
-                layout.setAlpha(0.7f); // Make unpurchased themes slightly dimmed
+                layout.setAlpha(0.7f);
             }
         }
     }
 
     private void handleThemeClick(String themeName) {
         if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
-            // Theme is already purchased, just apply it
             saveTheme(themeName);
             recreate();
         } else {
-            // Try to purchase the theme
             if (ThemePurchaseManager.purchaseTheme(this, themeName)) {
                 Toast.makeText(this, "Theme purchased successfully!", Toast.LENGTH_SHORT).show();
                 saveTheme(themeName);

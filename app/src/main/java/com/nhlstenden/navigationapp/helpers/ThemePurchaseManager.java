@@ -21,7 +21,7 @@ public class ThemePurchaseManager {
 
     public static boolean isThemePurchased(Context context, String themeName) {
         if (themeName.equals("classic")) {
-            return true; // Classic theme is always available
+            return true;
         }
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getBoolean(PREFIX_PURCHASED + themeName, false);
@@ -61,10 +61,8 @@ public class ThemePurchaseManager {
         int currentCoins = CoinManager.getCoins(context);
 
         if (currentCoins >= price) {
-            // Deduct coins
             CoinManager.addCoins(context, -price);
-            
-            // Mark theme as purchased
+
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             prefs.edit().putBoolean(PREFIX_PURCHASED + themeName, true).apply();
             
