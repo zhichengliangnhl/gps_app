@@ -63,6 +63,7 @@
         <item name="lightBackgroundColor">@color/macha_lightest</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/macha_lightest</item>
+        <item name="colorSecondary">@color/macha_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -74,6 +75,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/savana_lightest</item>
+        <item name="colorSecondary">@color/savana_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -85,6 +87,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/aqua_lightest</item>
+        <item name="colorSecondary">@color/aqua_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -96,6 +99,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/lavander_lightest</item>
+        <item name="colorSecondary">@color/lavander_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -107,6 +111,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/sunset_lightest</item>
+        <item name="colorSecondary">@color/sunset_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -118,6 +123,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/navy_lightest</item>
+        <item name="colorSecondary">@color/navy_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -129,6 +135,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/fakeholland_lightest</item>
+        <item name="colorSecondary">@color/fakeholland_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -140,6 +147,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/macchiato_lightest</item>
+        <item name="colorSecondary">@color/macchiato_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
@@ -151,6 +159,7 @@
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
         <item name="colorSurface">@color/cookiecream_lightest</item>
+        <item name="colorSecondary">@color/cookiecream_secondary</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 </resources>

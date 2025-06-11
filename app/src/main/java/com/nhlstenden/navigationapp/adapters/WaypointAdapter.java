@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +62,26 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
                 "Lat: %.6f, Lng: %.6f",
                 waypoint.getLat(), waypoint.getLng());
         holder.coordinatesTextView.setText(coordinates);
+
+        // Set border based on completion
+        boolean completed = false;
+        android.content.SharedPreferences prefs = holder.itemView.getContext().getSharedPreferences("AppPrefs",
+                android.content.Context.MODE_PRIVATE);
+        if (waypoint.getId() != null) {
+            completed = prefs.getBoolean("waypoint_completed_" + waypoint.getId(), false);
+        }
+        FrameLayout imageFrame = holder.itemView.findViewById(R.id.waypointImageFrame);
+        ImageView crownView = holder.itemView.findViewById(R.id.waypointCrown);
+        ImageView starView = holder.itemView.findViewById(R.id.waypointStar);
+        if (completed) {
+            imageFrame.setBackgroundResource(0);
+            crownView.setVisibility(View.VISIBLE);
+            starView.setVisibility(View.GONE);
+        } else {
+            imageFrame.setBackgroundResource(0);
+            crownView.setVisibility(View.GONE);
+            starView.setVisibility(View.VISIBLE);
+        }
 
         if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
             Uri uri = Uri.parse(waypoint.getImageUri());
