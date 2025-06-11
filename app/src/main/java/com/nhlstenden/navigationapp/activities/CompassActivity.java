@@ -108,7 +108,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                     " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng());
             nameText.setText(targetWaypoint.getName());
         } else {
-            Toast.makeText(this, "No waypoint!", Toast.LENGTH_LONG).show();
             Log.d("CompassActivity", "No waypoint received!");
             nameText.setText("No waypoint selected");
             distanceText.setText("Distance: -");

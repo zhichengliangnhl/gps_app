@@ -52,6 +52,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme1"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -77,6 +78,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme2"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="100"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,6 +127,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme3"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="200"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -127,6 +176,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme4"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="200"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -152,6 +225,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme5"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="200"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -177,6 +274,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme6"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="200"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -202,6 +323,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme7"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="200"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -227,6 +372,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme8"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="500"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -252,6 +421,30 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme9"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="500"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="5dp"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -277,6 +470,29 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@drawable/theme10"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="1000"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
                 </LinearLayout>
 
             </GridLayout>
