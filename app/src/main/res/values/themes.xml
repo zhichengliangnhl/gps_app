@@ -52,6 +52,8 @@
         <item name="colorSecondary">@color/classic_secondary</item>
         <item name="colorSecondaryVariant">@color/classic_2ndLightest</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSurface">@color/classic_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Macha" parent="Theme.NavigationApp">
@@ -60,6 +62,8 @@
         <item name="secondLightest">@color/macha_2ndLightest</item>
         <item name="lightBackgroundColor">@color/macha_lightest</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/macha_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Savana" parent="Theme.NavigationApp">
@@ -69,6 +73,8 @@
         <item name="lightBackgroundColor">@color/savana_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/savana_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Aqua" parent="Theme.NavigationApp">
@@ -78,6 +84,8 @@
         <item name="lightBackgroundColor">@color/aqua_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/aqua_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Lavander" parent="Theme.NavigationApp">
@@ -87,6 +95,8 @@
         <item name="lightBackgroundColor">@color/lavander_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/lavander_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Sunset" parent="Theme.NavigationApp">
@@ -96,6 +106,8 @@
         <item name="lightBackgroundColor">@color/sunset_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/sunset_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Navy" parent="Theme.NavigationApp">
@@ -105,6 +117,8 @@
         <item name="lightBackgroundColor">@color/navy_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/navy_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.FakeHolland" parent="Theme.NavigationApp">
@@ -114,6 +128,8 @@
         <item name="lightBackgroundColor">@color/fakeholland_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/fakeholland_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.Macchiato" parent="Theme.NavigationApp">
@@ -123,6 +139,8 @@
         <item name="lightBackgroundColor">@color/macchiato_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/macchiato_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="Theme.NavigationApp.CookieCream" parent="Theme.NavigationApp">
@@ -132,5 +150,7 @@
         <item name="lightBackgroundColor">@color/cookiecream_lightest</item>
         <item name="logo">@drawable/logo_platypus_with_letters</item>
         <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/cookiecream_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 </resources>
