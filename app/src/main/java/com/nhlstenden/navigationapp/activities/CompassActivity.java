@@ -3,6 +3,7 @@ package com.nhlstenden.navigationapp.activities;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -70,10 +71,22 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
-        // Header title
-        TextView headerTitle = findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
-            headerTitle.setText("Treasure Finder");
+        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+
+        Waypoint selectedWaypoint = loadSelectedWaypoint();
+        if (selectedWaypoint == null) {
+            Log.e("WAYPOINT", "Selected waypoint is null after loading. Cannot proceed.");
+            Toast.makeText(this, "No saved waypoint found", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+// Only use intent data if available, otherwise use loaded waypoint
+        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+
+        if (targetWaypoint == null) {
+            Log.w("WAYPOINT", "No waypoint from Intent. Using saved waypoint as target.");
+            targetWaypoint = selectedWaypoint; // fallback to loaded
         }
 
         // Needle and waypoint info
@@ -127,7 +140,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Use Parcelable!
-        targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+
         if (targetWaypoint != null) {
             Toast.makeText(this, "Waypoint: " + targetWaypoint.getName() +
                     " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng(), Toast.LENGTH_LONG).show();
@@ -149,6 +162,36 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
         } else {
             startLocationUpdates();
+        }
+    }
+
+    private Waypoint loadSelectedWaypoint() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+
+        String id = prefs.getString("selected_wp_id", null);
+        String name = prefs.getString("selected_wp_name", null);
+        String latStr = prefs.getString("selected_wp_lat", null);
+        String lngStr = prefs.getString("selected_wp_lng", null);
+
+        if (id == null || name == null || latStr == null || lngStr == null) {
+            Log.d("WAYPOINT_LOAD_ERROR", "WAYPOINT data is null");
+            return null;
+        }
+
+        Log.d("WAYPOINT_LOAD", "Waypoint has been loaded");
+        Log.d("WAYPOINT_DATA", name + ", " + latStr + ", " + lngStr);
+
+        try {
+            Log.d("WAYPOINT_LOAD", "Waypoint lat, lng parsing...");
+            double lat = Double.parseDouble(latStr);
+            double lng = Double.parseDouble(lngStr);
+            Log.d("WAYPOINT_LOAD", "Waypoint lat, lng parsed!");
+
+            return new Waypoint(id, name, "", "", lat, lng);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Log.d("WAYPOINT_LOAD_ERROR", e.getMessage());
+            return null;
         }
     }
 
@@ -216,6 +259,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     protected void onResume() {
         super.onResume();
+        Waypoint wp = loadSelectedWaypoint();
+        if (wp != null) {
+            targetWaypoint.setName(wp.getName());
+            targetWaypoint.setLat(wp.getLat());
+            targetWaypoint.setLng(wp.getLng());
+        }
         compassSensorManager.start();
         startLocationUpdates();
     }
