@@ -148,12 +148,30 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             timerText.setText("00:00");
         }
 
+        // Check if this waypoint is already completed
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean completed = false;
+        if (targetWaypoint != null) {
+            completed = prefs.getBoolean("waypoint_completed_" + targetWaypoint.getId(), false);
+        }
+        if (completed) {
+            // Clear selected waypoint and timer state
+            if (targetWaypoint != null) {
+                clearSelectedWaypoint();
+                prefs.edit().remove("timer_elapsed_" + targetWaypoint.getId()).apply();
+            }
+            nameText.setText("No waypoint selected");
+            distanceText.setText("Distance: -");
+            timerText.setText("00:00");
+            Toast.makeText(this, "Waypoint already completed!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         requestLocationAccess();
 
         updateWaypointStatusText();
 
         // Restore timer state if available
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         elapsedTimeBeforePause = prefs
                 .getLong("timer_elapsed_" + (targetWaypoint != null ? targetWaypoint.getId() : ""), 0L);
         if (targetWaypoint != null) {
@@ -458,11 +476,13 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 long elapsed = System.currentTimeMillis() - navigationStartTime;
                 saveTimerToWaypoint(targetWaypoint.getId(), elapsed);
                 SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                prefs.edit().remove("timer_elapsed_" + targetWaypoint.getId()).apply();
+                prefs.edit()
+                        .remove("timer_elapsed_" + targetWaypoint.getId())
+                        .putBoolean("waypoint_completed_" + targetWaypoint.getId(), true)
+                        .apply();
             }
             clearSelectedWaypoint();
             dialog.dismiss();
-            finish();
         });
 
         dialog.show();
