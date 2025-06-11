@@ -78,15 +78,13 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             Log.e("WAYPOINT", "No selected waypoint yet");
         }
 
-// Only use intent data if available, otherwise use loaded waypoint
         targetWaypoint = getIntent().getParcelableExtra("WAYPOINT");
 
         if (targetWaypoint == null) {
             Log.w("WAYPOINT", "No waypoint from Intent. Using saved waypoint as target.");
-            targetWaypoint = selectedWaypoint; // fallback to loaded
+            targetWaypoint = selectedWaypoint;
         }
 
-        // Needle and waypoint info
         compassNeedle = findViewById(R.id.arrowImage);
         distanceText = findViewById(R.id.distanceText);
         nameText = findViewById(R.id.waypointStatus);
