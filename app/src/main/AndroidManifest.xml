@@ -52,6 +52,13 @@
         <!-- Map screen -->
         <activity android:name=".activities.MapActivity" />
 
+        <!--    Portrait View    -->
+        <activity
+            android:name=".activities.PortraitCaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/zxing_CaptureTheme" />
+
+
         <!-- Google Maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"

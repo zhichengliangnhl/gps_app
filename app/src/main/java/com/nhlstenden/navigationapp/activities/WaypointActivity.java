@@ -65,6 +65,11 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             headerTitle.setText(folder.getName());
         }
 
+        View settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        }
+
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
         adapter = new WaypointAdapter(waypointList, this);
@@ -228,6 +233,31 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         bottomSheetDialog.show();
     }
+
+    private void showSettingsPanel() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportDialog();
+        });
+
+        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan QR Code");
+            options.setCaptureActivity(PortraitCaptureActivity.class);
+            options.setOrientationLocked(true);
+            qrScanner.launch(options);
+        });
+
+        dialog.show();
+    }
+
 
     public void showImportDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

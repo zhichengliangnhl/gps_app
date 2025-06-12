@@ -218,8 +218,8 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             dialog.dismiss();
             ScanOptions options = new ScanOptions();
             options.setPrompt("Scan QR Code");
-            options.setBeepEnabled(true);
-            options.setOrientationLocked(false);
+            options.setCaptureActivity(PortraitCaptureActivity.class);
+            options.setOrientationLocked(true);
             qrScanner.launch(options);
         });
 
