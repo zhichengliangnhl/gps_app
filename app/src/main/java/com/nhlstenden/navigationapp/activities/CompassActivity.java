@@ -2,12 +2,16 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,6 +80,9 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable;
+    private Vibrator vibrator;
+    private long lastVibrationTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +185,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             navigationStartTime = System.currentTimeMillis() - elapsedTimeBeforePause;
             startLiveTimer();
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
     }
 
     private void requestLocationAccess() {
@@ -263,6 +278,19 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
 
+            // Start vibrating when within 100m from the waypoints
+            if (distance < 100f && vibrator != null) {
+                long now = System.currentTimeMillis();
+
+                // Vibrate more often when getting closer, from every 5s (at 100m) to every 0.5s (at 10m)
+                long interval = (long) (5000 * (distance / 100f));
+                interval = Math.max(500, interval); // Cap at minimum 300ms to prevent spamming
+
+                if (vibrator != null) {
+                    vibrator.vibrate(150); // Vibrate for 150ms
+                }
+            }
+
             // Show dialog if reached and not already shown
             if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
                 waypointReachedShown = true;
@@ -285,7 +313,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         target.setLongitude(targetWaypoint.getLng());
 
         float bearingTo = currentLocation.bearingTo(target);
-        float angle = (bearingTo - currentAzimuth + 540) % 360;
+        float angle = (bearingTo - currentAzimuth + 360) % 360;
 
         Log.d("CompassActivity",
                 "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
