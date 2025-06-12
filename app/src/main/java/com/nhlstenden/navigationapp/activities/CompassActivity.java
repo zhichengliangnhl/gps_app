@@ -85,6 +85,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private long lastVibrationTime = 0;
     private boolean hasStoppedVibrating = false;
     private boolean hasEnteredCompletionRange = false;
+    private boolean isActivityVisible = false;
+
 
 
 
@@ -279,41 +281,44 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             target.setLatitude(targetWaypoint.getLat());
             target.setLongitude(targetWaypoint.getLng());
             float distance = currentLocation.distanceTo(target);
-            Log.d("CompassActivity", "Distance to waypoint: " + distance);
-            distanceText.setText(String.format("Distance: %.1f meters", distance));
 
-            // Stop showing distance text once within 10m
+            Log.d("CompassActivity", "Distance to waypoint: " + distance);
+
+            // Hide distance if within 10m
             if (distance <= 10f) {
                 hasStoppedVibrating = true;
                 distanceText.setVisibility(View.GONE);
             } else {
-            distanceText.setVisibility(View.VISIBLE);
-            distanceText.setText(String.format("Distance: %.1f meters", distance));
-        }
+                distanceText.setVisibility(View.VISIBLE);
+                distanceText.setText(String.format("Distance: %.1f meters", distance));
+            }
 
-            // Start vibrating when within 100m from the waypoints
-            if (!hasStoppedVibrating && distance < 100f && vibrator != null) {
-                long now = System.currentTimeMillis();
-
-                // Vibrate more often when getting closer, from every 5s (at 100m) to every 0.5s (at 10m)
+            // Vibrate only if in correct range, on screen, and not completed
+            if (isActivityVisible && !hasStoppedVibrating && distance < 100f && distance >= 10f && vibrator != null) {
                 long interval = (long) (5000 * (distance / 100f));
-                interval = Math.max(500, interval); // Cap at minimum 500ms
+                interval = Math.max(500, interval); // Cap minimum
 
-                if (vibrator != null) {
-                    vibrator.vibrate(250); // Vibrate for 150ms
+                // Throttle vibrations using time (optional, simple approach)
+                long now = System.currentTimeMillis();
+                if (now - lastVibrationTime >= interval) {
+                    vibrator.vibrate(150);
+                    lastVibrationTime = now;
                 }
             }
 
-            // Show dialog if reached and not already shown
+            // Show completion screen if in range
             if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
                 waypointReachedShown = true;
                 showWaypointReachedDialog(distance);
             }
+
         } else {
             Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
             distanceText.setText("Distance: -");
+            distanceText.setVisibility(View.VISIBLE);
         }
     }
+
 
     private void updateNeedleRotation() {
         if (currentLocation == null || targetWaypoint == null) {
@@ -339,11 +344,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityVisible = true;
         Waypoint wp = loadSelectedWaypoint();
         if (wp != null) {
             targetWaypoint.setName(wp.getName());
             targetWaypoint.setLat(wp.getLat());
             targetWaypoint.setLng(wp.getLng());
+            hasStoppedVibrating = false;
+            distanceText.setVisibility(View.VISIBLE);
         }
         compassSensorManager.start();
         startLocationUpdates();
@@ -352,6 +360,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     protected void onPause() {
         super.onPause();
+        isActivityVisible = false;
         compassSensorManager.stop();
         stopLocationUpdates();
         // Save timer state
