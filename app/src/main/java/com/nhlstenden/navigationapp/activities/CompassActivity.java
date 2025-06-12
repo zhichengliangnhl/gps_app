@@ -80,8 +80,12 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable;
+
     private Vibrator vibrator;
     private long lastVibrationTime = 0;
+    private boolean hasStoppedVibrating = false;
+    private boolean hasEnteredCompletionRange = false;
+
 
 
     @Override
@@ -278,16 +282,25 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
 
+            // Stop showing distance text once within 10m
+            if (distance <= 10f) {
+                hasStoppedVibrating = true;
+                distanceText.setVisibility(View.GONE);
+            } else {
+            distanceText.setVisibility(View.VISIBLE);
+            distanceText.setText(String.format("Distance: %.1f meters", distance));
+        }
+
             // Start vibrating when within 100m from the waypoints
-            if (distance < 100f && vibrator != null) {
+            if (!hasStoppedVibrating && distance < 100f && vibrator != null) {
                 long now = System.currentTimeMillis();
 
                 // Vibrate more often when getting closer, from every 5s (at 100m) to every 0.5s (at 10m)
                 long interval = (long) (5000 * (distance / 100f));
-                interval = Math.max(500, interval); // Cap at minimum 300ms to prevent spamming
+                interval = Math.max(500, interval); // Cap at minimum 500ms
 
                 if (vibrator != null) {
-                    vibrator.vibrate(150); // Vibrate for 150ms
+                    vibrator.vibrate(250); // Vibrate for 150ms
                 }
             }
 
