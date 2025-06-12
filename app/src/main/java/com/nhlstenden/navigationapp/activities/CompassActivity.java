@@ -55,7 +55,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private float lastAnimatedAzimuth = 0f;
     private float currentAzimuth = 0f;
     private long lastUpdateTime = 0;
-    private static final long MIN_UPDATE_INTERVAL_MS = 200; // e.g. 100ms, adjust as needed
+    private static final long MIN_UPDATE_INTERVAL_MS = 400; // e.g. 100ms, adjust as needed
     private static final int AZIMUTH_AVG_WINDOW = 5;
     private final float[] azimuthBuffer = new float[AZIMUTH_AVG_WINDOW];
     private int azimuthBufferIdx = 0;
