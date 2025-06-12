@@ -154,7 +154,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             double lng = Double.parseDouble(lngStr);
             Log.d("WAYPOINT_LOAD", "Waypoint lat, lng parsed!");
 
-            return new Waypoint(id, name, "", "", lat, lng);
+            return new Waypoint(id, name, "", R.drawable.icon1, R.color.black, lat, lng);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             Log.d("WAYPOINT_LOAD_ERROR", e.getMessage());

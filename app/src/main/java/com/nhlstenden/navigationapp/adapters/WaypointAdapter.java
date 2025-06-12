@@ -53,18 +53,9 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
                 waypoint.getLat(), waypoint.getLng());
         holder.coordinatesTextView.setText(coordinates);
 
-        if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-            Uri uri = Uri.parse(waypoint.getImageUri());
-            if ("file".equals(uri.getScheme())) {
-                holder.imageView.setImageURI(uri);
-            } else {
-                Log.e("WAYPOINT_IMAGE", "Failed to load image from URI ");
-                holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
-            }
-        } else {
-            Log.e("WAYPOINT_IMAGE", "Failed, supposedly, image URI is empty");
-            holder.imageView.setImageResource(R.drawable.ic_launcher_background);
-        }
+        // Set icon and color
+        holder.imageView.setImageResource(waypoint.getIconResId());
+        holder.imageView.setColorFilter(waypoint.getIconColor());
 
         // Hook entire card view to navigation
         holder.itemView.setOnClickListener(v -> listener.onNavigateClick(waypoint));

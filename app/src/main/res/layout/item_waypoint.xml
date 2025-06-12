@@ -6,9 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="6dp"
-    card_view:cardBackgroundColor="#1E1E1E"
     android:paddingTop="?attr/actionBarSize"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground">
@@ -25,9 +22,9 @@
             android:layout_height="60dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/image_background"
+            android:src="@drawable/icon1"
             android:contentDescription="Waypoint Image"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/waypointName"
