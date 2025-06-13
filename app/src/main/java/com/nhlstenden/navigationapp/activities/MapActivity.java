@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                     setResult(RESULT_OK, result.getData());
                     finish();
                 } else if (result.getResultCode() == RESULT_CANCELED) {
-                    Toast.makeText(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT);
                 }
             });
 
@@ -158,8 +159,8 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableMyLocation();
             } else {
-                Toast.makeText(this, "Location permission is required for this feature",
-                        Toast.LENGTH_LONG).show();
+                ToastUtils.show(this, "Location permission is required for this feature",
+                        Toast.LENGTH_LONG);
             }
         }
     }
@@ -187,11 +188,11 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 btnSaveWaypoint.setEnabled(true);
             } else {
-                Toast.makeText(this, "Address not found", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Address not found", Toast.LENGTH_SHORT);
             }
         } catch (IOException e) {
             Log.e("MapActivity", "Geocoder failed", e);
-            Toast.makeText(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            ToastUtils.show(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG);
         }
     }
 }

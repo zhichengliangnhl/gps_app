@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.helpers.ThemePurchaseManager;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,11 +88,11 @@ public class BrushActivity extends BaseActivity {
             recreate();
         } else {
             if (ThemePurchaseManager.purchaseTheme(this, themeName)) {
-                Toast.makeText(this, "Theme purchased successfully!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Theme purchased successfully!", Toast.LENGTH_SHORT);
                 saveTheme(themeName);
                 recreate();
             } else {
-                Toast.makeText(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT);
             }
         }
     }

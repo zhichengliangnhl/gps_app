@@ -214,19 +214,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 .setView(sidePanelView)
                 .create();
 
-        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
-            dialog.dismiss();
-            showImportDialog();
-        });
 
-        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
-            dialog.dismiss();
-            ScanOptions options = new ScanOptions();
-            options.setPrompt("Scan QR Code");
-            options.setBeepEnabled(true);
-            options.setOrientationLocked(false);
-            qrScanner.launch(options);
-        });
 
         dialog.show();
     }

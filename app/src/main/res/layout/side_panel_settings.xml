@@ -5,30 +5,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFF5E1"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:layout_marginTop="56dp"
+    android:layout_marginBottom="56dp">
 
-    <TextView
-        android:id="@+id/txtMode"
+    <Button
+        android:id="@+id/btnToggleVibration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mode"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:paddingBottom="12dp"/>
+        android:text="Vibration: ON"
+        android:layout_marginTop="24dp"/>
 
-    <TextView
-        android:id="@+id/txtImport"
+    <Button
+        android:id="@+id/btnToggleToast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Import link"
-        android:textColor="#000000"
-        android:paddingBottom="12dp"/>
-
-    <TextView
-        android:id="@+id/txtQr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Scan QR Code"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
+        android:text="Toast: ON"
+        android:layout_marginTop="24dp"/>
 </LinearLayout>

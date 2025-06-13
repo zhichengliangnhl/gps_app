@@ -17,7 +17,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -84,10 +84,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         if (imported != null && imported.getName() != null) {
                             waypointList.add(imported);
                             adapter.updateList(waypointList);
-                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(this, "Waypoint imported!", Toast.LENGTH_SHORT);
                             saveFolderToPrefs(folder);
                         } else {
-                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT);
                         }
                     }
                 });
@@ -114,8 +114,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 // Check for duplicate waypoint name in this folder
                                 for (Waypoint wp : folder.getWaypoints()) {
                                     if (wp.getName().equalsIgnoreCase(w.getName())) {
-                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
-                                                Toast.LENGTH_SHORT).show();
+                                        ToastUtils.show(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT);
                                         return;
                                     }
                                 }
