@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#EFC37B">
+        android:background="?attr/lightBackgroundColor">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,20 +22,6 @@
             android:paddingBottom="24dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp">
-
-            <TextView
-                android:id="@+id/achievementTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="32sp"
-                android:textColor="#fff"
-                android:layout_gravity="start"
-                android:paddingBottom="24dp"
-                android:shadowColor="#000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="2"/>
 
             <GridLayout
                 android:id="@+id/achievementContainer"

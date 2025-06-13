@@ -5,17 +5,27 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Folder implements Parcelable {
+    private String id;
     private String name;
     private List<Waypoint> waypoints;
 
     public Folder(String name) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.waypoints = new ArrayList<>();
+    }
+
+    public Folder(String id, String name) {
+        this.id = id;
         this.name = name;
         this.waypoints = new ArrayList<>();
     }
 
     protected Folder(Parcel in) {
+        id = in.readString();
         name = in.readString();
         waypoints = in.createTypedArrayList(Waypoint.CREATOR);
     }
@@ -31,6 +41,14 @@ public class Folder implements Parcelable {
             return new Folder[size];
         }
     };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -63,6 +81,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeTypedList(waypoints);
     }

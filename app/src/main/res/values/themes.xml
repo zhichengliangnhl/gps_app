@@ -16,7 +16,12 @@
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="android:statusBarColor">#000000</item>
-        <item name="android:fontFamily">@font/arial</item>
+        <item name="darkColor">@color/classic_primary</item>
+        <item name="secondDarkest">@color/classic_secondary</item>
+        <item name="secondLightest">@color/classic_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/classic_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon</item>
     </style>
 
     <style name="Theme.NavigationApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -26,7 +31,6 @@
         <item name="windowSplashScreenBackground">#E6B974</item>
         <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
-        <item name="android:fontFamily">@font/comic</item>
         <!-- Still compatible with AppCompatActivity -->
         <item name="android:windowBackground">#E6B974</item>
 
@@ -34,9 +38,128 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">#000000</item>
     </style>
-    <style name="Theme.NavigationApp.Retro" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:fontFamily">@font/times</item>
-        <item name="colorPrimary">#241A09</item>
+
+    <style name="Theme.NavigationApp.Classic" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/classic_primary</item>
+        <item name="secondDarkest">@color/classic_secondary</item>
+        <item name="secondLightest">@color/classic_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/classic_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon</item>
+        <item name="colorPrimary">@color/classic_primary</item>
+        <item name="colorPrimaryVariant">@color/classic_secondary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/classic_secondary</item>
+        <item name="colorSecondaryVariant">@color/classic_2ndLightest</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSurface">@color/classic_lightest</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
+    <style name="Theme.NavigationApp.Macha" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/macha_primary</item>
+        <item name="secondDarkest">@color/macha_secondary</item>
+        <item name="secondLightest">@color/macha_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/macha_lightest</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/macha_lightest</item>
+        <item name="colorSecondary">@color/macha_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Savana" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/savana_primary</item>
+        <item name="secondDarkest">@color/savana_secondary</item>
+        <item name="secondLightest">@color/savana_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/savana_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/savana_lightest</item>
+        <item name="colorSecondary">@color/savana_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Aqua" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/aqua_primary</item>
+        <item name="secondDarkest">@color/aqua_secondary</item>
+        <item name="secondLightest">@color/aqua_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/aqua_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/aqua_lightest</item>
+        <item name="colorSecondary">@color/aqua_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Lavander" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/lavander_primary</item>
+        <item name="secondDarkest">@color/lavander_secondary</item>
+        <item name="secondLightest">@color/lavander_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/lavander_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/lavander_lightest</item>
+        <item name="colorSecondary">@color/lavander_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Sunset" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/sunset_primary</item>
+        <item name="secondDarkest">@color/sunset_secondary</item>
+        <item name="secondLightest">@color/sunset_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/sunset_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/sunset_lightest</item>
+        <item name="colorSecondary">@color/sunset_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Navy" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/navy_primary</item>
+        <item name="secondDarkest">@color/navy_secondary</item>
+        <item name="secondLightest">@color/navy_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/navy_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/navy_lightest</item>
+        <item name="colorSecondary">@color/navy_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.FakeHolland" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/fakeholland_primary</item>
+        <item name="secondDarkest">@color/fakeholland_secondary</item>
+        <item name="secondLightest">@color/fakeholland_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/fakeholland_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/fakeholland_lightest</item>
+        <item name="colorSecondary">@color/fakeholland_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.Macchiato" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/macchiato_primary</item>
+        <item name="secondDarkest">@color/macchiato_secondary</item>
+        <item name="secondLightest">@color/macchiato_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/macchiato_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/macchiato_lightest</item>
+        <item name="colorSecondary">@color/macchiato_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="Theme.NavigationApp.CookieCream" parent="Theme.NavigationApp">
+        <item name="darkColor">@color/cookiecream_primary</item>
+        <item name="secondDarkest">@color/cookiecream_secondary</item>
+        <item name="secondLightest">@color/cookiecream_2ndLightest</item>
+        <item name="lightBackgroundColor">@color/cookiecream_lightest</item>
+        <item name="logo">@drawable/logo_platypus_with_letters</item>
+        <item name="settingsIcon">@drawable/setting_icon_cogwheel</item>
+        <item name="colorSurface">@color/cookiecream_lightest</item>
+        <item name="colorSecondary">@color/cookiecream_secondary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
 </resources>

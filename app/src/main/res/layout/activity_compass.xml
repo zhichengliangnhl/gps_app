@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#E6B974"
+    android:background="?attr/secondLightest"
     tools:context=".activities.CompassActivity">
 
     <include
@@ -12,6 +12,18 @@
         layout="@layout/include_top_bar" />
 
     <!-- Center Content -->
+    <TextView
+        android:id="@+id/timerText"
+        android:layout_width="91dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="00:00"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -60,17 +72,23 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:background="@drawable/rounded_button_brown"
+            android:background="@drawable/rounded_button"
             android:paddingHorizontal="32dp"
             android:paddingVertical="14dp" />
 
         <Button
             android:id="@+id/btnEarnCoins"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_marginBottom="18dp"
-            android:text="Earn 1"
-            android:textSize="16sp" />
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Earn 100"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button_accent"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="14dp" />
 
 
     </LinearLayout>

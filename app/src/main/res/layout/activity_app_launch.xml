@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6B974"
+    android:background="?attr/secondLightest"
     android:gravity="center">
 
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo_platypus_with_letters"
+        android:src="?attr/logo"
         android:contentDescription="Treasure Hunt Logo"
         android:layout_centerInParent="true" />
 </RelativeLayout>

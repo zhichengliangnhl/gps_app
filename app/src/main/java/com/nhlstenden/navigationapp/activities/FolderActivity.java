@@ -48,18 +48,18 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                     if (updatedFolder != null) {
                         folderAdapter.updateFolder(updatedFolder);
                         for (int i = 0; i < folderList.size(); i++) {
-                            if (folderList.get(i).getName().equals(updatedFolder.getName())) {
+                            if (folderList.get(i).getId().equals(updatedFolder.getId())) {
                                 folderList.set(i, updatedFolder);
+                                saveFolders();
                                 break;
                             }
                         }
-                        saveFolders();
                     }
                 }
             });
 
-    private final ActivityResultLauncher<ScanOptions> qrScanner =
-            registerForActivityResult(new com.journeyapps.barcodescanner.ScanContract(), result -> {
+    private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(
+            new com.journeyapps.barcodescanner.ScanContract(), result -> {
                 if (result.getContents() != null) {
                     String encodedWaypoint = result.getContents();
                     Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
@@ -78,7 +78,6 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         }
 
         // Set top bar title
-        View topBar = findViewById(R.id.top_bar);
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Collections");
@@ -104,13 +103,17 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 Toast.makeText(this, "Please enter a folder name", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            for (Folder f : folderList) {
+                if (f.getName().equalsIgnoreCase(folderName)) {
+                    Toast.makeText(this, "Folder name must be unique", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Folder folder = new Folder(folderName);
             folderList.add(folder);
             folderAdapter.notifyItemInserted(folderList.size() - 1);
             saveFolders();
             folderNameInput.setText("");
-
             onFolderClicked(folder); // Open folder immediately
         });
     }
@@ -170,7 +173,8 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = prefs.getString(KEY_FOLDERS, null);
         if (json != null) {
-            Type type = new TypeToken<List<Folder>>() {}.getType();
+            Type type = new TypeToken<List<Folder>>() {
+            }.getType();
             List<Folder> saved = new Gson().fromJson(json, type);
             folderList.clear();
             folderList.addAll(saved);

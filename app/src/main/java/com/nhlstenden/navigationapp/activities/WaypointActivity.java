@@ -31,6 +31,9 @@ import com.nhlstenden.navigationapp.models.Waypoint;
 import com.nhlstenden.navigationapp.utils.QRCodeUtils;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.journeyapps.barcodescanner.ScanContract;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,12 +89,12 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             waypointList.add(imported);
                             adapter.updateList(waypointList);
                             Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                            saveFolderToPrefs(folder);
                         } else {
                             Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
-        );
+                });
 
         Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
         btnAddWaypoint.setOnClickListener(v -> {
@@ -110,8 +113,18 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
                                 adapter.updateWaypoint(w);
+                                saveFolderToPrefs(folder);
                             } else {
+                                // Check for duplicate waypoint name in this folder
+                                for (Waypoint wp : folder.getWaypoints()) {
+                                    if (wp.getName().equalsIgnoreCase(w.getName())) {
+                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
                                 adapter.addWaypoint(w);
+                                saveFolderToPrefs(folder);
                             }
                         }
                     }
@@ -169,6 +182,9 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     @Override
     public void onNavigateClick(Waypoint waypoint) {
         saveSelectedWaypoint(waypoint);
+        // Save selected folder name for CompassActivity display
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        prefs.edit().putString("selected_folder_name", folder.getName()).apply();
         Intent intent = new Intent(this, CompassActivity.class);
         intent.putExtra("WAYPOINT", waypoint);
         startActivity(intent);
@@ -186,6 +202,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     public void onDeleteClick(Waypoint waypoint) {
         folder.getWaypoints().remove(waypoint);
         adapter.updateList(folder.getWaypoints());
+        saveFolderToPrefs(folder);
     }
 
     @Override
@@ -274,6 +291,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                     waypointList.add(wp);
                     adapter.updateList(waypointList);
                     Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                    saveFolderToPrefs(folder);
                 } else {
                     Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                 }
@@ -301,5 +319,36 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void finish() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("FOLDER", folder);
+        setResult(RESULT_OK, resultIntent);
+        super.finish();
+    }
+
+    private void saveFolderToPrefs(Folder folder) {
+        SharedPreferences prefs = getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE);
+        String json = prefs.getString("folders_json", null);
+        List<Folder> folderList = new java.util.ArrayList<>();
+        if (json != null) {
+            Type type = new TypeToken<List<Folder>>() {
+            }.getType();
+            folderList = new Gson().fromJson(json, type);
+        }
+        boolean found = false;
+        for (int i = 0; i < folderList.size(); i++) {
+            if (folderList.get(i).getId().equals(folder.getId())) {
+                folderList.set(i, folder);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            folderList.add(folder);
+        }
+        prefs.edit().putString("folders_json", new Gson().toJson(folderList)).apply();
     }
 }

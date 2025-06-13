@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="24dp"
+    android:viewportWidth="32"
+    android:viewportHeight="24">
+    <!-- Crown top -->
+    <path
+        android:fillColor="#FFD700"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.5"
+        android:pathData="M2,20 L30,20 L28,8 L22,16 L16,4 L10,16 L4,8 Z"/>
+    <!-- Crown base as a path -->
+    <path
+        android:fillColor="#FFD700"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.5"
+        android:pathData="M6,20 L26,20 L26,23 L6,23 Z"/>
+</vector> 

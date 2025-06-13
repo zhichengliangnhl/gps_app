@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6B974"
+    android:background="?attr/secondLightest"
     android:fitsSystemWindows="true">
 
     <!-- Top Bar -->
@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Cancel"
-                    android:background="@drawable/rounded_button_brown"
+                    android:background="@drawable/rounded_button"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:layout_margin="8dp"
@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Save"
-                    android:background="@drawable/rounded_button_brown"
+                    android:background="@drawable/rounded_button"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:layout_margin="8dp"

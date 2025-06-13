@@ -30,6 +30,7 @@ public class Waypoint implements Parcelable {
     private double lat;
     private double lng;
     private String date;
+    private long navigationTimeMillis = 0L;
 
     public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
         this.id = id;
@@ -51,6 +52,7 @@ public class Waypoint implements Parcelable {
         lat = in.readDouble();
         lng = in.readDouble();
         date = in.readString();
+        navigationTimeMillis = in.readLong();
     }
 
     public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
@@ -93,6 +95,10 @@ public class Waypoint implements Parcelable {
         return date;
     }
 
+    public long getNavigationTimeMillis() {
+        return navigationTimeMillis;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -121,6 +127,10 @@ public class Waypoint implements Parcelable {
         this.date = date;
     }
 
+    public void setNavigationTimeMillis(long navigationTimeMillis) {
+        this.navigationTimeMillis = navigationTimeMillis;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -135,10 +145,10 @@ public class Waypoint implements Parcelable {
         dest.writeDouble(lat);
         dest.writeDouble(lng);
         dest.writeString(date);
+        dest.writeLong(navigationTimeMillis);
     }
 
     // Add this in Waypoint.java
-
 
     public String encode() {
         try {
@@ -150,6 +160,7 @@ public class Waypoint implements Parcelable {
             json.put("lat", lat);
             json.put("lng", lng);
             json.put("date", date);
+            json.put("navigationTimeMillis", navigationTimeMillis);
 
             // Encode actual image if it's a file URI
             if (imageUri != null && imageUri.startsWith("file://")) {
@@ -179,6 +190,7 @@ public class Waypoint implements Parcelable {
             double lat = json.getDouble("lat");
             double lng = json.getDouble("lng");
             String date = json.optString("date", null);
+            long navigationTimeMillis = json.optLong("navigationTimeMillis", 0L);
 
             // Check if there's an embedded image
             if (json.has("imageBase64")) {
@@ -190,7 +202,9 @@ public class Waypoint implements Parcelable {
             }
 
             Waypoint wp = new Waypoint(id, name, description, imageUri, lat, lng);
-            if (date != null) wp.setDate(date);
+            if (date != null)
+                wp.setDate(date);
+            wp.setNavigationTimeMillis(navigationTimeMillis);
             return wp;
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,7 +229,8 @@ public class Waypoint implements Parcelable {
             options.inJustDecodeBounds = false;
             Bitmap resizedBitmap = BitmapFactory.decodeFile(imagePath, options);
 
-            if (resizedBitmap == null) return null;
+            if (resizedBitmap == null)
+                return null;
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
@@ -229,4 +244,3 @@ public class Waypoint implements Parcelable {
         }
     }
 }
-
