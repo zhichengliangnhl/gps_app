@@ -119,6 +119,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         if (headerTitle != null) {
             headerTitle.setText("Treasure Finder");
         }
+        setupSettingsPanel();
 
         // Earn coins button
         Button btnEarn = findViewById(R.id.btnEarnCoins);

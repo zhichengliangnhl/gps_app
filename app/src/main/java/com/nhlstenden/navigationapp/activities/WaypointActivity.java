@@ -67,6 +67,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         if (headerTitle != null) {
             headerTitle.setText(folder.getName());
         }
+        setupSettingsPanel();
 
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);

@@ -21,11 +21,11 @@ public class BrushActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brush);
-
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Themes");
         }
+        setupSettingsPanel();
 
         Map<Integer, String> themeMap = new HashMap<>();
         themeMap.put(R.id.theme1, "classic");

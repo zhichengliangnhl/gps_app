@@ -46,12 +46,11 @@ public class AchievementActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
-
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Trophies");
         }
-
+        setupSettingsPanel();
         // Get actual progress for First Steps achievement
         int firstStepsProgress = AchievementManager.getFirstStepsProgress(this);
 

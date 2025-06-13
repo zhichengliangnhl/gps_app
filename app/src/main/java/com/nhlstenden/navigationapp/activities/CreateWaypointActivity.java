@@ -105,6 +105,7 @@ public class CreateWaypointActivity extends BaseActivity {
         if (headerTitle != null) {
             headerTitle.setText("edit".equals(mode) ? "Edit Treasure" : "Create Treasure");
         }
+        setupSettingsPanel();
 
         // Restore state or initialize from intent
         if (savedInstanceState != null) {

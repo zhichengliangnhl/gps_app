@@ -62,6 +62,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         if (headerTitle != null) {
             headerTitle.setText("Loot land");
         }
+        setupSettingsPanel();
 
         // Initialize the map
         SupportMapFragment mapFragment = new SupportMapFragment();

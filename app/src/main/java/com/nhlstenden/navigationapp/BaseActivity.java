@@ -3,7 +3,11 @@ package com.nhlstenden.navigationapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,14 +19,16 @@ import com.nhlstenden.navigationapp.activities.BrushActivity;
 import com.nhlstenden.navigationapp.activities.CompassActivity;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public abstract class BaseActivity extends AppCompatActivity {
+
+    private View sidePanel;
+    private boolean isSidePanelVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         applyDynamicTheme(); // apply early
         super.onCreate(savedInstanceState);
+        // Note: You must call setupSettingsPanel() in subclasses AFTER setContentView()
     }
 
     @Override
@@ -35,6 +41,47 @@ public abstract class BaseActivity extends AppCompatActivity {
             CoinManager.updateCoinDisplay(this, coinCounter);
         }
 
+        setupBottomNavigation();
+    }
+
+    protected void setupSettingsPanel() {
+        ImageView settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> toggleSidePanel());
+        }
+    }
+
+    private void toggleSidePanel() {
+        ViewGroup root = (ViewGroup) getWindow().getDecorView();
+
+        if (sidePanel == null) {
+            sidePanel = getLayoutInflater().inflate(R.layout.side_panel_settings, root, false);
+
+            int widthPx = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    widthPx, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.END);
+
+            sidePanel.setLayoutParams(params);
+            sidePanel.setTranslationX(widthPx);  // start hidden offscreen
+            sidePanel.setVisibility(View.GONE);
+            root.addView(sidePanel);
+        }
+
+        if (isSidePanelVisible) {
+            // Hide side panel
+            sidePanel.setVisibility(View.GONE);
+            isSidePanelVisible = false;
+        } else {
+            // Show side panel
+            sidePanel.setVisibility(View.VISIBLE);
+            sidePanel.setTranslationX(0);
+            isSidePanelVisible = true;
+        }
+    }
+
+    private void setupBottomNavigation() {
         ImageView navBrush = findViewById(R.id.navBrush);
         ImageView navArrow = findViewById(R.id.navArrow);
         ImageView navTrophy = findViewById(R.id.navTrophy);
@@ -76,7 +123,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Update coin counter when activity resumes
         TextView coinCounter = findViewById(R.id.coinCounter);
         if (coinCounter != null) {
             CoinManager.updateCoinDisplay(this, coinCounter);

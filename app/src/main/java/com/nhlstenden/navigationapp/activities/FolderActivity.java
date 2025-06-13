@@ -82,6 +82,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         if (headerTitle != null) {
             headerTitle.setText("Treasure Collections");
         }
+        setupSettingsPanel();
 
         // Initialize views
         recyclerView = findViewById(R.id.recyclerViewFolders);
