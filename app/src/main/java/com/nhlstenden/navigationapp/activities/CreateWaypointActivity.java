@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.graphics.TypefaceCompatApi28Impl;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -53,8 +55,6 @@ public class CreateWaypointActivity extends BaseActivity {
     private String originalDate;
     private boolean isEditMode = false;
     private Waypoint existingWaypoint = null;
-    private View mapClickOverlay;
-
     // Launcher for picking location on map
     private final ActivityResultLauncher<Intent> mapLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -97,7 +97,7 @@ public class CreateWaypointActivity extends BaseActivity {
         isEditMode = "edit".equals(mode);
         id = getIntent().getStringExtra("id");
 
-        boolean isImported = false;
+        boolean isImported;
 
         // Set appropriate title
         if (headerTitle != null) {
@@ -106,6 +106,7 @@ public class CreateWaypointActivity extends BaseActivity {
 
         // Restore state or initialize from intent
         if (savedInstanceState != null) {
+            isImported = false;
             lat = savedInstanceState.getDouble("lat", 0.0);
             lng = savedInstanceState.getDouble("lng", 0.0);
             mode = savedInstanceState.getString("mode");
@@ -127,8 +128,11 @@ public class CreateWaypointActivity extends BaseActivity {
                 selectedIconColor = existingWaypoint.getIconColor();
                 imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
                 imagePreview.setColorFilter(selectedIconColor);
+            } else {
+                isImported = false;
             }
         } else {
+            isImported = false;
             if (getIntent().hasExtra("lat") && getIntent().hasExtra("lng")) {
                 lat = getIntent().getDoubleExtra("lat", 0.0);
                 lng = getIntent().getDoubleExtra("lng", 0.0);
@@ -145,7 +149,7 @@ public class CreateWaypointActivity extends BaseActivity {
 
         View ivCompass = findViewById(R.id.ivCompass);
 
-        if (existingWaypoint.isImported()) {
+        if (isImported) {
             mapPreview.setAlpha(0.6f);
             mapPreview.setVisibility(View.GONE);
             findViewById(R.id.mapClickOverlay).setVisibility(View.GONE);
@@ -208,8 +212,12 @@ public class CreateWaypointActivity extends BaseActivity {
                     lng
             );
             resultWaypoint.setDate(waypointDate);
+            resultWaypoint.setImported(isImported);
 
             Intent resultIntent = new Intent();
+
+            Log.d("WAYPOINT_RESULT", "Waypoint: " +  resultWaypoint);
+
             resultIntent.putExtra("WAYPOINT", resultWaypoint);
             resultIntent.putExtra("mode", mode);
             setResult(RESULT_OK, resultIntent);

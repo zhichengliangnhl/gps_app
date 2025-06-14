@@ -227,8 +227,6 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "edit");
         intent.putExtra("WAYPOINT", waypoint);
-        Toast.makeText(this,"is waypoint imported in onEditClick() - " + waypoint.isImported(),
-                Toast.LENGTH_LONG).show();
         createEditLauncher.launch(intent);
     }
 

@@ -212,6 +212,7 @@ public class Waypoint implements Parcelable {
 
             Waypoint wp = new Waypoint(id, name, description, iconName, iconColor, lat, lng);
             if (date != null) wp.setDate(date);
+            wp.setImported(true);
             return wp;
         } catch (Exception e) {
             e.printStackTrace();
