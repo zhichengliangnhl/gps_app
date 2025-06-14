@@ -9,6 +9,7 @@
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="6dp"
     card_view:cardBackgroundColor="?attr/colorSecondary"
+    android:paddingTop="?attr/actionBarSize"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground">
 
@@ -100,15 +101,6 @@
                 android:layout_marginTop="2dp"
                 android:gravity="start"
                 android:text="2025-04-24"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/waypointCoordinates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:text="Lat: 0.0, Lng: 0.0"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp" />
 

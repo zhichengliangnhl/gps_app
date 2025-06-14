@@ -1,20 +1,23 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -22,14 +25,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.dialogs.IconSelectionDialog;
 import com.nhlstenden.navigationapp.helpers.AchievementManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 public class CreateWaypointActivity extends BaseActivity {
 
@@ -45,23 +48,12 @@ public class CreateWaypointActivity extends BaseActivity {
     private ImageView imagePreview;
     private View imageClickOverlay;
     private String mode, id;
-    private Uri imageUri = Uri.EMPTY;
+    private String selectedIconName = "icon1";
+    private int selectedIconColor = Color.BLACK;
     private String originalDate;
-
-    // Launcher for picking an image from gallery
-    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    String internalPath = copyImageToInternalStorage(uri);
-                    if (internalPath != null) {
-                        imageUri = Uri.fromFile(new File(internalPath));
-                        Glide.with(this).load(imageUri).into(imagePreview);
-                    } else {
-                        Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+    private boolean isEditMode = false;
+    private Waypoint existingWaypoint = null;
+    private View mapClickOverlay;
 
     // Launcher for picking location on map
     private final ActivityResultLauncher<Intent> mapLauncher =
@@ -96,11 +88,16 @@ public class CreateWaypointActivity extends BaseActivity {
         imagePreview = findViewById(R.id.imagePreview);
         imageClickOverlay = findViewById(R.id.imageClickOverlay);
 
+        // Set initial icon
+        imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
+        imagePreview.setColorFilter(selectedIconColor);
+
         // Handle intent extras
-        Intent intent = getIntent();
-        mode = intent.getStringExtra("mode");
-        id = intent.getStringExtra("id");
-        boolean isWaypointImported = false;
+        mode = getIntent().getStringExtra("mode");
+        isEditMode = "edit".equals(mode);
+        id = getIntent().getStringExtra("id");
+
+        boolean isImported = false;
 
         // Set appropriate title
         if (headerTitle != null) {
@@ -113,33 +110,28 @@ public class CreateWaypointActivity extends BaseActivity {
             lng = savedInstanceState.getDouble("lng", 0.0);
             mode = savedInstanceState.getString("mode");
             id = savedInstanceState.getString("id");
-            String savedImageUri = savedInstanceState.getString("imageUri");
-            if (savedImageUri != null) {
-                imageUri = Uri.parse(savedImageUri);
-                Glide.with(this).load(imageUri).into(imagePreview);
-            }
+            selectedIconName = savedInstanceState.getString("iconName");
+            selectedIconColor = savedInstanceState.getInt("iconColor", Color.BLACK);
+            imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
+            imagePreview.setColorFilter(selectedIconColor);
         } else if ("edit".equals(mode)) {
-            Waypoint waypoint = intent.getParcelableExtra("WAYPOINT");
-            if (waypoint != null) {
-                etName.setText(waypoint.getName());
-                etDescription.setText(waypoint.getDescription());
-                lat = waypoint.getLat();
-                lng = waypoint.getLng();
-                originalDate = waypoint.getDate();
-                isWaypointImported = waypoint.isImported();
-
-                Toast.makeText(this,"is waypoint imported in onCreate() - " + waypoint.isImported(),
-                        Toast.LENGTH_LONG).show();
-
-                if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-                    imageUri = Uri.parse(waypoint.getImageUri());
-                    Glide.with(this).load(imageUri).into(imagePreview);
-                }
+            existingWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+            if (existingWaypoint != null) {
+                etName.setText(existingWaypoint.getName());
+                etDescription.setText(existingWaypoint.getDescription());
+                lat = existingWaypoint.getLat();
+                lng = existingWaypoint.getLng();
+                originalDate = existingWaypoint.getDate();
+                isImported = existingWaypoint.isImported();
+                selectedIconName = existingWaypoint.getIconName();
+                selectedIconColor = existingWaypoint.getIconColor();
+                imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
+                imagePreview.setColorFilter(selectedIconColor);
             }
         } else {
-            if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
-                lat = intent.getDoubleExtra("lat", 0.0);
-                lng = intent.getDoubleExtra("lng", 0.0);
+            if (getIntent().hasExtra("lat") && getIntent().hasExtra("lng")) {
+                lat = getIntent().getDoubleExtra("lat", 0.0);
+                lng = getIntent().getDoubleExtra("lng", 0.0);
             }
         }
 
@@ -151,17 +143,18 @@ public class CreateWaypointActivity extends BaseActivity {
             updateMapPreview(lat, lng);
         });
 
-        ImageView ivCompass = findViewById(R.id.ivCompass);
+        View ivCompass = findViewById(R.id.ivCompass);
 
-        View mapClickOverlay = findViewById(R.id.mapClickOverlay);
-
-        if ("edit".equals(mode) && isWaypointImported) {
-            mapClickOverlay.setVisibility(View.GONE);
-            mapPreview.setAlpha(0.0f);
+        if (existingWaypoint.isImported()) {
+            mapPreview.setAlpha(0.6f);
+            mapPreview.setVisibility(View.GONE);
+            findViewById(R.id.mapClickOverlay).setVisibility(View.GONE);
             ivCompass.setVisibility(View.VISIBLE);
         } else {
+            mapPreview.setVisibility(View.VISIBLE);
+            findViewById(R.id.mapClickOverlay).setVisibility(View.VISIBLE);
             ivCompass.setVisibility(View.GONE);
-            mapClickOverlay.setOnClickListener(v -> {
+            findViewById(R.id.mapClickOverlay).setOnClickListener(v -> {
                 Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
                 if (lat != 0.0 && lng != 0.0) {
                     mapIntent.putExtra("lat", lat);
@@ -170,6 +163,16 @@ public class CreateWaypointActivity extends BaseActivity {
                 mapLauncher.launch(mapIntent);
             });
         }
+
+        imageClickOverlay.setOnClickListener(v -> {
+            IconSelectionDialog dialog = new IconSelectionDialog(this, selectedIconName, selectedIconColor, (iconName, color) -> {
+                selectedIconName = iconName;
+                selectedIconColor = color;
+                imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
+                imagePreview.setColorFilter(selectedIconColor);
+            });
+            dialog.show();
+        });
 
         btnSaveWaypoint.setOnClickListener(v -> {
             if (!validateInput()) {
@@ -182,21 +185,29 @@ public class CreateWaypointActivity extends BaseActivity {
                 description = description.substring(0, MAX_DESCRIPTION_LENGTH);
             }
 
+            // Always use the existing waypoint's ID when in edit mode
+            String waypointId;
+            String waypointDate;
+            if (isEditMode && existingWaypoint != null) {
+                waypointId = existingWaypoint.getId();
+                waypointDate = existingWaypoint.getDate();
+            } else {
+                waypointId = UUID.randomUUID().toString();
+                waypointDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                // Update First Steps achievement only for new waypoints
+                AchievementManager.updateFirstStepsProgress(this);
+            }
+
             Waypoint resultWaypoint = new Waypoint(
-                    id,
+                    waypointId,
                     name,
                     description,
-                    imageUri != Uri.EMPTY ? imageUri.toString() : null,
+                    selectedIconName,
+                    selectedIconColor,
                     lat,
                     lng
             );
-
-            if ("edit".equals(mode)) {
-                resultWaypoint.setDate(originalDate);
-            } else {
-                // Update First Steps achievement when creating a new waypoint
-                AchievementManager.updateFirstStepsProgress(this);
-            }
+            resultWaypoint.setDate(waypointDate);
 
             Intent resultIntent = new Intent();
             resultIntent.putExtra("WAYPOINT", resultWaypoint);
@@ -208,6 +219,21 @@ public class CreateWaypointActivity extends BaseActivity {
         btnCancel.setOnClickListener(v -> {
             setResult(RESULT_CANCELED);
             finish();
+        });
+
+        View topBar = findViewById(R.id.top_bar);
+        View bottomNav = findViewById(R.id.bottom_nav_container);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            if (bottomNav != null) {
+                bottomNav.setPadding(
+                    bottomNav.getPaddingLeft(),
+                    bottomNav.getPaddingTop(),
+                    bottomNav.getPaddingRight(),
+                    systemInsets.bottom
+                );
+            }
+            return insets;
         });
     }
 
@@ -229,23 +255,6 @@ public class CreateWaypointActivity extends BaseActivity {
         }
 
         return true;
-    }
-
-    private String copyImageToInternalStorage(Uri sourceUri) {
-        try (InputStream in = getContentResolver().openInputStream(sourceUri)) {
-            File file = new File(getFilesDir(), "img_" + System.currentTimeMillis() + ".jpg");
-            try (OutputStream out = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4096];
-                int len;
-                while ((len = in.read(buffer)) > 0) {
-                    out.write(buffer, 0, len);
-                }
-            }
-            return file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void updateMapPreview(double lat, double lng) {
@@ -292,8 +301,7 @@ public class CreateWaypointActivity extends BaseActivity {
         outState.putDouble("lng", lng);
         outState.putString("mode", mode);
         outState.putString("id", id);
-        if (imageUri != Uri.EMPTY) {
-            outState.putString("imageUri", imageUri.toString());
-        }
+        outState.putString("iconName", selectedIconName);
+        outState.putInt("iconColor", selectedIconColor);
     }
 }
