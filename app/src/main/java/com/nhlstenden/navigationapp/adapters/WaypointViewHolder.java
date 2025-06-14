@@ -12,7 +12,7 @@ import com.nhlstenden.navigationapp.R;
 
 public class WaypointViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
-    TextView nameTextView, descriptionTextView, dateTextView, coordinatesTextView;
+    TextView nameTextView, descriptionTextView, dateTextView, timerTextView;
     ImageButton editButton, deleteButton, shareButton;
 
     public WaypointViewHolder(@NonNull View itemView) {
@@ -21,7 +21,7 @@ public class WaypointViewHolder extends RecyclerView.ViewHolder {
         nameTextView = itemView.findViewById(R.id.waypointName);
         descriptionTextView = itemView.findViewById(R.id.waypointDescription);
         dateTextView = itemView.findViewById(R.id.waypointDate);
-        coordinatesTextView = itemView.findViewById(R.id.waypointCoordinates);
+        timerTextView = itemView.findViewById(R.id.waypointTimer);
         editButton = itemView.findViewById(R.id.btnEdit);
         deleteButton = itemView.findViewById(R.id.btnDelete);
         shareButton = itemView.findViewById(R.id.btnShare);
