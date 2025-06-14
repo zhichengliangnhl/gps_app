@@ -75,15 +75,6 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
-        <ImageView
-            android:id="@+id/waypointImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon1"
-            android:contentDescription="Waypoint Image"
-            android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/waypointName"
@@ -110,15 +101,6 @@
                 android:layout_marginTop="2dp"
                 android:gravity="start"
                 android:text="2025-04-24"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/waypointCoordinates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:text="Lat: 0.0, Lng: 0.0"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp" />
 

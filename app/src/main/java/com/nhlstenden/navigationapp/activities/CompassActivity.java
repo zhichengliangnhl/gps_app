@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -212,7 +213,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             double lng = Double.parseDouble(lngStr);
             Log.d("WAYPOINT_LOAD", "Waypoint lat, lng parsed!");
 
-            return new Waypoint(id, name, "", R.drawable.icon1, R.color.black, lat, lng);
+            return new Waypoint(id, name, "", "icon1", Color.BLACK, lat, lng);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             Log.d("WAYPOINT_LOAD_ERROR", e.getMessage());
@@ -237,8 +238,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                     totalDistanceTraveled += lastLocation.distanceTo(currentLocation);
                 }
                 lastLocation = new Location(currentLocation);
-                Log.d("CompassActivity", "Location update: " +
-                        currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
+                // Log.d("CompassActivity", "Location update: " + currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
                 updateDistanceDisplay();
                 updateNeedleRotation();
             }
@@ -260,7 +260,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             target.setLatitude(targetWaypoint.getLat());
             target.setLongitude(targetWaypoint.getLng());
             float distance = currentLocation.distanceTo(target);
-            Log.d("CompassActivity", "Distance to waypoint: " + distance);
+            // Log.d("CompassActivity", "Distance to waypoint: " + distance);
             distanceText.setText(String.format("Distance: %.1f meters", distance));
 
             // Show dialog if reached and not already shown
@@ -269,14 +269,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 showWaypointReachedDialog(distance);
             }
         } else {
-            Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
+            // Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
             distanceText.setText("Distance: -");
         }
     }
 
     private void updateNeedleRotation() {
         if (currentLocation == null || targetWaypoint == null) {
-            Log.d("CompassActivity", "updateNeedleRotation: currentLocation or targetWaypoint is null");
+            // Log.d("CompassActivity", "updateNeedleRotation: currentLocation or targetWaypoint is null");
             return;
         }
 
@@ -287,8 +287,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         float bearingTo = currentLocation.bearingTo(target);
         float angle = (bearingTo - currentAzimuth + 3600) % 360;
 
-        Log.d("CompassActivity",
-                "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
+        // Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
 
         ObjectAnimator.ofFloat(compassNeedle, "rotation", compassNeedle.getRotation(), angle)
                 .setDuration(300)

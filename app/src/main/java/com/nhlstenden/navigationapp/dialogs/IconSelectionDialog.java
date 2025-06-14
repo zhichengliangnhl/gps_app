@@ -19,17 +19,23 @@ import androidx.appcompat.app.AppCompatDialog;
 import com.nhlstenden.navigationapp.R;
 
 public class IconSelectionDialog extends AppCompatDialog {
-    private int selectedIconResId = R.drawable.icon1;
+    private String selectedIconName = "icon1";
     private int selectedColor = Color.BLACK;
+    private String initialIconName = "icon1";
+    private int initialColor = Color.BLACK;
     private OnIconSelectedListener listener;
 
     public interface OnIconSelectedListener {
-        void onIconSelected(int iconResId, int color);
+        void onIconSelected(String iconName, int color);
     }
 
-    public IconSelectionDialog(@NonNull Context context, OnIconSelectedListener listener) {
+    public IconSelectionDialog(@NonNull Context context, String initialIconName, int initialColor, OnIconSelectedListener listener) {
         super(context);
         this.listener = listener;
+        this.initialIconName = initialIconName;
+        this.initialColor = initialColor;
+        this.selectedIconName = initialIconName;
+        this.selectedColor = initialColor;
     }
 
     @Override
@@ -55,15 +61,24 @@ public class IconSelectionDialog extends AppCompatDialog {
                 int finalIconResId = getContext().getResources().getIdentifier("icon" + i, "drawable", getContext().getPackageName());
                 int finalI = i;
                 iconView.setOnClickListener(v -> {
-                    selectedIconResId = finalIconResId;
+                    selectedIconName = "icon" + finalI;
                     updateAllIconsColor(selectedColor);
                     updateSelectedIcon(finalI);
                 });
             }
         }
 
-        // Set initial selection
-        updateSelectedIcon(1);
+        // Set initial selection based on initialIconName
+        int initialIndex = 1;
+        for (int i = 1; i <= 10; i++) {
+            int resId = getContext().getResources().getIdentifier("icon" + i, "drawable", getContext().getPackageName());
+            if (resId == getContext().getResources().getIdentifier(initialIconName, "drawable", getContext().getPackageName())) {
+                initialIndex = i;
+                break;
+            }
+        }
+        updateSelectedIcon(initialIndex);
+        updateAllIconsColor(initialColor);
 
         // Initialize color grid
         for (int i = 1; i <= 10; i++) {
@@ -78,14 +93,11 @@ public class IconSelectionDialog extends AppCompatDialog {
             }
         }
 
-        // Set initial color
-        updateAllIconsColor(selectedColor);
-
         // OK button
         Button okButton = findViewById(R.id.okButton);
         okButton.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onIconSelected(selectedIconResId, selectedColor);
+                listener.onIconSelected(selectedIconName, selectedColor);
             }
             dismiss();
         });

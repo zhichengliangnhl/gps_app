@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -109,10 +110,22 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
+                        Log.d("WAYPOINT_EDIT", "Edited waypoint: " + (w != null ? w.getName() : "null") + ", icon: " + (w != null ? w.getIconName() : "null") + ", color: " + (w != null ? w.getIconColor() : "null"));
                         if (w != null) {
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
-                                adapter.updateWaypoint(w);
+                                // Update the waypoint in the list (which is folder.getWaypoints())
+                                for (int i = 0; i < waypointList.size(); i++) {
+                                    if (waypointList.get(i).getId().equals(w.getId())) {
+                                        waypointList.set(i, w);
+                                        break;
+                                    }
+                                }
+                                // Log the updated list
+                                for (Waypoint wp : waypointList) {
+                                    Log.d("WAYPOINT_LIST", "Waypoint: " + wp.getName() + ", icon: " + wp.getIconName() + ", color: " + wp.getIconColor());
+                                }
+                                adapter.notifyDataSetChanged();
                                 saveFolderToPrefs(folder);
                             } else {
                                 // Check for duplicate waypoint name in this folder

@@ -29,18 +29,18 @@ public class Waypoint implements Parcelable {
     private String id;
     private String name;
     private String description;
-    private int iconResId;
+    private String iconName;
     private int iconColor;
     private double lat;
     private double lng;
     private String date;
     private long navigationTimeMillis = 0L;
 
-    public Waypoint(String id, String name, String description, int iconResId, int iconColor, double lat, double lng) {
+    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.iconResId = iconResId;
+        this.iconName = iconName;
         this.iconColor = iconColor;
         this.lat = lat;
         this.lng = lng;
@@ -53,7 +53,7 @@ public class Waypoint implements Parcelable {
         id = in.readString();
         name = in.readString();
         description = in.readString();
-        iconResId = in.readInt();
+        iconName = in.readString();
         iconColor = in.readInt();
         lat = in.readDouble();
         lng = in.readDouble();
@@ -85,8 +85,8 @@ public class Waypoint implements Parcelable {
         return description;
     }
 
-    public int getIconResId() {
-        return iconResId;
+    public String getIconName() {
+        return iconName;
     }
 
     public int getIconColor() {
@@ -121,8 +121,8 @@ public class Waypoint implements Parcelable {
         this.description = description;
     }
 
-    public void setIconResId(int iconResId) {
-        this.iconResId = iconResId;
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
     }
 
     public void setIconColor(int iconColor) {
@@ -155,7 +155,7 @@ public class Waypoint implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeInt(iconResId);
+        dest.writeString(iconName);
         dest.writeInt(iconColor);
         dest.writeDouble(lat);
         dest.writeDouble(lng);
@@ -169,7 +169,7 @@ public class Waypoint implements Parcelable {
             json.put("id", id);
             json.put("name", name);
             json.put("description", description);
-            json.put("iconResId", iconResId);
+            json.put("iconName", iconName);
             json.put("iconColor", iconColor);
             json.put("lat", lat);
             json.put("lng", lng);
@@ -191,48 +191,16 @@ public class Waypoint implements Parcelable {
             String id = json.getString("id");
             String name = json.getString("name");
             String description = json.getString("description");
-            int iconResId = json.optInt("iconResId", R.drawable.icon1);
+            String iconName = json.getString("iconName");
             int iconColor = json.optInt("iconColor", Color.BLACK);
             double lat = json.getDouble("lat");
             double lng = json.getDouble("lng");
             String date = json.optString("date", null);
             long navigationTimeMillis = json.optLong("navigationTimeMillis", 0L);
 
-            Waypoint wp = new Waypoint(id, name, description, iconResId, iconColor, lat, lng);
+            Waypoint wp = new Waypoint(id, name, description, iconName, iconColor, lat, lng);
             if (date != null) wp.setDate(date);
             return wp;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String encodeImageFromPath(String imagePath) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(imagePath, options);
-
-            // Determine scaling factor
-            int maxDim = 300;
-            int scale = 1;
-            while (options.outWidth / scale > maxDim || options.outHeight / scale > maxDim) {
-                scale *= 2;
-            }
-
-            options.inSampleSize = scale;
-            options.inJustDecodeBounds = false;
-            Bitmap resizedBitmap = BitmapFactory.decodeFile(imagePath, options);
-
-            if (resizedBitmap == null)
-                return null;
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
-            resizedBitmap.recycle();
-
-            byte[] imageBytes = outputStream.toByteArray();
-            return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
