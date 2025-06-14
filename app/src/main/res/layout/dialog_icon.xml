@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
     android:background="@drawable/rounded_card_bg">
@@ -25,87 +25,245 @@
         android:columnCount="5"
         android:paddingHorizontal="10dp">
 
-        <ImageView
-            android:id="@+id/icon1"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:src="@drawable/icon1"
-            android:layout_marginBottom="10dp"
-            app:tint="#000000"/>
+            android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/icon2"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon2"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon1_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
 
-        <ImageView
-            android:id="@+id/icon3"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon3"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon1"
+                app:tint="#000000"/>
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/icon4"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:src="@drawable/icon4"
-            app:tint="#000000"/>
+            android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/icon5"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon5"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon2_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
 
-        <ImageView
-            android:id="@+id/icon6"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon6"
-            android:layout_marginBottom="10dp"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon2"
+                app:tint="#000000"/>
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/icon7"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:src="@drawable/icon7"
-            app:tint="#000000"/>
+            android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/icon8"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon8"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon3_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
 
-        <ImageView
-            android:id="@+id/icon9"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_columnWeight="1"
-            android:src="@drawable/icon9"
-            app:tint="#000000"/>
+            <ImageView
+                android:id="@+id/icon3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon3"
+                app:tint="#000000"/>
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/icon10"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:src="@drawable/icon10"
-            app:tint="#000000"/>
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon4_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon4"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon5_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon5"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon6_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon6"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon7_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon7"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon7"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon8_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon8"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon9_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon9"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon9"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon10_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon10"
+                app:tint="#000000"/>
+        </FrameLayout>
     </GridLayout>
 
     <GridLayout
@@ -198,8 +356,6 @@
             app:tint="#DDDDDD"/>
 
     </GridLayout>
-
-
 
     <Button
         android:id="@+id/okButton"

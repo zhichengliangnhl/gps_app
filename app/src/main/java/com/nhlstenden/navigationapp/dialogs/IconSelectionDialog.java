@@ -53,12 +53,17 @@ public class IconSelectionDialog extends AppCompatDialog {
             ImageView iconView = findViewById(iconId);
             if (iconView != null) {
                 int finalIconResId = getContext().getResources().getIdentifier("icon" + i, "drawable", getContext().getPackageName());
+                int finalI = i;
                 iconView.setOnClickListener(v -> {
                     selectedIconResId = finalIconResId;
                     updateAllIconsColor(selectedColor);
+                    updateSelectedIcon(finalI);
                 });
             }
         }
+
+        // Set initial selection
+        updateSelectedIcon(1);
 
         // Initialize color grid
         for (int i = 1; i <= 10; i++) {
@@ -93,6 +98,24 @@ public class IconSelectionDialog extends AppCompatDialog {
             if (iconView != null) {
                 iconView.setColorFilter(color);
             }
+        }
+    }
+
+    private void updateSelectedIcon(int selectedIconIndex) {
+        // Hide all selection indicators
+        for (int i = 1; i <= 10; i++) {
+            int selectedId = getContext().getResources().getIdentifier("icon" + i + "_selected", "id", getContext().getPackageName());
+            ImageView selectedView = findViewById(selectedId);
+            if (selectedView != null) {
+                selectedView.setVisibility(View.GONE);
+            }
+        }
+
+        // Show selection indicator for selected icon
+        int selectedId = getContext().getResources().getIdentifier("icon" + selectedIconIndex + "_selected", "id", getContext().getPackageName());
+        ImageView selectedView = findViewById(selectedId);
+        if (selectedView != null) {
+            selectedView.setVisibility(View.VISIBLE);
         }
     }
 
