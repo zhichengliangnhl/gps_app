@@ -126,7 +126,9 @@ public class CreateWaypointActivity extends BaseActivity {
                 lat = waypoint.getLat();
                 lng = waypoint.getLng();
                 originalDate = waypoint.getDate();
-                isWaypointImported = waypoint.isImported();
+
+                Toast.makeText(this,"is waypoint imported - " + waypoint.isImported(),
+                        Toast.LENGTH_LONG).show();
 
                 if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
                     imageUri = Uri.parse(waypoint.getImageUri());

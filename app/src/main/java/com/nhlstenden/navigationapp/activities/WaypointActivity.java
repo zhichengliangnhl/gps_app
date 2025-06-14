@@ -216,12 +216,30 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     @Override
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
-        if (encoded != null) {
-            Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
-            showQrBottomSheet(qrBitmap);
-        } else {
+
+        if (encoded == null) {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Present dialog to choose sharing method
+        new AlertDialog.Builder(this)
+                .setTitle("Share Waypoint")
+                .setItems(new String[]{"Share as QR Code", "Share as Import Link"}, (dialog, which) -> {
+                    if (which == 0) {
+                        // Share as QR code
+                        Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
+                        showQrBottomSheet(qrBitmap);
+                    } else if (which == 1) {
+                        // Share as text/link
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
+                        startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void saveSelectedWaypoint(Waypoint waypoint) {
@@ -258,25 +276,11 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 .setView(sidePanelView)
                 .create();
 
-        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
-            dialog.dismiss();
-            showImportDialog();
-        });
-
-        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
-            dialog.dismiss();
-            ScanOptions options = new ScanOptions();
-            options.setPrompt("Scan QR Code");
-            options.setCaptureActivity(PortraitCaptureActivity.class);
-            options.setOrientationLocked(true);
-            qrScanner.launch(options);
-        });
-
         dialog.show();
     }
 
 
-    public void showImportDialog() {
+    public void showImportLinkDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Import Waypoint Code");
 
@@ -302,6 +306,30 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
+    }
+
+    public void showImportDialog() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
+            dialog.dismiss();
+            showImportLinkDialog();
+        });
+
+        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
+            dialog.dismiss();
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan QR Code");
+            options.setCaptureActivity(PortraitCaptureActivity.class);
+            options.setOrientationLocked(true);
+            qrScanner.launch(options);
+        });
+
+        dialog.show();
     }
 
     public static String decodeBase64ToImageFile(Context context, String base64Data) {
