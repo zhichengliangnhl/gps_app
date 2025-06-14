@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/rounded_card_bg">
+
+    <TextView
+        android:id="@+id/dialogText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Customize Icon"
+        android:layout_gravity="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="#222"
+        android:layout_marginBottom="16dp"/>
+
+    <GridLayout
+        android:id="@+id/iconGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="5"
+        android:paddingHorizontal="10dp">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon1_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon1"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon2_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon2"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon3_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon3"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon4_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon4"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon5_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon5"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon6_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon6"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon7_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon7"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon7"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon8_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon8"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon9_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon9"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon9"
+                app:tint="#000000"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/icon10_selected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_selection_indicator"
+                android:visibility="gone"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/icon10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon10"
+                app:tint="#000000"/>
+        </FrameLayout>
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="5"
+        android:layout_marginTop="35dp"
+        android:paddingHorizontal="10dp">
+
+        <ImageView
+            android:id="@+id/color1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            android:layout_marginBottom="10dp"
+            app:tint="#0074d9"/>
+
+        <ImageView
+            android:id="@+id/color2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#39cccc"/>
+
+        <ImageView
+            android:id="@+id/color3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#2ecc40"/>
+
+        <ImageView
+            android:id="@+id/color4"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#ffdc00"/>
+
+        <ImageView
+            android:id="@+id/color5"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#ff851b"/>
+
+        <ImageView
+            android:id="@+id/color6"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            android:layout_marginBottom="10dp"
+            app:tint="#ff4136"/>
+
+        <ImageView
+            android:id="@+id/color7"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#f012be"/>
+
+        <ImageView
+            android:id="@+id/color8"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#b10dc9"/>
+
+        <ImageView
+            android:id="@+id/color9"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#111111"/>
+
+        <ImageView
+            android:id="@+id/color10"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/drop"
+            app:tint="#DDDDDD"/>
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="65dp"
+        android:layout_height="50dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
+        android:text="OK"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:textSize="19sp"/>
+
+</LinearLayout>

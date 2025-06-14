@@ -34,27 +34,26 @@
                 android:layout_height="190dp"
                 android:orientation="horizontal">
 
-                <!-- Left Column: Image + transparent overlay -->
                 <FrameLayout
-                    android:layout_width="73dp"
-                    android:layout_height="66dp"
-                    android:layout_marginBottom="12dp">
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
 
                     <ImageView
                         android:id="@+id/imagePreview"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:background="#CCCCCC"
-                        android:contentDescription="Selected image"
-                        android:scaleType="centerCrop" />
+                        android:src="@drawable/icon1"
+                        android:scaleType="centerCrop"
+                        app:tint="#111111"/>
 
                     <View
                         android:id="@+id/imageClickOverlay"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:background="@android:color/transparent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"/>
+
                 </FrameLayout>
 
                 <!-- Right Column: Name + Description -->

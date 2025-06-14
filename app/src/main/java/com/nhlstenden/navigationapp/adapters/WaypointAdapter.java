@@ -63,6 +63,9 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
                 waypoint.getLat(), waypoint.getLng());
         holder.coordinatesTextView.setText(coordinates);
 
+        // Set icon and color
+        holder.imageView.setImageResource(waypoint.getIconResId());
+        holder.imageView.setColorFilter(waypoint.getIconColor());
         // Set border based on completion
         boolean completed = false;
         android.content.SharedPreferences prefs = holder.itemView.getContext().getSharedPreferences("AppPrefs",

@@ -1,6 +1,7 @@
 package com.nhlstenden.navigationapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.dialogs.IconSelectionDialog;
 import com.nhlstenden.navigationapp.helpers.AchievementManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
@@ -45,23 +47,9 @@ public class CreateWaypointActivity extends BaseActivity {
     private ImageView imagePreview;
     private View imageClickOverlay;
     private String mode, id;
-    private Uri imageUri = Uri.EMPTY;
+    private int selectedIconResId = R.drawable.icon1;
+    private int selectedIconColor = Color.BLACK;
     private String originalDate;
-
-    // Launcher for picking an image from gallery
-    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    String internalPath = copyImageToInternalStorage(uri);
-                    if (internalPath != null) {
-                        imageUri = Uri.fromFile(new File(internalPath));
-                        Glide.with(this).load(imageUri).into(imagePreview);
-                    } else {
-                        Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
 
     // Launcher for picking location on map
     private final ActivityResultLauncher<Intent> mapLauncher =
@@ -96,6 +84,10 @@ public class CreateWaypointActivity extends BaseActivity {
         imagePreview = findViewById(R.id.imagePreview);
         imageClickOverlay = findViewById(R.id.imageClickOverlay);
 
+        // Set initial icon
+        imagePreview.setImageResource(selectedIconResId);
+        imagePreview.setColorFilter(selectedIconColor);
+
         // Handle intent extras
         Intent intent = getIntent();
         mode = intent.getStringExtra("mode");
@@ -112,11 +104,10 @@ public class CreateWaypointActivity extends BaseActivity {
             lng = savedInstanceState.getDouble("lng", 0.0);
             mode = savedInstanceState.getString("mode");
             id = savedInstanceState.getString("id");
-            String savedImageUri = savedInstanceState.getString("imageUri");
-            if (savedImageUri != null) {
-                imageUri = Uri.parse(savedImageUri);
-                Glide.with(this).load(imageUri).into(imagePreview);
-            }
+            selectedIconResId = savedInstanceState.getInt("iconResId", R.drawable.icon1);
+            selectedIconColor = savedInstanceState.getInt("iconColor", Color.BLACK);
+            imagePreview.setImageResource(selectedIconResId);
+            imagePreview.setColorFilter(selectedIconColor);
         } else if ("edit".equals(mode)) {
             Waypoint waypoint = intent.getParcelableExtra("WAYPOINT");
             if (waypoint != null) {
@@ -125,11 +116,10 @@ public class CreateWaypointActivity extends BaseActivity {
                 lat = waypoint.getLat();
                 lng = waypoint.getLng();
                 originalDate = waypoint.getDate();
-
-                if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-                    imageUri = Uri.parse(waypoint.getImageUri());
-                    Glide.with(this).load(imageUri).into(imagePreview);
-                }
+                selectedIconResId = waypoint.getIconResId();
+                selectedIconColor = waypoint.getIconColor();
+                imagePreview.setImageResource(selectedIconResId);
+                imagePreview.setColorFilter(selectedIconColor);
             }
         } else {
             if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
@@ -157,7 +147,13 @@ public class CreateWaypointActivity extends BaseActivity {
         });
 
         imageClickOverlay.setOnClickListener(v -> {
-            imagePickerLauncher.launch("image/*");
+            IconSelectionDialog dialog = new IconSelectionDialog(this, (iconResId, color) -> {
+                selectedIconResId = iconResId;
+                selectedIconColor = color;
+                imagePreview.setImageResource(selectedIconResId);
+                imagePreview.setColorFilter(selectedIconColor);
+            });
+            dialog.show();
         });
 
         btnSaveWaypoint.setOnClickListener(v -> {
@@ -175,7 +171,8 @@ public class CreateWaypointActivity extends BaseActivity {
                     id,
                     name,
                     description,
-                    imageUri != Uri.EMPTY ? imageUri.toString() : null,
+                    selectedIconResId,
+                    selectedIconColor,
                     lat,
                     lng
             );
@@ -218,23 +215,6 @@ public class CreateWaypointActivity extends BaseActivity {
         }
 
         return true;
-    }
-
-    private String copyImageToInternalStorage(Uri sourceUri) {
-        try (InputStream in = getContentResolver().openInputStream(sourceUri)) {
-            File file = new File(getFilesDir(), "img_" + System.currentTimeMillis() + ".jpg");
-            try (OutputStream out = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4096];
-                int len;
-                while ((len = in.read(buffer)) > 0) {
-                    out.write(buffer, 0, len);
-                }
-            }
-            return file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void updateMapPreview(double lat, double lng) {
@@ -281,8 +261,7 @@ public class CreateWaypointActivity extends BaseActivity {
         outState.putDouble("lng", lng);
         outState.putString("mode", mode);
         outState.putString("id", id);
-        if (imageUri != Uri.EMPTY) {
-            outState.putString("imageUri", imageUri.toString());
-        }
+        outState.putInt("iconResId", selectedIconResId);
+        outState.putInt("iconColor", selectedIconColor);
     }
 }
