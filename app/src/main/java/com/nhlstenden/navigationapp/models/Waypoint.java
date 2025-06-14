@@ -32,6 +32,8 @@ public class Waypoint implements Parcelable {
     private String date;
     private long navigationTimeMillis = 0L;
 
+    private Boolean isImported = false;
+
     public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
         this.id = id;
         this.name = name;
@@ -127,6 +129,14 @@ public class Waypoint implements Parcelable {
         this.date = date;
     }
 
+    public boolean isImported() {
+        return isImported;
+    }
+
+    public void setImported(boolean imported) {
+        this.isImported = imported;
+    }
+
     public void setNavigationTimeMillis(long navigationTimeMillis) {
         this.navigationTimeMillis = navigationTimeMillis;
     }
@@ -205,6 +215,7 @@ public class Waypoint implements Parcelable {
             if (date != null)
                 wp.setDate(date);
             wp.setNavigationTimeMillis(navigationTimeMillis);
+            wp.setImported(true);
             return wp;
         } catch (Exception e) {
             e.printStackTrace();

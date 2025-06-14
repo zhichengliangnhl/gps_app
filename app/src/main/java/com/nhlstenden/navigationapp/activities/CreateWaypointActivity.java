@@ -100,6 +100,7 @@ public class CreateWaypointActivity extends BaseActivity {
         Intent intent = getIntent();
         mode = intent.getStringExtra("mode");
         id = intent.getStringExtra("id");
+        Boolean isWaypointImported = false;
 
         // Set appropriate title
         if (headerTitle != null) {
@@ -125,6 +126,7 @@ public class CreateWaypointActivity extends BaseActivity {
                 lat = waypoint.getLat();
                 lng = waypoint.getLng();
                 originalDate = waypoint.getDate();
+                isWaypointImported = waypoint.isImported();
 
                 if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
                     imageUri = Uri.parse(waypoint.getImageUri());
@@ -147,18 +149,22 @@ public class CreateWaypointActivity extends BaseActivity {
         });
 
         // Set up click listeners
-        findViewById(R.id.mapClickOverlay).setOnClickListener(v -> {
-            Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
-            if (lat != 0.0 && lng != 0.0) {
-                mapIntent.putExtra("lat", lat);
-                mapIntent.putExtra("lng", lng);
-            }
-            mapLauncher.launch(mapIntent);
-        });
+        View mapClickOverlay = findViewById(R.id.mapClickOverlay);
 
-        imageClickOverlay.setOnClickListener(v -> {
-            imagePickerLauncher.launch("image/*");
-        });
+        if ("edit".equals(mode) && isWaypointImported) {
+            mapClickOverlay.setVisibility(View.GONE);
+            mapPreview.setAlpha(0.6f);
+        } else {
+            // ✅ Normal interactive behavior
+            mapClickOverlay.setOnClickListener(v -> {
+                Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
+                if (lat != 0.0 && lng != 0.0) {
+                    mapIntent.putExtra("lat", lat);
+                    mapIntent.putExtra("lng", lng);
+                }
+                mapLauncher.launch(mapIntent);
+            });
+        }
 
         btnSaveWaypoint.setOnClickListener(v -> {
             if (!validateInput()) {
