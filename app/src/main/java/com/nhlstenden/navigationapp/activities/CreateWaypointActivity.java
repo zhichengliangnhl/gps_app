@@ -100,7 +100,7 @@ public class CreateWaypointActivity extends BaseActivity {
         Intent intent = getIntent();
         mode = intent.getStringExtra("mode");
         id = intent.getStringExtra("id");
-        Boolean isWaypointImported = false;
+        boolean isWaypointImported = false;
 
         // Set appropriate title
         if (headerTitle != null) {
@@ -126,8 +126,9 @@ public class CreateWaypointActivity extends BaseActivity {
                 lat = waypoint.getLat();
                 lng = waypoint.getLng();
                 originalDate = waypoint.getDate();
+                isWaypointImported = waypoint.isImported();
 
-                Toast.makeText(this,"is waypoint imported - " + waypoint.isImported(),
+                Toast.makeText(this,"is waypoint imported in onCreate() - " + waypoint.isImported(),
                         Toast.LENGTH_LONG).show();
 
                 if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
@@ -150,14 +151,16 @@ public class CreateWaypointActivity extends BaseActivity {
             updateMapPreview(lat, lng);
         });
 
-        // Set up click listeners
+        ImageView ivCompass = findViewById(R.id.ivCompass);
+
         View mapClickOverlay = findViewById(R.id.mapClickOverlay);
 
         if ("edit".equals(mode) && isWaypointImported) {
             mapClickOverlay.setVisibility(View.GONE);
-            mapPreview.setAlpha(0.6f);
+            mapPreview.setAlpha(0.0f);
+            ivCompass.setVisibility(View.VISIBLE);
         } else {
-            // ✅ Normal interactive behavior
+            ivCompass.setVisibility(View.GONE);
             mapClickOverlay.setOnClickListener(v -> {
                 Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
                 if (lat != 0.0 && lng != 0.0) {

@@ -10,6 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -32,7 +33,7 @@ public class Waypoint implements Parcelable {
     private String date;
     private long navigationTimeMillis = 0L;
 
-    private Boolean isImported = false;
+    private boolean isImported = false;
 
     public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
         this.id = id;
@@ -55,6 +56,7 @@ public class Waypoint implements Parcelable {
         lng = in.readDouble();
         date = in.readString();
         navigationTimeMillis = in.readLong();
+        isImported = in.readByte() != 0;
     }
 
     public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
@@ -156,6 +158,7 @@ public class Waypoint implements Parcelable {
         dest.writeDouble(lng);
         dest.writeString(date);
         dest.writeLong(navigationTimeMillis);
+        dest.writeByte((byte) (isImported ? 1 : 0));
     }
 
     // Add this in Waypoint.java
@@ -216,6 +219,9 @@ public class Waypoint implements Parcelable {
                 wp.setDate(date);
             wp.setNavigationTimeMillis(navigationTimeMillis);
             wp.setImported(true);
+
+            Toast.makeText(context.getApplicationContext(), "is waypoint imported - " + wp.isImported(),
+                    Toast.LENGTH_LONG).show();
             return wp;
         } catch (Exception e) {
             e.printStackTrace();

@@ -120,6 +120,16 @@
                     android:background="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true" />
+
+                <ImageView
+                    android:id="@+id/ivCompass"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/compass"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+
             </FrameLayout>
 
             <LinearLayout
