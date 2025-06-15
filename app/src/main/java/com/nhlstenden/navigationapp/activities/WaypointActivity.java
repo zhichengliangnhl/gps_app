@@ -1,5 +1,7 @@
 package com.nhlstenden.navigationapp.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -248,30 +250,33 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     @Override
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
-
         if (encoded == null) {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Present dialog to choose sharing method
-        new AlertDialog.Builder(this)
-                .setTitle("Share Waypoint")
-                .setItems(new String[]{"Share as QR Code", "Share as Import Link"}, (dialog, which) -> {
-                    if (which == 0) {
-                        // Share as QR code
-                        Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
-                        showQrBottomSheet(qrBitmap);
-                    } else if (which == 1) {
-                        // Share as text/link
-                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                        shareIntent.setType("text/plain");
-                        shareIntent.putExtra(Intent.EXTRA_TEXT, encoded);
-                        startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
+
+        // Inflate the custom layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_share_waypoint, null);
+        ImageView qrCodeImage = dialogView.findViewById(R.id.qrCodeImage);
+        TextView importLink = dialogView.findViewById(R.id.importLink);
+        Button btnCopy = dialogView.findViewById(R.id.btnCopy);
+
+        qrCodeImage.setImageBitmap(qrBitmap);
+        importLink.setText(encoded);
+
+        btnCopy.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+        });
+
+        // Show as a BottomSheetDialog
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(dialogView);
+        dialog.show();
     }
 
     private void saveSelectedWaypoint(Waypoint waypoint) {
