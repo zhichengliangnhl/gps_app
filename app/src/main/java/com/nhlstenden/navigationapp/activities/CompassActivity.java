@@ -478,6 +478,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
+        
+        // Set transparent background for the dialog window
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         TextView statsText = dialogView.findViewById(R.id.dialogStats);
         TextView titleText = dialogView.findViewById(R.id.dialogTitle);
