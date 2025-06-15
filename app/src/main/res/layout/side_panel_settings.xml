@@ -15,6 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginTop="16dp"
             android:paddingHorizontal="16dp">
 
             <TextView
@@ -40,7 +41,6 @@
 
         </RelativeLayout>
 
-        <!-- Your toggle buttons below -->
         <Button
             android:id="@+id/btnToggleVibration"
             android:layout_width="match_parent"
