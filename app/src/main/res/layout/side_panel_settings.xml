@@ -12,23 +12,44 @@
         android:background="?attr/lightBackgroundColor"
         android:padding="12dp">
 
-        <TextView
-            android:id="@+id/sidePanelTitle"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="?android:textColorPrimary"
-            android:layout_margin="12dp" />
+            android:layout_height="56dp"
+            android:paddingHorizontal="16dp">
 
+            <TextView
+                android:id="@+id/sidePanelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Settings"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:gravity="center_vertical"
+                android:layout_alignParentStart="true" />
+
+            <ImageView
+                android:id="@+id/sidePanelSettingsIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/setting_icon_cogwheel"
+                android:background="@drawable/rounded_button"
+                android:contentDescription="Settings Icon"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+        <!-- Your toggle buttons below -->
         <Button
             android:id="@+id/btnToggleVibration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Vibration: ON"
             android:background="@drawable/rounded_button"
-            android:layout_margin="12dp"/>
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            />
 
         <Button
             android:id="@+id/btnToggleToast"
@@ -36,7 +57,7 @@
             android:layout_height="wrap_content"
             android:text="Toast: ON"
             android:background="@drawable/rounded_button"
-            android:layout_margin="12dp"/>
+            android:layout_marginBottom="12dp"/>
 
     </LinearLayout>
 

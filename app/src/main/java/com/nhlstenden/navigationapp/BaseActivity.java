@@ -3,7 +3,6 @@ package com.nhlstenden.navigationapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,15 @@ import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+
+    public static final int SIDE_PANEL_WIDTH = 600;
+    public static final int SCRIM_COLOR = 0x88000000;
+
+
     private View sidePanel;
+    private View touchInterceptor;
     private boolean isSidePanelVisible = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,40 +52,57 @@ public abstract class BaseActivity extends AppCompatActivity {
         setupBottomNavigation();
     }
 
+
     protected void setupSettingsPanel() {
-        ImageView settingsIcon = findViewById(R.id.settingsIcon);
-        if (settingsIcon != null) {
-            settingsIcon.setOnClickListener(v -> toggleSidePanel());
+        ImageView topBarSettingsIcon = findViewById(R.id.settingsIcon);
+        if (topBarSettingsIcon != null) {
+            topBarSettingsIcon.setOnClickListener(v -> toggleSidePanel());
         }
 
         ViewGroup root = (ViewGroup) getWindow().getDecorView();
 
         if (sidePanel != null) return;
 
+        touchInterceptor = new View(this);
+        touchInterceptor.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        touchInterceptor.setBackgroundColor(SCRIM_COLOR);
+        touchInterceptor.setClickable(true);
+        touchInterceptor.setVisibility(View.GONE);
+        touchInterceptor.setOnClickListener(v -> toggleSidePanel());
+        root.addView(touchInterceptor);
+
         sidePanel = getLayoutInflater().inflate(R.layout.side_panel_settings, root, false);
 
-        int widthPx = dpToPx(250);
-        int topBarHeightPx = dpToPx(85);
-        int bottomNavHeightPx = dpToPx(60);
-
-        int screenHeight = getResources().getDisplayMetrics().heightPixels;
-        int sidePanelHeight = screenHeight - topBarHeightPx - bottomNavHeightPx;
-
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                widthPx,
-                sidePanelHeight,
+                SIDE_PANEL_WIDTH,
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 Gravity.END
         );
-
         sidePanel.setLayoutParams(params);
-        sidePanel.setTranslationX(widthPx);
-        sidePanel.setTranslationY(topBarHeightPx);
         sidePanel.setVisibility(View.GONE);
-
         root.addView(sidePanel);
+
+        ImageView panelSettingsIcon = sidePanel.findViewById(R.id.sidePanelSettingsIcon);
+        if (panelSettingsIcon != null) {
+            panelSettingsIcon.setOnClickListener(v -> toggleSidePanel());
+        }
 
         bindToggle(R.id.btnToggleVibration, AppSettings.VIBRATION, "Vibration");
         bindToggle(R.id.btnToggleToast, AppSettings.TOAST_ENABLED, "Toast");
+    }
+
+    private void toggleSidePanel() {
+        if (sidePanel == null) {
+            setupSettingsPanel();
+        }
+
+        boolean show = !isSidePanelVisible;
+        sidePanel.setVisibility(show ? View.VISIBLE : View.GONE);
+        touchInterceptor.setVisibility(show ? View.VISIBLE : View.GONE);
+        isSidePanelVisible = show;
     }
 
     private void bindToggle(int btnId, String prefKey, String label) {
@@ -99,25 +122,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         b.setText(label + ": " + (on ? "ON" : "OFF"));
     }
 
-    private void toggleSidePanel() {
-        if (sidePanel == null) {
-            setupSettingsPanel();
-        }
-
-        if (isSidePanelVisible) {
-            sidePanel.setVisibility(View.GONE);
-            isSidePanelVisible = false;
-        } else {
-            sidePanel.setVisibility(View.VISIBLE);
-            sidePanel.setTranslationX(0); // Slide fully visible
-            isSidePanelVisible = true;
-        }
-    }
-
-    protected int dpToPx(int dp) {
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
-    }
 
     private void setupBottomNavigation() {
         ImageView navBrush = findViewById(R.id.navBrush);
@@ -172,16 +176,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         String selectedTheme = prefs.getString("selected_theme", "classic");
 
         switch (selectedTheme) {
-            case "macha": setTheme(R.style.Theme_NavigationApp_Macha); break;
-            case "savana": setTheme(R.style.Theme_NavigationApp_Savana); break;
-            case "aqua": setTheme(R.style.Theme_NavigationApp_Aqua); break;
-            case "lavander": setTheme(R.style.Theme_NavigationApp_Lavander); break;
-            case "sunset": setTheme(R.style.Theme_NavigationApp_Sunset); break;
-            case "navy": setTheme(R.style.Theme_NavigationApp_Navy); break;
-            case "fakeHolland": setTheme(R.style.Theme_NavigationApp_FakeHolland); break;
-            case "macchiato": setTheme(R.style.Theme_NavigationApp_Macchiato); break;
-            case "cookieCream": setTheme(R.style.Theme_NavigationApp_CookieCream); break;
-            default: setTheme(R.style.Theme_NavigationApp_Classic); break;
+            case "macha":        setTheme(R.style.Theme_NavigationApp_Macha);        break;
+            case "savana":       setTheme(R.style.Theme_NavigationApp_Savana);       break;
+            case "aqua":         setTheme(R.style.Theme_NavigationApp_Aqua);         break;
+            case "lavander":     setTheme(R.style.Theme_NavigationApp_Lavander);     break;
+            case "sunset":       setTheme(R.style.Theme_NavigationApp_Sunset);       break;
+            case "navy":         setTheme(R.style.Theme_NavigationApp_Navy);         break;
+            case "fakeHolland":  setTheme(R.style.Theme_NavigationApp_FakeHolland);  break;
+            case "macchiato":    setTheme(R.style.Theme_NavigationApp_Macchiato);    break;
+            case "cookieCream":  setTheme(R.style.Theme_NavigationApp_CookieCream);  break;
+            default:             setTheme(R.style.Theme_NavigationApp_Classic);      break;
         }
     }
 }
