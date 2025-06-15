@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="56dp"
     android:background="?attr/darkColor"
-    android:paddingTop="20dp">
+    android:paddingHorizontal="16dp">
 
     <TextView
         android:id="@+id/headerTitle"
-        android:layout_width="214dp"
-        android:layout_height="72dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="1dp"
-        android:gravity="center_vertical"
-        android:paddingTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:text="Default Title"
-        android:textColor="@android:color/white"
+        android:textStyle="bold"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textColor="@android:color/white"
+        android:gravity="center_vertical"
+        android:layout_alignParentStart="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -31,10 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginEnd="26dp"
-            android:layout_margin="10dp"
-            android:paddingTop="10dp"
-            >
+            android:layout_marginEnd="16dp">
 
             <TextView
                 android:id="@+id/coinCounter"
@@ -44,9 +38,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textAlignment="textEnd"
-                android:layout_marginEnd="10dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="20dp"/>
+                android:layout_marginEnd="5dp"/>
 
             <ImageView
                 android:id="@+id/coinIcon"
@@ -62,9 +54,8 @@
             android:id="@+id/settingsIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="?attr/settingsIcon"
-            android:contentDescription="Settings Icon"
-            android:paddingTop="12dp"/>
+            android:src="@drawable/setting_icon"
+            android:contentDescription="Settings Icon" />
 
     </LinearLayout>
 </RelativeLayout> 

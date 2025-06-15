@@ -23,6 +23,15 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Themes"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:background="@drawable/rounded_button"/>
+
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -490,6 +499,489 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="1000"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </GridLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Arrows"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:background="@drawable/rounded_button"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
+
+                <LinearLayout
+                    android:id="@+id/arrow1"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Orange"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow2"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Red"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_2"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow3"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Yellow"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_3"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow4"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Green"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_4"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow5"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cyan"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_5"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow6"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Blue"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_6"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow7"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Purple"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_7"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow8"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rose"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_8"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow9"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Grey"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_9"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
+                            android:textColor="#000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/arrow10"
+                    android:layout_width="10dp"
+                    android:layout_height="110dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/rounded_card_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="White"
+                        android:textSize="15sp"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_10"/>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="4dp"
+                            android:src="@drawable/coin"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"/>
+
+                        <TextView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="4dp"
+                            android:text="50"
                             android:textColor="#000"
                             android:textSize="15sp" />
                     </RelativeLayout>

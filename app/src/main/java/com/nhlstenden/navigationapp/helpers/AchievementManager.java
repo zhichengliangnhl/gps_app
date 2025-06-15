@@ -14,6 +14,7 @@ public class AchievementManager {
     private static final String KEY_GRINDER_III = "grinder_iii_progress";
     private static final String PREFIX_CLAIMED = "claimed_";
     private static final float COMPLETION_DISTANCE = 10.0f; // 10 meters
+    private static final String KEY_LAST_COMPLETED_WAYPOINT = "last_completed_waypoint";
 
     public static void updateFirstStepsProgress(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -31,6 +32,23 @@ public class AchievementManager {
     public static void checkWaypointCompletion(Context context, float distance) {
         if (distance <= COMPLETION_DISTANCE) {
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            
+            // Get the current waypoint ID from CompassActivity
+            String currentWaypointId = prefs.getString("selected_wp_id", "");
+            if (currentWaypointId.isEmpty()) {
+                return;
+            }
+            
+            // Check if this waypoint was already completed
+            String lastCompletedWaypoint = prefs.getString(KEY_LAST_COMPLETED_WAYPOINT, "");
+            if (lastCompletedWaypoint.equals(currentWaypointId)) {
+                return; // This waypoint was already completed
+            }
+            
+            // Mark this waypoint as completed
+            prefs.edit().putString(KEY_LAST_COMPLETED_WAYPOINT, currentWaypointId).apply();
+            
+            // Update achievements
             int current = prefs.getInt(KEY_RUNNER_I, 0);
             if (current < 1) {
                 prefs.edit().putInt(KEY_RUNNER_I, 1).apply();
