@@ -32,9 +32,10 @@ public class AchievementManager {
     public static void checkWaypointCompletion(Context context, float distance) {
         if (distance <= COMPLETION_DISTANCE) {
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            SharedPreferences appPrefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
             
-            // Get the current waypoint ID from CompassActivity
-            String currentWaypointId = prefs.getString("selected_wp_id", "");
+            // Get the current waypoint ID from AppPrefs
+            String currentWaypointId = appPrefs.getString("selected_wp_id", "");
             if (currentWaypointId.isEmpty()) {
                 return;
             }
