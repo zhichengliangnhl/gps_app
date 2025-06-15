@@ -27,6 +27,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
@@ -35,6 +37,12 @@ import com.nhlstenden.navigationapp.helpers.CoinManager;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
+import com.nhlstenden.navigationapp.models.Folder;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
+import com.nhlstenden.navigationapp.helpers.ArrowPurchaseManager;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class CompassActivity extends BaseActivity implements CompassListener {
 
@@ -78,6 +86,23 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable;
 
+    // Map color names to arrow resource numbers
+    private String getArrowResourceName(String colorName) {
+        switch (colorName.toLowerCase()) {
+            case "orange": return "1";
+            case "red": return "2";
+            case "yellow": return "3";
+            case "green": return "4";
+            case "cyan": return "5";
+            case "blue": return "6";
+            case "purple": return "7";
+            case "rose": return "8";
+            case "grey": return "9";
+            case "white": return "10";
+            default: return "1"; // Default to orange arrow
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +126,16 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         distanceText = findViewById(R.id.distanceText);
         nameText = findViewById(R.id.waypointStatus);
         timerText = findViewById(R.id.timerText);
+
+        // Set the selected arrow
+        String selectedArrow = ArrowPurchaseManager.getSelectedArrow(this);
+        String arrowNumber = getArrowResourceName(selectedArrow);
+        int arrowResource = getResources().getIdentifier("arrow_" + arrowNumber, "drawable", getPackageName());
+        if (arrowResource != 0) {
+            compassNeedle.setImageResource(arrowResource);
+        } else {
+            Log.e("CompassActivity", "Failed to find arrow resource for: " + selectedArrow);
+        }
 
         // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
@@ -443,6 +478,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
+        
+        // Set transparent background for the dialog window
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         TextView statsText = dialogView.findViewById(R.id.dialogStats);
         TextView titleText = dialogView.findViewById(R.id.dialogTitle);
@@ -469,13 +509,32 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 "Time taken: " + timeTaken + "\n";
         statsText.setText(stats);
 
+        // Check if waypoint was already completed
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean wasCompleted = false;
+        if (targetWaypoint != null) {
+            wasCompleted = prefs.getBoolean("waypoint_completed_" + targetWaypoint.getId(), false);
+        }
+
+        // Only give rewards if not already completed
+        if (!wasCompleted) {
+            // Check achievements when waypoint is actually reached
+            AchievementManager.checkWaypointCompletion(this, distance);
+            
+            CoinManager.addCoins(this, 50);
+            TextView coinCounter = findViewById(R.id.coinCounter);
+            if (coinCounter != null) {
+                CoinManager.updateCoinDisplay(this, coinCounter);
+            }
+        }
+
         doneButton.setOnClickListener(v -> {
             // Save final timer to waypoint and clear timer state
             if (targetWaypoint != null && navigationStartTime > 0) {
                 long elapsed = System.currentTimeMillis() - navigationStartTime;
                 saveTimerToWaypoint(targetWaypoint.getId(), elapsed);
-                SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                prefs.edit()
+                SharedPreferences preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                preferences.edit()
                         .remove("timer_elapsed_" + targetWaypoint.getId())
                         .putBoolean("waypoint_completed_" + targetWaypoint.getId(), true)
                         .apply();
@@ -558,13 +617,11 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         SharedPreferences prefs = getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE);
         String json = prefs.getString("folders_json", null);
         if (json != null) {
-            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<java.util.List<com.nhlstenden.navigationapp.models.Folder>>() {
-            }.getType();
-            java.util.List<com.nhlstenden.navigationapp.models.Folder> folderList = new com.google.gson.Gson()
-                    .fromJson(json, type);
+            Type type = new TypeToken<List<Folder>>() {}.getType();
+            List<Folder> folderList = new Gson().fromJson(json, type);
             boolean updated = false;
-            for (com.nhlstenden.navigationapp.models.Folder folder : folderList) {
-                for (com.nhlstenden.navigationapp.models.Waypoint wp : folder.getWaypoints()) {
+            for (Folder folder : folderList) {
+                for (Waypoint wp : folder.getWaypoints()) {
                     if (wp.getId().equals(waypointId)) {
                         wp.setNavigationTimeMillis(elapsedMillis);
                         updated = true;
@@ -575,7 +632,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                     break;
             }
             if (updated) {
-                prefs.edit().putString("folders_json", new com.google.gson.Gson().toJson(folderList)).apply();
+                prefs.edit().putString("folders_json", new Gson().toJson(folderList)).apply();
             }
         }
     }
