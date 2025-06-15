@@ -30,9 +30,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        applyDynamicTheme(); // apply early
+        applyDynamicTheme();
         super.onCreate(savedInstanceState);
-        // Don't forget: call setupSettingsPanel() in subclasses after setContentView()
     }
 
     @Override
@@ -55,29 +54,32 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         ViewGroup root = (ViewGroup) getWindow().getDecorView();
 
-        if (sidePanel != null) return; // Already added
+        if (sidePanel != null) return;
 
         sidePanel = getLayoutInflater().inflate(R.layout.side_panel_settings, root, false);
 
-        int widthPx = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
+        int widthPx = dpToPx(250);
+        int topBarHeightPx = dpToPx(85);
+        int bottomNavHeightPx = dpToPx(60);
+
+        int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        int sidePanelHeight = screenHeight - topBarHeightPx - bottomNavHeightPx;
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 widthPx,
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                sidePanelHeight,
                 Gravity.END
         );
 
-        // Pad to avoid top bar (56dp) and bottom nav (56dp) (doesn't work though)
-        sidePanel.setPadding(0, dpToPx(56), 0, dpToPx(56));
         sidePanel.setLayoutParams(params);
         sidePanel.setTranslationX(widthPx);
+        sidePanel.setTranslationY(topBarHeightPx);
         sidePanel.setVisibility(View.GONE);
+
         root.addView(sidePanel);
 
         bindToggle(R.id.btnToggleVibration, AppSettings.VIBRATION, "Vibration");
         bindToggle(R.id.btnToggleToast, AppSettings.TOAST_ENABLED, "Toast");
-
     }
 
     private void bindToggle(int btnId, String prefKey, String label) {
@@ -98,21 +100,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void toggleSidePanel() {
-        ViewGroup root = (ViewGroup) getWindow().getDecorView();
-
         if (sidePanel == null) {
-            sidePanel = getLayoutInflater().inflate(R.layout.side_panel_settings, root, false);
-
-            int widthPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
-
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    widthPx, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.END);
-
-            sidePanel.setLayoutParams(params);
-            sidePanel.setTranslationX(widthPx);  // start hidden offscreen
-            sidePanel.setVisibility(View.GONE);
-            root.addView(sidePanel);
+            setupSettingsPanel();
         }
 
         if (isSidePanelVisible) {
@@ -120,13 +109,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             isSidePanelVisible = false;
         } else {
             sidePanel.setVisibility(View.VISIBLE);
-            sidePanel.setTranslationX(0);
+            sidePanel.setTranslationX(0); // Slide fully visible
             isSidePanelVisible = true;
         }
     }
 
     protected int dpToPx(int dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density);
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
     private void setupBottomNavigation() {
@@ -182,36 +172,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         String selectedTheme = prefs.getString("selected_theme", "classic");
 
         switch (selectedTheme) {
-            case
-                    "macha": setTheme(R.style.Theme_NavigationApp_Macha);
-            break;
-            case
-                    "savana": setTheme(R.style.Theme_NavigationApp_Savana);
-            break;
-            case
-                    "aqua": setTheme(R.style.Theme_NavigationApp_Aqua);
-            break;
-            case
-                    "lavander": setTheme(R.style.Theme_NavigationApp_Lavander);
-            break;
-            case
-                    "sunset": setTheme(R.style.Theme_NavigationApp_Sunset);
-            break;
-            case
-                    "navy": setTheme(R.style.Theme_NavigationApp_Navy);
-            break;
-            case
-                    "fakeHolland": setTheme(R.style.Theme_NavigationApp_FakeHolland);
-            break;
-            case
-                    "macchiato": setTheme(R.style.Theme_NavigationApp_Macchiato);
-            break;
-            case
-                    "cookieCream": setTheme(R.style.Theme_NavigationApp_CookieCream);
-            break;
-            default:
-                setTheme(R.style.Theme_NavigationApp_Classic);
-            break;
+            case "macha": setTheme(R.style.Theme_NavigationApp_Macha); break;
+            case "savana": setTheme(R.style.Theme_NavigationApp_Savana); break;
+            case "aqua": setTheme(R.style.Theme_NavigationApp_Aqua); break;
+            case "lavander": setTheme(R.style.Theme_NavigationApp_Lavander); break;
+            case "sunset": setTheme(R.style.Theme_NavigationApp_Sunset); break;
+            case "navy": setTheme(R.style.Theme_NavigationApp_Navy); break;
+            case "fakeHolland": setTheme(R.style.Theme_NavigationApp_FakeHolland); break;
+            case "macchiato": setTheme(R.style.Theme_NavigationApp_Macchiato); break;
+            case "cookieCream": setTheme(R.style.Theme_NavigationApp_CookieCream); break;
+            default: setTheme(R.style.Theme_NavigationApp_Classic); break;
         }
     }
 }

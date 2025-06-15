@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sidePanelLayout"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sidePanelRoot"
     android:layout_width="300dp"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFF5E1"
-    android:padding="24dp"
-    android:layout_marginTop="56dp"
-    android:layout_marginBottom="56dp">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnToggleVibration"
+    <LinearLayout
+        android:id="@+id/sidePanelLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Vibration: ON"
-        android:layout_marginTop="24dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/lightBackgroundColor"
+        android:padding="12dp">
 
-    <Button
-        android:id="@+id/btnToggleToast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Toast: ON"
-        android:layout_marginTop="24dp"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/sidePanelTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary"
+            android:layout_margin="12dp" />
+
+        <Button
+            android:id="@+id/btnToggleVibration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vibration: ON"
+            android:background="@drawable/rounded_button"
+            android:layout_margin="12dp"/>
+
+        <Button
+            android:id="@+id/btnToggleToast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Toast: ON"
+            android:background="@drawable/rounded_button"
+            android:layout_margin="12dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>
