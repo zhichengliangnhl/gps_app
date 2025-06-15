@@ -15,18 +15,48 @@ public class AchievementManager {
     private static final String PREFIX_CLAIMED = "claimed_";
     private static final float COMPLETION_DISTANCE = 10.0f; // 10 meters
     private static final String KEY_LAST_COMPLETED_WAYPOINT = "last_completed_waypoint";
+    private static final String KEY_COLLECTIONISTA = "collectionista_progress";
+    private static final int TOTAL_ACHIEVEMENTS = 6; // First Steps, Runner I, Runner II, Runner III, Grinder I, Grinder II, Grinder III
 
     public static void updateFirstStepsProgress(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         int current = prefs.getInt(KEY_FIRST_STEPS, 0);
         if (current < 1) {
             prefs.edit().putInt(KEY_FIRST_STEPS, 1).apply();
+            // Update Collectionista progress when First Steps is completed
+            updateCollectionistaProgress(context);
         }
     }
 
     public static int getFirstStepsProgress(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getInt(KEY_FIRST_STEPS, 0);
+    }
+
+    public static void updateCollectionistaProgress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        int completedAchievements = 0;
+
+        // Check First Steps
+        if (getFirstStepsProgress(context) >= 1) completedAchievements++;
+
+        // Check Runner achievements
+        if (getRunnerIProgress(context) >= 1) completedAchievements++;
+        if (getRunnerIIProgress(context) >= 5) completedAchievements++;
+        if (getRunnerIIIProgress(context) >= 10) completedAchievements++;
+
+        // Check Grinder achievements
+        int coins = CoinManager.getCoins(context);
+        if (coins >= 1000) completedAchievements++;
+        if (coins >= 10000) completedAchievements++;
+        if (coins >= 100000) completedAchievements++;
+
+        prefs.edit().putInt(KEY_COLLECTIONISTA, completedAchievements).apply();
+    }
+
+    public static int getCollectionistaProgress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_COLLECTIONISTA, 0);
     }
 
     public static void checkWaypointCompletion(Context context, float distance) {
@@ -64,6 +94,9 @@ public class AchievementManager {
             if (runnerIIIProgress < 10) {
                 prefs.edit().putInt(KEY_RUNNER_III, runnerIIIProgress + 1).apply();
             }
+
+            // Update Collectionista progress
+            updateCollectionistaProgress(context);
         }
     }
 
@@ -99,6 +132,9 @@ public class AchievementManager {
         if (coins >= 100000) {
             prefs.edit().putInt(KEY_GRINDER_III, 1).apply();
         }
+
+        // Update Collectionista progress
+        updateCollectionistaProgress(context);
     }
 
     public static int getGrinderIProgress(Context context) {
