@@ -101,6 +101,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         if (headerTitle != null) {
             headerTitle.setText("Treasure Collections");
         }
+        setupSettingsPanel();
 
         // Initialize views
         recyclerView = findViewById(R.id.recyclerViewFolders);
@@ -218,7 +219,6 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         builder.setPositiveButton("Import", (dialog, which) -> {
             String code = input.getText().toString().trim();
             Toast.makeText(this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
-            // Optionally decode and handle the code
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -231,20 +231,6 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
                 .setView(sidePanelView)
                 .create();
-
-        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
-            dialog.dismiss();
-            showImportDialog();
-        });
-
-        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
-            dialog.dismiss();
-            ScanOptions options = new ScanOptions();
-            options.setPrompt("Scan QR Code");
-            options.setCaptureActivity(PortraitCaptureActivity.class);
-            options.setOrientationLocked(true);
-            qrScanner.launch(options);
-        });
 
         dialog.show();
     }

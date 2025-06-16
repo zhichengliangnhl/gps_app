@@ -2,13 +2,18 @@ package com.nhlstenden.navigationapp.activities;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
@@ -33,7 +39,9 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.helpers.AppSettings;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -43,6 +51,7 @@ import com.nhlstenden.navigationapp.helpers.ArrowPurchaseManager;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
 
 public class CompassActivity extends BaseActivity implements CompassListener {
 
@@ -66,7 +75,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private final ActivityResultLauncher<ScanOptions> qrScannerLauncher = registerForActivityResult(new ScanContract(),
             result -> {
                 if (result.getContents() != null) {
-                    Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT);
                 }
             });
 
@@ -85,6 +94,13 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable;
+
+    private Vibrator vibrator;
+    private long lastVibrationTime = 0;
+    private boolean hasStoppedVibrating = false;
+    private boolean hasEnteredCompletionRange = false;
+    private boolean isActivityVisible = false;
+
 
     // Map color names to arrow resource numbers
     private String getArrowResourceName(String colorName) {
@@ -142,6 +158,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         if (headerTitle != null) {
             headerTitle.setText("Treasure Finder");
         }
+        setupSettingsPanel();
 
         // Earn coins button
         Button btnEarn = findViewById(R.id.btnEarnCoins);
@@ -170,8 +187,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         // Use Parcelable!
 
         if (targetWaypoint != null) {
-            Toast.makeText(this, "Waypoint: " + targetWaypoint.getName() +
-                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng(), Toast.LENGTH_LONG).show();
+            ToastUtils.show(this, "Waypoint: " + targetWaypoint.getName() +
+                    " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng(), Toast.LENGTH_LONG);
             Log.d("CompassActivity", "Waypoint: " + targetWaypoint.getName() +
                     " @ " + targetWaypoint.getLat() + ", " + targetWaypoint.getLng());
             nameText.setText(targetWaypoint.getName());
@@ -199,7 +216,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             nameText.setText("No waypoint selected");
             distanceText.setText("Distance: -");
             timerText.setText("00:00");
-            Toast.makeText(this, "Waypoint already completed!", Toast.LENGTH_LONG).show();
+            ToastUtils.show(this, "Waypoint already completed!", Toast.LENGTH_LONG);
             return;
         }
 
@@ -214,6 +231,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             navigationStartTime = System.currentTimeMillis() - elapsedTimeBeforePause;
             startLiveTimer();
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
     }
 
     private void requestLocationAccess() {
@@ -263,6 +288,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null)
@@ -289,25 +315,66 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         locationClient.removeLocationUpdates(locationCallback);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateDistanceDisplay() {
-        if (currentLocation != null && targetWaypoint != null) {
-            Location target = new Location("target");
-            target.setLatitude(targetWaypoint.getLat());
-            target.setLongitude(targetWaypoint.getLng());
-            float distance = currentLocation.distanceTo(target);
-            // Log.d("CompassActivity", "Distance to waypoint: " + distance);
-            distanceText.setText(String.format("Distance: %.1f meters", distance));
+        if (currentLocation == null || targetWaypoint == null) {
+            Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
 
-            // Show dialog if reached and not already shown
-            if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
-                waypointReachedShown = true;
-                showWaypointReachedDialog(distance);
+            boolean distanceDisplayEnabled = AppSettings.get(this, AppSettings.DISTANCE_DISPLAY, true);
+            if (distanceDisplayEnabled) {
+                distanceText.setText("Distance: -");
+                distanceText.setVisibility(View.VISIBLE);
+            } else {
+                distanceText.setVisibility(View.GONE);
             }
-        } else {
-            // Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
-            distanceText.setText("Distance: -");
+            return;
+        }
+
+        Location target = new Location("target");
+        target.setLatitude(targetWaypoint.getLat());
+        target.setLongitude(targetWaypoint.getLng());
+        float distance = currentLocation.distanceTo(target);
+
+        Log.d("CompassActivity", "Distance to waypoint: " + distance + " meters");
+
+        boolean distanceDisplayEnabled = AppSettings.get(this, AppSettings.DISTANCE_DISPLAY, true);
+
+        if (distanceDisplayEnabled) {
+          distanceText.setVisibility(View.VISIBLE);
+          } else {
+          distanceText.setVisibility(View.GONE);
+          }
+          
+        if (distance <= 10f) {
+          hasStoppedVibrating = true;
+          distanceText.setText("You're here!");
+          } else {
+              distanceText.setText(String.format("Distance: %.1f meters", distance));
+          }
+
+        boolean vibrationEnabled = AppSettings.get(this, AppSettings.VIBRATION, true);
+        if (isActivityVisible &&
+                !hasStoppedVibrating &&
+                distance >= 10f && distance < 100f &&
+                vibrator != null && vibrationEnabled) {
+
+            long interval = (long) (5000 * (distance / 100f));
+            interval = Math.max(500, interval); // Minimum interval: 500ms
+
+            long now = System.currentTimeMillis();
+            if (now - lastVibrationTime >= interval) {
+                vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                lastVibrationTime = now;
+            }
+        }
+
+        if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
+            waypointReachedShown = true;
+            showWaypointReachedDialog(distance);
         }
     }
+
+
 
     private void updateNeedleRotation() {
         if (currentLocation == null || targetWaypoint == null) {
@@ -320,9 +387,8 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         target.setLongitude(targetWaypoint.getLng());
 
         float bearingTo = currentLocation.bearingTo(target);
-        float angle = (bearingTo - currentAzimuth + 3600) % 360;
 
-        // Log.d("CompassActivity", "Needle angle: " + angle + " (bearingTo: " + bearingTo + ", currentAzimuth: " + currentAzimuth + ")");
+        float angle = (bearingTo - currentAzimuth + 3600) % 360;
 
         ObjectAnimator.ofFloat(compassNeedle, "rotation", compassNeedle.getRotation(), angle)
                 .setDuration(300)
@@ -332,11 +398,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityVisible = true;
         Waypoint wp = loadSelectedWaypoint();
         if (wp != null) {
             targetWaypoint.setName(wp.getName());
             targetWaypoint.setLat(wp.getLat());
             targetWaypoint.setLng(wp.getLng());
+            hasStoppedVibrating = false;
+            distanceText.setVisibility(View.VISIBLE);
         }
         compassSensorManager.start();
         startLocationUpdates();
@@ -345,6 +414,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     @Override
     protected void onPause() {
         super.onPause();
+        isActivityVisible = false;
         compassSensorManager.stop();
         stopLocationUpdates();
         // Save timer state
@@ -389,7 +459,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         } else {
-            Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Location permission required", Toast.LENGTH_SHORT);
             finish();
         }
     }
@@ -401,24 +471,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
                 .setView(sheetView)
                 .create();
-
-        TextView txtScanQR = sheetView.findViewById(R.id.txtQr);
-        TextView txtImport = sheetView.findViewById(R.id.txtImport);
-
-        txtScanQR.setOnClickListener(v -> {
-            dialog.dismiss();
-            ScanOptions options = new ScanOptions();
-            options.setPrompt("Scan a QR code");
-            options.setCaptureActivity(PortraitCaptureActivity.class);
-            options.setOrientationLocked(true);
-            qrScannerLauncher.launch(options);
-        });
-
-        txtImport.setOnClickListener(v -> {
-            dialog.dismiss();
-            showImportDialog();
-        });
-
         dialog.show();
     }
 
@@ -434,13 +486,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             try {
                 Waypoint wp = Waypoint.decode(this, code);
                 if (wp != null && wp.getName() != null) {
-                    Toast.makeText(this, "Imported: " + wp.getName(), Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Imported: " + wp.getName());
+
                     // Optionally update the waypoint here and refresh UI if desired
                 } else {
-                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT);
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Failed to import", Toast.LENGTH_SHORT);
             }
         });
 
@@ -450,6 +503,7 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
     // Optional: for live updates if you ever want to switch waypoint without
     // re-launching activity
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setWaypoint(Waypoint wp) {
         this.targetWaypoint = wp;
         if (wp != null) {

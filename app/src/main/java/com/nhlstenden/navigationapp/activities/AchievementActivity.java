@@ -121,13 +121,12 @@ public class AchievementActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
-
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Trophies");
         }
-
         updateAchievementProgress();
+        setupSettingsPanel();
 
         GridLayout container = findViewById(R.id.achievementContainer);
         int columnCount = 2;

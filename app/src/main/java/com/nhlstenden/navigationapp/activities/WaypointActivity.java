@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -31,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -89,6 +91,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         if (headerTitle != null) {
             headerTitle.setText(folder.getName());
         }
+        setupSettingsPanel();
 
         View settingsIcon = findViewById(R.id.settingsIcon);
         if (settingsIcon != null) {
@@ -110,10 +113,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         if (imported != null && imported.getName() != null) {
                             waypointList.add(imported);
                             adapter.updateList(waypointList);
-                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(this, "Waypoint imported!", Toast.LENGTH_SHORT);
                             saveFolderToPrefs(folder);
                         } else {
-                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT);
                         }
                     }
                 });
@@ -152,8 +155,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 // Check for duplicate waypoint name in this folder
                                 for (Waypoint wp : folder.getWaypoints()) {
                                     if (wp.getName().equalsIgnoreCase(w.getName())) {
-                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
-                                                Toast.LENGTH_SHORT).show();
+                                        ToastUtils.show(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT);
                                         return;
                                     }
                                 }
@@ -194,7 +197,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 intent.putExtra("WAYPOINT", waypointList.get(0));
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "No waypoints available", Toast.LENGTH_SHORT);
             }
         });
 
@@ -251,7 +254,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
         if (encoded == null) {
-            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Failed to encode waypoint", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -270,7 +273,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Link copied to clipboard", Toast.LENGTH_SHORT);
         });
 
         // Show as a BottomSheetDialog
@@ -346,27 +349,27 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     public void showImportDialog() {
-        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
-                .setView(sidePanelView)
-                .create();
-
-        sidePanelView.findViewById(R.id.txtImport).setOnClickListener(v -> {
-            dialog.dismiss();
-            showImportLinkDialog();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint");
+        
+        String[] options = {"Import from Code", "Scan QR Code"};
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    showImportLinkDialog();
+                    break;
+                case 1: 
+                    ScanOptions scanOptions = new ScanOptions();
+                    scanOptions.setPrompt("Scan QR Code");
+                    scanOptions.setCaptureActivity(PortraitCaptureActivity.class);
+                    scanOptions.setOrientationLocked(true);
+                    qrScanner.launch(scanOptions);
+                    break;
+            }
         });
-
-        sidePanelView.findViewById(R.id.txtQr).setOnClickListener(v -> {
-            dialog.dismiss();
-            ScanOptions options = new ScanOptions();
-            options.setPrompt("Scan QR Code");
-            options.setCaptureActivity(PortraitCaptureActivity.class);
-            options.setOrientationLocked(true);
-            qrScanner.launch(options);
-        });
-
-        dialog.show();
+        
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     public static String decodeBase64ToImageFile(Context context, String base64Data) {

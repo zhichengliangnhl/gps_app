@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.helpers.ThemePurchaseManager;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.helpers.ArrowPurchaseManager;
 
 import java.util.HashMap;
@@ -22,11 +23,11 @@ public class BrushActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brush);
-
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText("Treasure Themes");
         }
+        setupSettingsPanel();
 
         // Handle themes
         Map<Integer, String> themeMap = new HashMap<>();
@@ -143,11 +144,11 @@ public class BrushActivity extends BaseActivity {
             recreate();
         } else {
             if (ThemePurchaseManager.purchaseTheme(this, themeName)) {
-                Toast.makeText(this, "Theme purchased successfully!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Theme purchased successfully!", Toast.LENGTH_SHORT);
                 saveTheme(themeName);
                 recreate();
             } else {
-                Toast.makeText(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT);
             }
         }
     }

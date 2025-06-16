@@ -29,6 +29,7 @@ import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.dialogs.IconSelectionDialog;
 import com.nhlstenden.navigationapp.helpers.AchievementManager;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
 import java.text.SimpleDateFormat;
@@ -103,6 +104,7 @@ public class CreateWaypointActivity extends BaseActivity {
         if (headerTitle != null) {
             headerTitle.setText("edit".equals(mode) ? "Edit Treasure" : "Create Treasure");
         }
+        setupSettingsPanel();
 
         // Restore state or initialize from intent
         if (savedInstanceState != null) {
@@ -247,18 +249,18 @@ public class CreateWaypointActivity extends BaseActivity {
 
     private boolean validateInput() {
         if (TextUtils.isEmpty(etName.getText().toString().trim())) {
-            Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Please enter a name", Toast.LENGTH_SHORT);
             return false;
         }
 
         if (lat == 0.0 && lng == 0.0) {
-            Toast.makeText(this, "Please select a location on the map", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Please select a location on the map", Toast.LENGTH_SHORT);
             return false;
         }
 
         String description = etDescription.getText().toString().trim();
         if (description.length() > MAX_DESCRIPTION_LENGTH) {
-            Toast.makeText(this, "Description too long (max 500 characters)", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Description too long (max 500 characters)", Toast.LENGTH_SHORT);
             return false;
         }
 
