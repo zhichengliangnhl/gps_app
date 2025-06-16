@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -27,7 +28,6 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
@@ -44,8 +44,12 @@ import java.lang.reflect.Type;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.ArrayList;
 
 import androidx.core.graphics.Insets;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class WaypointActivity extends BaseActivity implements OnWaypointClickListener {
 
@@ -79,8 +83,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         bottomNav.getPaddingLeft(),
                         bottomNav.getPaddingTop(),
                         bottomNav.getPaddingRight(),
-                        systemInsets.bottom
-                );
+                        systemInsets.bottom);
             }
             return insets;
         });
@@ -94,7 +97,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         setupSettingsPanel();
 
         // DON'T override the settings icon behavior - let BaseActivity handle it
-        // The settings icon will now properly show the settings panel, not the import panel
+        // The settings icon will now properly show the settings panel, not the import
+        // panel
 
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
@@ -132,7 +136,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
-                        Log.d("WAYPOINT_EDIT", "Edited waypoint: " + (w != null ? w.getName() : "null") + ", icon: " + (w != null ? w.getIconName() : "null") + ", color: " + (w != null ? w.getIconColor() : "null"));
+                        Log.d("WAYPOINT_EDIT",
+                                "Edited waypoint: " + (w != null ? w.getName() : "null") + ", icon: "
+                                        + (w != null ? w.getIconName() : "null") + ", color: "
+                                        + (w != null ? w.getIconColor() : "null"));
                         if (w != null) {
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
@@ -145,7 +152,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 }
                                 // Log the updated list
                                 for (Waypoint wp : waypointList) {
-                                    Log.d("WAYPOINT_LIST", "Waypoint: " + wp.getName() + ", icon: " + wp.getIconName() + ", color: " + wp.getIconColor());
+                                    Log.d("WAYPOINT_LIST", "Waypoint: " + wp.getName() + ", icon: " + wp.getIconName()
+                                            + ", color: " + wp.getIconColor());
                                 }
                                 adapter.notifyDataSetChanged();
                                 saveFolderToPrefs(folder);
@@ -261,22 +269,135 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         // Inflate the custom layout
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_share_waypoint, null);
         ImageView qrCodeImage = dialogView.findViewById(R.id.qrCodeImage);
-        TextView importLink = dialogView.findViewById(R.id.importLink);
+        EditText importLink = dialogView.findViewById(R.id.importLink);
         Button btnCopy = dialogView.findViewById(R.id.btnCopy);
+        Button btnShare = dialogView.findViewById(R.id.btnShare);
 
+        // Set up the QR code with a fade-in animation
+        qrCodeImage.setAlpha(0f);
         qrCodeImage.setImageBitmap(qrBitmap);
+        qrCodeImage.animate()
+                .alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+
         importLink.setText(encoded);
+
+        // Show as a BottomSheetDialog with custom behavior
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        dialog.setContentView(dialogView);
+
+        // Set the dialog to be draggable and dismissible
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        // Set up the bottom sheet behavior
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setDraggable(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
 
         btnCopy.setOnClickListener(v -> {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
             clipboard.setPrimaryClip(clip);
+
+            // Show a nice animation for the copy button
+            String originalText = btnCopy.getText().toString();
+            btnCopy.setText("Copied!");
+            btnCopy.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .setDuration(100)
+                    .withEndAction(() -> btnCopy.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(100)
+                            .withEndAction(() -> {
+                                btnCopy.setText(originalText);
+                            })
+                            .start())
+                    .start();
+
             Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
-        // Show as a BottomSheetDialog
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(dialogView);
+        btnShare.setOnClickListener(v -> {
+            // Add a small delay to show the button press animation
+            v.postDelayed(() -> {
+                try {
+                    // Validate inputs
+                    if (encoded == null || encoded.isEmpty()) {
+                        Toast.makeText(this, "Invalid waypoint data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (qrBitmap == null) {
+                        Toast.makeText(this, "Failed to generate QR code", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Create a simple text share intent first
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Waypoint: " + waypoint.getName());
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this waypoint: " + encoded);
+
+                    // Try to add the QR code image if possible
+                    boolean imageAdded = false;
+                    try {
+                        File cachePath = new File(getCacheDir(), "images");
+                        if (!cachePath.exists()) {
+                            cachePath.mkdirs();
+                        }
+
+                        File imageFile = new File(cachePath, "qr_code.png");
+                        FileOutputStream stream = new FileOutputStream(imageFile);
+                        qrBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        stream.close();
+
+                        // Get the URI for the image file
+                        Uri contentUri = androidx.core.content.FileProvider.getUriForFile(
+                                this,
+                                getPackageName() + ".fileprovider",
+                                imageFile);
+
+                        // Add the image to the share intent
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        imageAdded = true;
+                    } catch (Exception e) {
+                        // If image sharing fails, just share text
+                        Log.w("ShareWaypoint", "Failed to add image to share intent: " + e.getMessage());
+                    }
+
+                    // Check if there are apps that can handle this intent
+                    if (shareIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+                        dialog.dismiss();
+                    } else {
+                        // Fallback: try to share just text
+                        Intent textShareIntent = new Intent(Intent.ACTION_SEND);
+                        textShareIntent.setType("text/plain");
+                        textShareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this waypoint: " + encoded);
+
+                        if (textShareIntent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(Intent.createChooser(textShareIntent, "Share Waypoint"));
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(this, "No apps available to share", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("ShareWaypoint", "Failed to share waypoint: " + e.getMessage());
+                    Toast.makeText(this, "Failed to share waypoint", Toast.LENGTH_SHORT).show();
+                }
+            }, 100);
+        });
+
         dialog.show();
     }
 
@@ -340,7 +461,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Import Waypoint");
 
-        String[] options = {"Import from Code", "Scan QR Code"};
+        String[] options = { "Import from Code", "Scan QR Code" };
         builder.setItems(options, (dialog, which) -> {
             switch (which) {
                 case 0: // Import from Code
