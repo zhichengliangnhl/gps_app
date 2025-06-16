@@ -160,18 +160,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
         }
         setupSettingsPanel();
 
-        // Earn coins button
-        Button btnEarn = findViewById(R.id.btnEarnCoins);
-        if (btnEarn != null) {
-            btnEarn.setOnClickListener(v -> {
-                CoinManager.addCoins(this, 100000000);
-                TextView coinCounter = findViewById(R.id.coinCounter);
-                if (coinCounter != null) {
-                    CoinManager.updateCoinDisplay(this, coinCounter);
-                }
-            });
-        }
-
         // Waypoint button
         Button waypointButton = findViewById(R.id.waypointsButton);
         if (waypointButton != null) {

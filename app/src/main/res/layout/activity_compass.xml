@@ -71,22 +71,6 @@
             android:background="@drawable/rounded_button"
             android:paddingHorizontal="32dp"
             android:paddingVertical="14dp" />
-
-        <Button
-            android:id="@+id/btnEarnCoins"
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button_accent"
-            android:paddingHorizontal="32dp"
-            android:paddingVertical="14dp"
-            android:text="Earn 100"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-
     </LinearLayout>
 
     <!-- Bottom Nav Bar -->
