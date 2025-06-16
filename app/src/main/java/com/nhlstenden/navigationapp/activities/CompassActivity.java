@@ -43,6 +43,7 @@ import com.nhlstenden.navigationapp.interfaces.CompassListener;
 import com.nhlstenden.navigationapp.adapters.CompassSensorManager;
 import com.nhlstenden.navigationapp.models.Waypoint;
 
+
 public class CompassActivity extends BaseActivity implements CompassListener {
 
     private static final int LOCATION_PERMISSION_REQUEST = 100;
@@ -90,7 +91,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private boolean hasStoppedVibrating = false;
     private boolean hasEnteredCompletionRange = false;
     private boolean isActivityVisible = false;
-
 
 
 
@@ -285,8 +285,14 @@ public class CompassActivity extends BaseActivity implements CompassListener {
     private void updateDistanceDisplay() {
         if (currentLocation == null || targetWaypoint == null) {
             Log.d("CompassActivity", "updateDistanceDisplay: currentLocation or targetWaypoint is null");
-            distanceText.setText("Distance: -");
-            distanceText.setVisibility(View.VISIBLE);
+
+            boolean distanceDisplayEnabled = AppSettings.get(this, AppSettings.DISTANCE_DISPLAY, true);
+            if (distanceDisplayEnabled) {
+                distanceText.setText("Distance: -");
+                distanceText.setVisibility(View.VISIBLE);
+            } else {
+                distanceText.setVisibility(View.GONE);
+            }
             return;
         }
 
@@ -297,17 +303,24 @@ public class CompassActivity extends BaseActivity implements CompassListener {
 
         Log.d("CompassActivity", "Distance to waypoint: " + distance + " meters");
 
-        // Show meaningful distance text
-        if (distance <= 10f) {
-            hasStoppedVibrating = true;
-            distanceText.setText("You're here!");
-            distanceText.setVisibility(View.VISIBLE);
+        boolean distanceDisplayEnabled = AppSettings.get(this, AppSettings.DISTANCE_DISPLAY, true);
+
+        if (distanceDisplayEnabled) {
+            if (distance <= 10f) {
+                hasStoppedVibrating = true;
+                distanceText.setText("You're here!");
+                distanceText.setVisibility(View.VISIBLE);
+            } else {
+                distanceText.setText(String.format("Distance: %.1f meters", distance));
+                distanceText.setVisibility(View.VISIBLE);
+            }
         } else {
-            distanceText.setText(String.format("Distance: %.1f meters", distance));
-            distanceText.setVisibility(View.VISIBLE);
+            if (distance <= 10f) {
+                hasStoppedVibrating = true;
+            }
+            distanceText.setVisibility(View.GONE);
         }
 
-        // Vibration logic
         boolean vibrationEnabled = AppSettings.get(this, AppSettings.VIBRATION, true);
         if (isActivityVisible &&
                 !hasStoppedVibrating &&
@@ -324,7 +337,6 @@ public class CompassActivity extends BaseActivity implements CompassListener {
             }
         }
 
-        // Trigger completion
         if (distance <= COMPLETION_DISTANCE && !waypointReachedShown) {
             waypointReachedShown = true;
             showWaypointReachedDialog(distance);

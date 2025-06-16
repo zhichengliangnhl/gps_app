@@ -92,6 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         bindToggle(R.id.btnToggleVibration, AppSettings.VIBRATION, "Vibration");
         bindToggle(R.id.btnToggleToast, AppSettings.TOAST_ENABLED, "Toast");
+        bindToggle(R.id.btnToggleDistance, AppSettings.DISTANCE_DISPLAY, "Distance");
     }
 
     private void toggleSidePanel() {

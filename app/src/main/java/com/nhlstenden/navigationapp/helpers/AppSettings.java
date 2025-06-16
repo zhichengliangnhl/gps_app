@@ -9,7 +9,7 @@ public final class AppSettings {
 
     public static final String VIBRATION = "vibration_enabled";
     public static final String TOAST_ENABLED = "toast_enabled";
-
+    public static final String DISTANCE_DISPLAY = "distance_display_enabled";
 
     public static boolean get(Context ctx, String key, boolean def) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(key, def);

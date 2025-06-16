@@ -48,8 +48,7 @@
             android:text="Vibration: ON"
             android:background="@drawable/rounded_button"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"
-            />
+            android:layout_marginBottom="12dp" />
 
         <Button
             android:id="@+id/btnToggleToast"
@@ -57,7 +56,15 @@
             android:layout_height="wrap_content"
             android:text="Toast: ON"
             android:background="@drawable/rounded_button"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnToggleDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Distance: ON"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="12dp" />
 
     </LinearLayout>
 
