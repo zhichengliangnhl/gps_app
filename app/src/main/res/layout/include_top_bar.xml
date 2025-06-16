@@ -32,13 +32,14 @@
 
             <TextView
                 android:id="@+id/coinCounter"
-                android:layout_width="100dp"
-                android:layout_height="20dp"
+                android:layout_width="141dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="5dp"
+                android:padding="6dp"
                 android:text="0"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
                 android:textAlignment="textEnd"
-                android:layout_marginEnd="5dp"/>
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/coinIcon"

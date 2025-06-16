@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.material:material:1.9.0")
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

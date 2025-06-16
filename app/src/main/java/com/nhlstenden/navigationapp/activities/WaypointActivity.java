@@ -1,22 +1,30 @@
 package com.nhlstenden.navigationapp.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +46,8 @@ import java.lang.reflect.Type;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+
+import androidx.core.graphics.Insets;
 
 public class WaypointActivity extends BaseActivity implements OnWaypointClickListener {
 
@@ -63,11 +73,30 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         }
 
         View topBar = findViewById(R.id.top_bar);
+        View bottomNav = findViewById(R.id.bottom_nav_container);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            if (bottomNav != null) {
+                bottomNav.setPadding(
+                    bottomNav.getPaddingLeft(),
+                    bottomNav.getPaddingTop(),
+                    bottomNav.getPaddingRight(),
+                    systemInsets.bottom
+                );
+            }
+            return insets;
+        });
+
         TextView headerTitle = topBar.findViewById(R.id.headerTitle);
         if (headerTitle != null) {
             headerTitle.setText(folder.getName());
         }
         setupSettingsPanel();
+
+        View settingsIcon = findViewById(R.id.settingsIcon);
+        if (settingsIcon != null) {
+            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        }
 
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
@@ -105,10 +134,22 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
+                        Log.d("WAYPOINT_EDIT", "Edited waypoint: " + (w != null ? w.getName() : "null") + ", icon: " + (w != null ? w.getIconName() : "null") + ", color: " + (w != null ? w.getIconColor() : "null"));
                         if (w != null) {
                             String mode = result.getData().getStringExtra("mode");
                             if ("edit".equals(mode)) {
-                                adapter.updateWaypoint(w);
+                                // Update the waypoint in the list (which is folder.getWaypoints())
+                                for (int i = 0; i < waypointList.size(); i++) {
+                                    if (waypointList.get(i).getId().equals(w.getId())) {
+                                        waypointList.set(i, w);
+                                        break;
+                                    }
+                                }
+                                // Log the updated list
+                                for (Waypoint wp : waypointList) {
+                                    Log.d("WAYPOINT_LIST", "Waypoint: " + wp.getName() + ", icon: " + wp.getIconName() + ", color: " + wp.getIconColor());
+                                }
+                                adapter.notifyDataSetChanged();
                                 saveFolderToPrefs(folder);
                             } else {
                                 // Check for duplicate waypoint name in this folder
@@ -156,7 +197,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 intent.putExtra("WAYPOINT", waypointList.get(0));
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "No waypoints available", Toast.LENGTH_SHORT);
             }
         });
 
@@ -212,12 +253,33 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     @Override
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
-        if (encoded != null) {
-            Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
-            showQrBottomSheet(qrBitmap);
-        } else {
-            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+        if (encoded == null) {
+            ToastUtils.show(this, "Failed to encode waypoint", Toast.LENGTH_SHORT);
+            return;
         }
+
+        Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
+
+        // Inflate the custom layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_share_waypoint, null);
+        ImageView qrCodeImage = dialogView.findViewById(R.id.qrCodeImage);
+        TextView importLink = dialogView.findViewById(R.id.importLink);
+        Button btnCopy = dialogView.findViewById(R.id.btnCopy);
+
+        qrCodeImage.setImageBitmap(qrBitmap);
+        importLink.setText(encoded);
+
+        btnCopy.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
+            clipboard.setPrimaryClip(clip);
+            ToastUtils.show(this, "Link copied to clipboard", Toast.LENGTH_SHORT);
+        });
+
+        // Show as a BottomSheetDialog
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(dialogView);
+        dialog.show();
     }
 
     private void saveSelectedWaypoint(Waypoint waypoint) {
@@ -247,7 +309,18 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         bottomSheetDialog.show();
     }
 
-    public void showImportDialog() {
+    private void showSettingsPanel() {
+        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
+                .setView(sidePanelView)
+                .create();
+
+        dialog.show();
+    }
+
+
+    public void showImportLinkDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Import Waypoint Code");
 
@@ -271,6 +344,30 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             }
         });
 
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    public void showImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import Waypoint");
+        
+        String[] options = {"Import from Code", "Scan QR Code"};
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    showImportLinkDialog();
+                    break;
+                case 1: 
+                    ScanOptions scanOptions = new ScanOptions();
+                    scanOptions.setPrompt("Scan QR Code");
+                    scanOptions.setCaptureActivity(PortraitCaptureActivity.class);
+                    scanOptions.setOrientationLocked(true);
+                    qrScanner.launch(scanOptions);
+                    break;
+            }
+        });
+        
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
     }

@@ -50,18 +50,18 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         holder.dateTextView.setText(waypoint.getDate());
 
         // Show navigation timer
-        TextView timerTextView = holder.itemView.findViewById(R.id.waypointTimer);
         long navTime = waypoint.getNavigationTimeMillis();
         if (navTime > 0) {
-            timerTextView.setText("Timer: " + formatTimer(navTime));
+            holder.timerTextView.setText("Timer: " + formatTimer(navTime));
         } else {
-            timerTextView.setText("Timer: --");
+            holder.timerTextView.setText("Timer: --");
         }
 
-        String coordinates = String.format(Locale.getDefault(),
-                "Lat: %.6f, Lng: %.6f",
-                waypoint.getLat(), waypoint.getLng());
-        holder.coordinatesTextView.setText(coordinates);
+        // Set icon and color (use default if not set)
+        int iconResId = holder.itemView.getContext().getResources().getIdentifier(waypoint.getIconName(), "drawable", holder.itemView.getContext().getPackageName());
+        int iconColor = waypoint.getIconColor();
+        holder.imageView.setImageResource(iconResId);
+        holder.imageView.setColorFilter(iconColor);
 
         // Set border based on completion
         boolean completed = false;
@@ -81,19 +81,6 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.GONE);
             starView.setVisibility(View.VISIBLE);
-        }
-
-        if (waypoint.getImageUri() != null && !waypoint.getImageUri().isEmpty()) {
-            Uri uri = Uri.parse(waypoint.getImageUri());
-            if ("file".equals(uri.getScheme())) {
-                holder.imageView.setImageURI(uri);
-            } else {
-                Log.e("WAYPOINT_IMAGE", "Failed to load image from URI ");
-                holder.imageView.setImageResource(R.drawable.ic_launcher_background); // fallback
-            }
-        } else {
-            Log.e("WAYPOINT_IMAGE", "Failed, supposedly, image URI is empty");
-            holder.imageView.setImageResource(R.drawable.ic_launcher_background);
         }
 
         // Hook entire card view to navigation
@@ -119,7 +106,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         for (int i = 0; i < waypointList.size(); i++) {
             if (waypointList.get(i).getId().equals(updated.getId())) {
                 waypointList.set(i, updated);
-                notifyItemChanged(i);
+                notifyDataSetChanged();
                 break;
             }
         }

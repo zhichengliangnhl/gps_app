@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/rounded_dialog_bg"
-    android:padding="24dp"
+    android:padding="34dp"
     android:gravity="center_horizontal">
 
     <TextView
@@ -30,17 +31,18 @@
     <TextView
         android:id="@+id/dialogStats"
         android:layout_width="247dp"
-        android:layout_height="92dp"
+        android:layout_height="155dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         android:text="Stats go here"
         android:textColor="?android:textColorPrimary"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/dialogPlatypusImage"
         android:layout_width="212dp"
         android:layout_height="189dp"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="16dp"
         android:contentDescription="Platypus celebration"
         android:src="@drawable/platypus_celebrate" />
 

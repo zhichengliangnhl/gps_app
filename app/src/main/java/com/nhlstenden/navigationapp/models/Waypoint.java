@@ -5,11 +5,14 @@ import static com.nhlstenden.navigationapp.activities.WaypointActivity.decodeBas
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
+
+import com.nhlstenden.navigationapp.R;
 
 import org.json.JSONObject;
 
@@ -26,17 +29,20 @@ public class Waypoint implements Parcelable {
     private String id;
     private String name;
     private String description;
-    private String imageUri;
+    private String iconName;
+    private int iconColor;
     private double lat;
     private double lng;
     private String date;
     private long navigationTimeMillis = 0L;
+    private boolean isImported = false;
 
-    public Waypoint(String id, String name, String description, String imageUri, double lat, double lng) {
+    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.imageUri = imageUri;
+        this.iconName = iconName;
+        this.iconColor = iconColor;
         this.lat = lat;
         this.lng = lng;
         // Set current date in yyyy-MM-dd format
@@ -48,11 +54,13 @@ public class Waypoint implements Parcelable {
         id = in.readString();
         name = in.readString();
         description = in.readString();
-        imageUri = in.readString();
+        iconName = in.readString();
+        iconColor = in.readInt();
         lat = in.readDouble();
         lng = in.readDouble();
         date = in.readString();
         navigationTimeMillis = in.readLong();
+        isImported = in.readByte() != 0;
     }
 
     public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
@@ -79,8 +87,12 @@ public class Waypoint implements Parcelable {
         return description;
     }
 
-    public String getImageUri() {
-        return imageUri;
+    public String getIconName() {
+        return iconName;
+    }
+
+    public int getIconColor() {
+        return iconColor;
     }
 
     public double getLat() {
@@ -111,8 +123,12 @@ public class Waypoint implements Parcelable {
         this.description = description;
     }
 
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
+    }
+
+    public void setIconColor(int iconColor) {
+        this.iconColor = iconColor;
     }
 
     public void setLat(double lat) {
@@ -131,6 +147,15 @@ public class Waypoint implements Parcelable {
         this.navigationTimeMillis = navigationTimeMillis;
     }
 
+    public boolean isImported() {
+        return isImported;
+    }
+
+    public void setImported(boolean imported) {
+        isImported = imported;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -141,14 +166,14 @@ public class Waypoint implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeString(imageUri);
+        dest.writeString(iconName);
+        dest.writeInt(iconColor);
         dest.writeDouble(lat);
         dest.writeDouble(lng);
         dest.writeString(date);
         dest.writeLong(navigationTimeMillis);
+        dest.writeByte((byte) (isImported ? 1 : 0));
     }
-
-    // Add this in Waypoint.java
 
     public String encode() {
         try {
@@ -156,20 +181,12 @@ public class Waypoint implements Parcelable {
             json.put("id", id);
             json.put("name", name);
             json.put("description", description);
-            json.put("imageUri", imageUri != null ? imageUri : "");
+            json.put("iconName", iconName);
+            json.put("iconColor", iconColor);
             json.put("lat", lat);
             json.put("lng", lng);
             json.put("date", date);
             json.put("navigationTimeMillis", navigationTimeMillis);
-
-            // Encode actual image if it's a file URI
-            if (imageUri != null && imageUri.startsWith("file://")) {
-                String path = Uri.parse(imageUri).getPath();
-                String base64 = encodeImageFromPath(path);
-                if (base64 != null) {
-                    json.put("imageBase64", base64);
-                }
-            }
 
             return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
         } catch (Exception e) {
@@ -186,58 +203,17 @@ public class Waypoint implements Parcelable {
             String id = json.getString("id");
             String name = json.getString("name");
             String description = json.getString("description");
-            String imageUri = json.optString("imageUri", "");
+            String iconName = json.getString("iconName");
+            int iconColor = json.optInt("iconColor", Color.BLACK);
             double lat = json.getDouble("lat");
             double lng = json.getDouble("lng");
             String date = json.optString("date", null);
             long navigationTimeMillis = json.optLong("navigationTimeMillis", 0L);
 
-            // Check if there's an embedded image
-            if (json.has("imageBase64")) {
-                String imageBase64 = json.getString("imageBase64");
-                String savedPath = decodeBase64ToImageFile(context, imageBase64);
-                if (savedPath != null) {
-                    imageUri = "file://" + savedPath;
-                }
-            }
-
-            Waypoint wp = new Waypoint(id, name, description, imageUri, lat, lng);
-            if (date != null)
-                wp.setDate(date);
-            wp.setNavigationTimeMillis(navigationTimeMillis);
+            Waypoint wp = new Waypoint(id, name, description, iconName, iconColor, lat, lng);
+            if (date != null) wp.setDate(date);
+            wp.setImported(true);
             return wp;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String encodeImageFromPath(String imagePath) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(imagePath, options);
-
-            // Determine scaling factor
-            int maxDim = 300;
-            int scale = 1;
-            while (options.outWidth / scale > maxDim || options.outHeight / scale > maxDim) {
-                scale *= 2;
-            }
-
-            options.inSampleSize = scale;
-            options.inJustDecodeBounds = false;
-            Bitmap resizedBitmap = BitmapFactory.decodeFile(imagePath, options);
-
-            if (resizedBitmap == null)
-                return null;
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
-            resizedBitmap.recycle();
-
-            byte[] imageBytes = outputStream.toByteArray();
-            return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

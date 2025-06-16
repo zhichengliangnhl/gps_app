@@ -13,6 +13,7 @@ import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.helpers.ThemePurchaseManager;
 import com.nhlstenden.navigationapp.helpers.ToastUtils;
+import com.nhlstenden.navigationapp.helpers.ArrowPurchaseManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class BrushActivity extends BaseActivity {
         }
         setupSettingsPanel();
 
+        // Handle themes
         Map<Integer, String> themeMap = new HashMap<>();
         themeMap.put(R.id.theme1, "classic");
         themeMap.put(R.id.theme2, "macha");
@@ -46,6 +48,28 @@ public class BrushActivity extends BaseActivity {
             if (layout != null) {
                 updateThemeCardUI(layout, themeName);
                 layout.setOnClickListener(v -> handleThemeClick(themeName));
+            }
+        }
+
+        // Handle arrows
+        Map<Integer, String> arrowMap = new HashMap<>();
+        arrowMap.put(R.id.arrow1, "orange");
+        arrowMap.put(R.id.arrow2, "red");
+        arrowMap.put(R.id.arrow3, "yellow");
+        arrowMap.put(R.id.arrow4, "green");
+        arrowMap.put(R.id.arrow5, "cyan");
+        arrowMap.put(R.id.arrow6, "blue");
+        arrowMap.put(R.id.arrow7, "purple");
+        arrowMap.put(R.id.arrow8, "rose");
+        arrowMap.put(R.id.arrow9, "grey");
+        arrowMap.put(R.id.arrow10, "white");
+
+        for (Map.Entry<Integer, String> entry : arrowMap.entrySet()) {
+            LinearLayout layout = findViewById(entry.getKey());
+            String arrowName = entry.getValue();
+            if (layout != null) {
+                updateArrowCardUI(layout, arrowName);
+                layout.setOnClickListener(v -> handleArrowClick(arrowName));
             }
         }
     }
@@ -82,6 +106,38 @@ public class BrushActivity extends BaseActivity {
         }
     }
 
+    private void updateArrowCardUI(LinearLayout layout, String arrowName) {
+        RelativeLayout priceLayout = null;
+        TextView priceText = null;
+        
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof RelativeLayout) {
+                priceLayout = (RelativeLayout) child;
+                for (int j = 0; j < priceLayout.getChildCount(); j++) {
+                    View grandChild = priceLayout.getChildAt(j);
+                    if (grandChild instanceof TextView) {
+                        priceText = (TextView) grandChild;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if (priceLayout != null && priceText != null) {
+            if (ArrowPurchaseManager.isArrowPurchased(this, arrowName)) {
+                priceLayout.setVisibility(View.GONE);
+                layout.setAlpha(1.0f);
+            } else {
+                priceLayout.setVisibility(View.VISIBLE);
+                int price = ArrowPurchaseManager.getArrowPrice(arrowName);
+                priceText.setText(String.valueOf(price));
+                layout.setAlpha(0.7f);
+            }
+        }
+    }
+
     private void handleThemeClick(String themeName) {
         if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
             saveTheme(themeName);
@@ -93,6 +149,21 @@ public class BrushActivity extends BaseActivity {
                 recreate();
             } else {
                 ToastUtils.show(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
+    private void handleArrowClick(String arrowName) {
+        if (ArrowPurchaseManager.isArrowPurchased(this, arrowName)) {
+            ArrowPurchaseManager.setSelectedArrow(this, arrowName);
+            recreate();
+        } else {
+            if (ArrowPurchaseManager.purchaseArrow(this, arrowName)) {
+                Toast.makeText(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT).show();
+                ArrowPurchaseManager.setSelectedArrow(this, arrowName);
+                recreate();
+            } else {
+                Toast.makeText(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT).show();
             }
         }
     }
