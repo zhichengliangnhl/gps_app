@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,7 +31,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
-import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -78,10 +76,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             if (bottomNav != null) {
                 bottomNav.setPadding(
-                    bottomNav.getPaddingLeft(),
-                    bottomNav.getPaddingTop(),
-                    bottomNav.getPaddingRight(),
-                    systemInsets.bottom
+                        bottomNav.getPaddingLeft(),
+                        bottomNav.getPaddingTop(),
+                        bottomNav.getPaddingRight(),
+                        systemInsets.bottom
                 );
             }
             return insets;
@@ -91,12 +89,12 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         if (headerTitle != null) {
             headerTitle.setText(folder.getName());
         }
+
+        // Setup the base settings panel from BaseActivity
         setupSettingsPanel();
 
-        View settingsIcon = findViewById(R.id.settingsIcon);
-        if (settingsIcon != null) {
-            settingsIcon.setOnClickListener(v -> showSettingsPanel());
-        }
+        // DON'T override the settings icon behavior - let BaseActivity handle it
+        // The settings icon will now properly show the settings panel, not the import panel
 
         waypointList = folder.getWaypoints();
         recyclerView = findViewById(R.id.rvWaypoints);
@@ -113,10 +111,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         if (imported != null && imported.getName() != null) {
                             waypointList.add(imported);
                             adapter.updateList(waypointList);
-                            ToastUtils.show(this, "Waypoint imported!", Toast.LENGTH_SHORT);
+                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
                             saveFolderToPrefs(folder);
                         } else {
-                            ToastUtils.show(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT);
+                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -155,8 +153,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 // Check for duplicate waypoint name in this folder
                                 for (Waypoint wp : folder.getWaypoints()) {
                                     if (wp.getName().equalsIgnoreCase(w.getName())) {
-                                        ToastUtils.show(this, "Waypoint name must be unique in this folder",
-                                                Toast.LENGTH_SHORT);
+                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }
@@ -197,7 +195,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 intent.putExtra("WAYPOINT", waypointList.get(0));
                 startActivity(intent);
             } else {
-                ToastUtils.show(this, "No waypoints available", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -254,7 +252,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     public void onShareClick(Waypoint waypoint) {
         String encoded = waypoint.encode();
         if (encoded == null) {
-            ToastUtils.show(this, "Failed to encode waypoint", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -273,7 +271,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
             clipboard.setPrimaryClip(clip);
-            ToastUtils.show(this, "Link copied to clipboard", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
         // Show as a BottomSheetDialog
@@ -309,17 +307,6 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         bottomSheetDialog.show();
     }
 
-    private void showSettingsPanel() {
-        View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
-                .setView(sidePanelView)
-                .create();
-
-        dialog.show();
-    }
-
-
     public void showImportLinkDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Import Waypoint Code");
@@ -349,16 +336,17 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     public void showImportDialog() {
+        // Create a simple dialog with import options instead of using a side panel
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Import Waypoint");
-        
+
         String[] options = {"Import from Code", "Scan QR Code"};
         builder.setItems(options, (dialog, which) -> {
             switch (which) {
-                case 0:
+                case 0: // Import from Code
                     showImportLinkDialog();
                     break;
-                case 1: 
+                case 1: // Scan QR Code
                     ScanOptions scanOptions = new ScanOptions();
                     scanOptions.setPrompt("Scan QR Code");
                     scanOptions.setCaptureActivity(PortraitCaptureActivity.class);
@@ -367,7 +355,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                     break;
             }
         });
-        
+
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
     }

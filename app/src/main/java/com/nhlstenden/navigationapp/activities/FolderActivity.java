@@ -27,6 +27,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.FolderAdapter;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.OnFolderClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 
@@ -209,21 +210,6 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 .apply();
     }
 
-    private void showImportDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Import Waypoint Code");
-
-        final EditText input = new EditText(this);
-        builder.setView(input);
-
-        builder.setPositiveButton("Import", (dialog, which) -> {
-            String code = input.getText().toString().trim();
-            Toast.makeText(this, "Entered code: " + code, Toast.LENGTH_SHORT).show();
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.show();
-    }
 
     private void showSettingsPanel() {
         View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);

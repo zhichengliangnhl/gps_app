@@ -65,9 +65,9 @@ public class CreateWaypointActivity extends BaseActivity {
                         lat = data.getDoubleExtra("lat", 0.0);
                         lng = data.getDoubleExtra("lng", 0.0);
 
-                        Toast.makeText(this,
+                        ToastUtils.show(this,
                                 String.format("Location selected: %.6f, %.6f", lat, lng),
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT);
 
                         updateMapPreview(lat, lng);
                     }
