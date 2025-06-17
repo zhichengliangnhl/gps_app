@@ -83,11 +83,10 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             if (bottomNav != null) {
                 bottomNav.setPadding(
-                    bottomNav.getPaddingLeft(),
-                    bottomNav.getPaddingTop(),
-                    bottomNav.getPaddingRight(),
-                    systemInsets.bottom
-                );
+                        bottomNav.getPaddingLeft(),
+                        bottomNav.getPaddingTop(),
+                        bottomNav.getPaddingRight(),
+                        systemInsets.bottom);
             }
             return insets;
         });
@@ -148,37 +147,100 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
 
     @Override
     public void onEditFolder(Folder folder) {
-        EditText input = new EditText(this);
-        input.setText(folder.getName());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_folder, null);
+        EditText editFolderName = dialogView.findViewById(R.id.editFolderName);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnSave = dialogView.findViewById(R.id.btnSave);
+        editFolderName.setText(folder.getName());
+        editFolderName.requestFocus();
+        editFolderName.setSelection(editFolderName.getText().length());
 
-        new AlertDialog.Builder(this)
-                .setTitle("Rename Folder")
-                .setView(input)
-                .setPositiveButton("Save", (dialog, which) -> {
-                    String newName = input.getText().toString().trim();
-                    if (!TextUtils.isEmpty(newName)) {
-                        folder.setName(newName);
-                        folderAdapter.notifyDataSetChanged();
-                        saveFolders();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(
+                this, R.style.Dialog_Rounded);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
+                    .from(bottomSheet);
+            behavior.setDraggable(true);
+            behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+        }
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSave.setOnClickListener(v -> {
+            String newName = editFolderName.getText().toString().trim();
+            if (!TextUtils.isEmpty(newName)) {
+                folder.setName(newName);
+                folderAdapter.notifyDataSetChanged();
+                saveFolders();
+                dialog.dismiss();
+            } else {
+                editFolderName.setError("Folder name cannot be empty");
+            }
+        });
+        btnCancel.setBackgroundTintList(null);
+        btnSave.setBackgroundTintList(null);
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setDimAmount(0.6f);
+        }
+        if (bottomSheet != null) {
+            bottomSheet.setBackgroundResource(android.R.color.transparent);
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.4); // 60% of screen
+            bottomSheet.getLayoutParams().height = desiredHeight;
+            bottomSheet.requestLayout();
+            com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
+                    .from(bottomSheet);
+            behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+        }
     }
 
     @Override
     public void onDeleteFolder(Folder folder) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Folder")
-                .setMessage("Are you sure you want to delete \"" + folder.getName() + "\"?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    folderList.remove(folder);
-                    folderAdapter.notifyDataSetChanged();
-                    saveFolders();
-                    Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_folder, null);
+        TextView previewFolderName = dialogView.findViewById(R.id.previewFolderName);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
+        previewFolderName.setText(folder.getName());
+
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(
+                this, R.style.Dialog_Rounded);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
+                    .from(bottomSheet);
+            behavior.setDraggable(true);
+            behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+        }
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnDelete.setOnClickListener(v -> {
+            folderList.remove(folder);
+            folderAdapter.notifyDataSetChanged();
+            saveFolders();
+            Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+        btnCancel.setBackgroundTintList(null);
+        btnDelete.setBackgroundTintList(null);
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setDimAmount(0.6f);
+        }
+        if (bottomSheet != null) {
+            bottomSheet.setBackgroundResource(android.R.color.transparent);
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.6); // 60% of screen
+            bottomSheet.getLayoutParams().height = desiredHeight;
+            bottomSheet.requestLayout();
+            com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
+                    .from(bottomSheet);
+            behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+        }
     }
 
     @Override
@@ -209,7 +271,6 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 .putString(KEY_FOLDERS, json)
                 .apply();
     }
-
 
     private void showSettingsPanel() {
         View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);

@@ -264,9 +264,93 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
     @Override
     public void onDeleteClick(Waypoint waypoint) {
-        folder.getWaypoints().remove(waypoint);
-        adapter.updateList(folder.getWaypoints());
-        saveFolderToPrefs(folder);
+        showDeleteConfirmationDialog(waypoint);
+    }
+
+    private void showDeleteConfirmationDialog(Waypoint waypoint) {
+        // Inflate the custom bottom sheet layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_waypoint, null);
+
+        // Get dialog elements
+        ImageView previewWaypointIcon = dialogView.findViewById(R.id.previewWaypointIcon);
+        ImageView previewWaypointCrown = dialogView.findViewById(R.id.previewWaypointCrown);
+        ImageView previewWaypointImport = dialogView.findViewById(R.id.previewWaypointImport);
+        TextView previewWaypointName = dialogView.findViewById(R.id.previewWaypointName);
+        TextView previewWaypointDescription = dialogView.findViewById(R.id.previewWaypointDescription);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
+
+        // Set waypoint details in preview
+        previewWaypointName.setText(waypoint.getName());
+        previewWaypointDescription.setText(waypoint.getDescription());
+
+        // Set icon and color
+        int iconResId = getResources().getIdentifier(waypoint.getIconName(), "drawable", getPackageName());
+        if (iconResId != 0) {
+            previewWaypointIcon.setImageResource(iconResId);
+            previewWaypointIcon.setColorFilter(waypoint.getIconColor());
+        }
+
+        // Check if waypoint is completed
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean completed = false;
+        if (waypoint.getId() != null) {
+            completed = prefs.getBoolean("waypoint_completed_" + waypoint.getId(), false);
+        }
+
+        // Show appropriate status indicators
+        if (completed) {
+            previewWaypointCrown.setVisibility(View.VISIBLE);
+            previewWaypointImport.setVisibility(View.GONE);
+        } else if (waypoint.isImported()) {
+            previewWaypointCrown.setVisibility(View.GONE);
+            previewWaypointImport.setVisibility(View.VISIBLE);
+        } else {
+            previewWaypointCrown.setVisibility(View.GONE);
+            previewWaypointImport.setVisibility(View.GONE);
+        }
+
+        // Create and configure the dialog
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.Dialog_Rounded);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        // Configure bottom sheet behavior
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setDraggable(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+
+        // Set up button click listeners
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnDelete.setOnClickListener(v -> {
+            // Actually delete the waypoint
+            folder.getWaypoints().remove(waypoint);
+            adapter.updateList(folder.getWaypoints());
+            saveFolderToPrefs(folder);
+
+            // Show success message
+            Toast.makeText(this, "Waypoint deleted", Toast.LENGTH_SHORT).show();
+
+            dialog.dismiss();
+        });
+
+        // Remove background tint from buttons to preserve custom styling
+        btnCancel.setBackgroundTintList(null);
+        btnDelete.setBackgroundTintList(null);
+
+        dialog.show();
+        // Set a stronger dim and remove default white background
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setDimAmount(0.6f); // Stronger dim
+        }
+        if (bottomSheet != null) {
+            bottomSheet.setBackgroundResource(android.R.color.transparent);
+        }
     }
 
     @Override
