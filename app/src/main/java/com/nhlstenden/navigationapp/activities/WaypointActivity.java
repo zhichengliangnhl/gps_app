@@ -230,32 +230,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Button btnImport = findViewById(R.id.btnImport);
         btnImport.setOnClickListener(v -> showImportDialog());
 
-        // Auto-paste logic: when the EditText is focused, check clipboard for a valid
-        // app link
-        EditText editImportCode = findViewById(R.id.editImportCode);
-        editImportCode.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipboard != null && clipboard.hasPrimaryClip()) {
-                    ClipData clip = clipboard.getPrimaryClip();
-                    if (clip != null && clip.getItemCount() > 0) {
-                        CharSequence text = clip.getItemAt(0).getText();
-                        if (text != null) {
-                            String code = text.toString().trim();
-                            // Check if the clipboard text is a valid waypoint link/code
-                            try {
-                                Waypoint wp = Waypoint.decode(this, code);
-                                if (wp != null && wp.getName() != null) {
-                                    editImportCode.setText(code);
-                                    editImportCode.setSelection(code.length());
-                                }
-                            } catch (Exception ignored) {
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        // Auto-paste logic moved to showImportDialog() method where editImportCode
+        // exists
     }
 
     private void openCreateWaypoint() {
@@ -410,6 +386,32 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Button btnScanQR = dialogView.findViewById(R.id.btnScanQR);
         Button btnImport = dialogView.findViewById(R.id.btnImport);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        // Auto-paste logic: when the EditText is focused, check clipboard for a valid
+        // app link
+        editImportCode.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                if (clipboard != null && clipboard.hasPrimaryClip()) {
+                    ClipData clip = clipboard.getPrimaryClip();
+                    if (clip != null && clip.getItemCount() > 0) {
+                        CharSequence text = clip.getItemAt(0).getText();
+                        if (text != null) {
+                            String code = text.toString().trim();
+                            // Check if the clipboard text is a valid waypoint link/code
+                            try {
+                                Waypoint wp = Waypoint.decode(this, code);
+                                if (wp != null && wp.getName() != null) {
+                                    editImportCode.setText(code);
+                                    editImportCode.setSelection(code.length());
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.Dialog_Rounded);
         dialog.setContentView(dialogView);
