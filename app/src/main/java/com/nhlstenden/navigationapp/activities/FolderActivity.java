@@ -75,7 +75,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 if (result.getContents() != null)
                 {
                     String encodedWaypoint = result.getContents();
-                    ToastUtils.show(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT);
+                    Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
                     // Optional: Decode or handle it
                 }
             });
@@ -135,14 +135,14 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             String folderName = folderNameInput.getText().toString().trim();
             if (TextUtils.isEmpty(folderName))
             {
-                ToastUtils.show(this, "Please enter a folder name", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Please enter a folder name", Toast.LENGTH_SHORT);
                 return;
             }
-            for (Folder f : folderList)
+            for (Folder f : this.folderList)
             {
                 if (f.getName().equalsIgnoreCase(folderName))
                 {
-                    ToastUtils.show(this, "Folder name must be unique", Toast.LENGTH_SHORT);
+                    Toast.makeText(this, "Folder name must be unique", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -248,10 +248,10 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnDelete.setOnClickListener(v ->
         {
-            folderList.remove(folder);
-            folderAdapter.notifyDataSetChanged();
-            saveFolders();
-            ToastUtils.show(this, "Folder deleted", Toast.LENGTH_SHORT);
+            this.folderList.remove(folder);
+            this.folderAdapter.notifyDataSetChanged();
+            this.saveFolders();
+            Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
         btnCancel.setBackgroundTintList(null);

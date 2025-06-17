@@ -3,6 +3,7 @@ package com.nhlstenden.navigationapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,10 +138,10 @@ public abstract class BaseActivity extends AppCompatActivity
                         getSharedPreferences("AppPrefs", MODE_PRIVATE).edit().clear().apply();
                         getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE).edit().clear().apply();
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-                        getSharedPreferences("theme_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
-                        getSharedPreferences("arrow_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
-                        getSharedPreferences("theme_prefs", MODE_PRIVATE).edit().clear().apply();
-                        ToastUtils.show(this, "App data reset! Restarting...", Toast.LENGTH_LONG);
+                        this.getSharedPreferences("theme_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
+                        this.getSharedPreferences("arrow_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
+                        this.getSharedPreferences("theme_prefs", MODE_PRIVATE).edit().clear().apply();
+                        Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                         recreate();
                     }
@@ -165,7 +166,7 @@ public abstract class BaseActivity extends AppCompatActivity
             btnAddGold.setOnClickListener(v ->
             {
                 CoinManager.addCoins(this, 500);
-                ToastUtils.show(this, "+500 gold added!", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "+500 gold added!", Toast.LENGTH_SHORT).show();
                 // Optionally update coin display if visible
                 TextView coinCounter = findViewById(R.id.coinCounter);
                 if (coinCounter != null)

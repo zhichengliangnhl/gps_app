@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:text="Classic"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:text="Macha"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -107,7 +107,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="100"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:text="Savanna"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -156,7 +156,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="200"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -178,7 +178,7 @@
                         android:layout_height="wrap_content"
                         android:text="Aqua"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -205,7 +205,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="200"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -227,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:text="Lavender"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -254,7 +254,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="200"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -276,7 +276,7 @@
                         android:layout_height="wrap_content"
                         android:text="Sunset"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -303,7 +303,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="200"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -325,7 +325,7 @@
                         android:layout_height="wrap_content"
                         android:text="Navy"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -352,7 +352,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="200"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -374,7 +374,7 @@
                         android:layout_height="wrap_content"
                         android:text="Fake Holland"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -401,7 +401,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="500"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -423,7 +423,7 @@
                         android:layout_height="wrap_content"
                         android:text="Macchiato"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -450,7 +450,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="500"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:layout_marginEnd="5dp"/>
                     </RelativeLayout>
@@ -472,7 +472,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cookie &amp; Cream"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <ImageView
@@ -499,8 +499,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="1000"
-                            android:textColor="#000"
-                            android:textSize="15sp" />
+                            android:textColor="?attr/colorOnSurface" />
                     </RelativeLayout>
                 </LinearLayout>
             </GridLayout>
@@ -536,7 +535,7 @@
                         android:layout_height="wrap_content"
                         android:text="Orange"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -562,7 +561,7 @@
                         android:layout_height="wrap_content"
                         android:text="Red"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -590,7 +589,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -611,7 +610,7 @@
                         android:layout_height="wrap_content"
                         android:text="Yellow"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -639,7 +638,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -660,7 +659,7 @@
                         android:layout_height="wrap_content"
                         android:text="Green"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -688,7 +687,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -709,7 +708,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cyan"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -737,7 +736,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -758,7 +757,7 @@
                         android:layout_height="wrap_content"
                         android:text="Blue"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -786,7 +785,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -807,7 +806,7 @@
                         android:layout_height="wrap_content"
                         android:text="Purple"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -835,7 +834,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -856,7 +855,7 @@
                         android:layout_height="wrap_content"
                         android:text="Rose"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -884,7 +883,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -905,7 +904,7 @@
                         android:layout_height="wrap_content"
                         android:text="Grey"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -933,7 +932,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -954,7 +953,7 @@
                         android:layout_height="wrap_content"
                         android:text="White"
                         android:textSize="15sp"
-                        android:textColor="#222"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="8dp"/>
 
                     <ImageView
@@ -982,7 +981,7 @@
                             android:layout_height="25dp"
                             android:layout_marginTop="4dp"
                             android:text="50"
-                            android:textColor="#000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </LinearLayout>

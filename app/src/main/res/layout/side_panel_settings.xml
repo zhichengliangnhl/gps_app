@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sidePanelRoot"
     android:layout_width="300dp"
     android:layout_height="match_parent">
@@ -41,49 +42,70 @@
 
         </RelativeLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnToggleVibration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vibration: ON"
-            android:background="@drawable/rounded_button"
+            android:text="VIBRATION: ON"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button_black"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp" />
+            app:backgroundTint="@null" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnToggleToast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Toast: ON"
-            android:background="@drawable/rounded_button"
-            android:layout_marginBottom="12dp" />
+            android:text="TOAST: ON"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button_black"
+            android:layout_marginTop="16dp"
+            app:backgroundTint="@null" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnToggleDistance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Distance: ON"
-            android:background="@drawable/rounded_button"
-            android:layout_marginBottom="12dp" />
+            android:text="DISTANCE: ON"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button_black"
+            android:layout_marginTop="16dp"
+            app:backgroundTint="@null" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnResetApp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reset App"
-            android:background="@drawable/rounded_red_button"
+            android:text="RESET APP"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button_red"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="12dp" />
+            app:backgroundTint="@null" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAddGold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add 500 Gold"
-            android:background="@drawable/rounded_button"
+            android:text="ADD 500 GOLD"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="12dp" />
+            android:background="@drawable/rounded_button_black"
+            android:layout_marginTop="16dp"
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 

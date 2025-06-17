@@ -25,8 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Waypoint implements Parcelable
-{
+public class Waypoint implements Parcelable {
     private String id;
     private String name;
     private String description;
@@ -38,8 +37,8 @@ public class Waypoint implements Parcelable
     private long navigationTimeMillis = 0L;
     private boolean isImported = false;
 
-    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng)
-    {
+    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat,
+            double lng) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,184 +51,152 @@ public class Waypoint implements Parcelable
         this.date = sdf.format(new Date());
     }
 
-    protected Waypoint(Parcel in)
-    {
-        id = in.readString();
-        name = in.readString();
-        description = in.readString();
-        iconName = in.readString();
-        iconColor = in.readInt();
-        lat = in.readDouble();
-        lng = in.readDouble();
-        date = in.readString();
-        navigationTimeMillis = in.readLong();
-        isImported = in.readByte() != 0;
+    protected Waypoint(Parcel in) {
+        this.id = in.readString();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.iconName = in.readString();
+        this.iconColor = in.readInt();
+        this.lat = in.readDouble();
+        this.lng = in.readDouble();
+        this.date = in.readString();
+        this.navigationTimeMillis = in.readLong();
+        this.isImported = in.readByte() != 0;
     }
 
-    public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>()
-    {
+    public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
         @Override
-        public Waypoint createFromParcel(Parcel in)
-        {
+        public Waypoint createFromParcel(Parcel in) {
             return new Waypoint(in);
         }
 
         @Override
-        public Waypoint[] newArray(int size)
-        {
+        public Waypoint[] newArray(int size) {
             return new Waypoint[size];
         }
     };
 
-    public String getId()
-    {
-        return id;
+    public String getId() {
+        return this.id;
     }
 
-    public String getName()
-    {
-        return name;
+    public String getName() {
+        return this.name;
     }
 
-    public String getDescription()
-    {
-        return description;
+    public String getDescription() {
+        return this.description;
     }
 
-    public String getIconName()
-    {
-        return iconName;
+    public String getIconName() {
+        return this.iconName;
     }
 
-    public int getIconColor()
-    {
-        return iconColor;
+    public int getIconColor() {
+        return this.iconColor;
     }
 
-    public double getLat()
-    {
-        return lat;
+    public double getLat() {
+        return this.lat;
     }
 
-    public double getLng()
-    {
-        return lng;
+    public double getLng() {
+        return this.lng;
     }
 
-    public String getDate()
-    {
-        return date;
+    public String getDate() {
+        return this.date;
     }
 
-    public long getNavigationTimeMillis()
-    {
-        return navigationTimeMillis;
+    public long getNavigationTimeMillis() {
+        return this.navigationTimeMillis;
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setIconName(String iconName)
-    {
+    public void setIconName(String iconName) {
         this.iconName = iconName;
     }
 
-    public void setIconColor(int iconColor)
-    {
+    public void setIconColor(int iconColor) {
         this.iconColor = iconColor;
     }
 
-    public void setLat(double lat)
-    {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public void setLng(double lng)
-    {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 
-    public void setDate(String date)
-    {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public void setNavigationTimeMillis(long navigationTimeMillis)
-    {
+    public void setNavigationTimeMillis(long navigationTimeMillis) {
         this.navigationTimeMillis = navigationTimeMillis;
     }
 
-    public boolean isImported()
-    {
-        return isImported;
+    public boolean isImported() {
+        return this.isImported;
     }
 
-    public void setImported(boolean imported)
-    {
-        isImported = imported;
+    public void setImported(boolean imported) {
+        this.isImported = imported;
     }
-
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeString(iconName);
-        dest.writeInt(iconColor);
-        dest.writeDouble(lat);
-        dest.writeDouble(lng);
-        dest.writeString(date);
-        dest.writeLong(navigationTimeMillis);
-        dest.writeByte((byte) (isImported ? 1 : 0));
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeString(this.iconName);
+        dest.writeInt(this.iconColor);
+        dest.writeDouble(this.lat);
+        dest.writeDouble(this.lng);
+        dest.writeString(this.date);
+        dest.writeLong(this.navigationTimeMillis);
+        dest.writeByte((byte) (this.isImported ? 1 : 0));
     }
 
-    public String encode()
-    {
-        try
-        {
+    public String encode() {
+        try {
             JSONObject json = new JSONObject();
-            json.put("id", id);
-            json.put("name", name);
-            json.put("description", description);
-            json.put("iconName", iconName);
-            json.put("iconColor", iconColor);
-            json.put("lat", lat);
-            json.put("lng", lng);
-            json.put("date", date);
-            json.put("navigationTimeMillis", navigationTimeMillis);
+            json.put("id", this.id);
+            json.put("name", this.name);
+            json.put("description", this.description);
+            json.put("iconName", this.iconName);
+            json.put("iconColor", this.iconColor);
+            json.put("lat", this.lat);
+            json.put("lng", this.lng);
+            json.put("date", this.date);
+            json.put("navigationTimeMillis", this.navigationTimeMillis);
 
             return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Waypoint decode(Context context, String encoded)
-    {
-        try
-        {
+    public static Waypoint decode(Context context, String encoded) {
+        try {
             String jsonStr = new String(Base64.decode(encoded, Base64.NO_WRAP));
             JSONObject json = new JSONObject(jsonStr);
 
@@ -244,11 +211,11 @@ public class Waypoint implements Parcelable
             long navigationTimeMillis = json.optLong("navigationTimeMillis", 0L);
 
             Waypoint wp = new Waypoint(id, name, description, iconName, iconColor, lat, lng);
-            if (date != null) wp.setDate(date);
+            if (date != null)
+                wp.setDate(date);
             wp.setImported(true);
             return wp;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

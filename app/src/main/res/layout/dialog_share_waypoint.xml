@@ -59,16 +59,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/qrCodeImage"
+    <ImageView
+        android:id="@+id/qrCodeImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
-                android:contentDescription="QR Code" />
+        android:contentDescription="QR Code" />
         </androidx.cardview.widget.CardView>
 
-        <TextView
+    <TextView
             android:id="@+id/linkLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/importLink"
+        android:id="@+id/importLink"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -97,17 +97,17 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+        android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/importLink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <Button
-                android:id="@+id/btnCopy"
+    <Button
+        android:id="@+id/btnCopy"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+        android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:text="Copy Link"
@@ -123,7 +123,7 @@
                 android:text="Share Link"
                 android:textColor="@android:color/white"
                 android:background="@drawable/rounded_button" />
-        </LinearLayout>
+</LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

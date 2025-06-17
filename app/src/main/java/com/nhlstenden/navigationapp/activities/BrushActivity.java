@@ -1,5 +1,6 @@
 package com.nhlstenden.navigationapp.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -200,13 +201,13 @@ public class BrushActivity extends BaseActivity
         {
             if (ArrowPurchaseManager.purchaseArrow(this, arrowName))
             {
-                ToastUtils.show(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT).show();
                 ArrowPurchaseManager.setSelectedArrow(this, arrowName);
                 recreate();
             }
             else
             {
-                ToastUtils.show(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT).show();
             }
         }
     }

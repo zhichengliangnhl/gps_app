@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/secondLightest">
@@ -23,8 +24,8 @@
             android:layout_height="wrap_content"
             android:hint="Folder Name"
             android:background="@null"
-            android:textColor="#000000"
-            android:textColorHint="#444444"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurface"
             android:textSize="23sp"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
@@ -34,12 +35,12 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="#000000"
+            android:background="?attr/darkColor"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp" />
 
         <!-- Add Folder Button -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addFolderButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +53,8 @@
             android:paddingHorizontal="48dp"
             android:paddingVertical="16dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="24dp"
+            app:backgroundTint="@null" />
 
         <!-- Folder List -->
         <androidx.recyclerview.widget.RecyclerView
