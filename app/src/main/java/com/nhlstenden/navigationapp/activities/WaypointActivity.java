@@ -128,6 +128,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         } else {
                             Waypoint imported = Waypoint.decode(this, encodedWaypoint);
                             if (imported != null && imported.getName() != null) {
+                                // Mark the waypoint as imported
+                                imported.setImported(true);
                                 waypointList.add(imported);
                                 adapter.updateList(waypointList);
                                 Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
@@ -445,6 +447,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             try {
                 Waypoint wp = Waypoint.decode(this, code);
                 if (wp != null && wp.getName() != null) {
+                    // Mark the waypoint as imported
+                    wp.setImported(true);
                     waypointList.add(wp);
                     adapter.updateList(waypointList);
                     Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();

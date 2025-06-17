@@ -46,6 +46,13 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_star"
                     android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/waypointImport"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_download"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <Space android:layout_width="1dp" android:layout_height="4dp" />
@@ -112,6 +119,17 @@
                 android:text="Waypoint description goes here"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/waypointImportedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="IMPORTED"
+                android:textColor="#4CAF50"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Spacer -->

@@ -58,7 +58,8 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         }
 
         // Set icon and color (use default if not set)
-        int iconResId = holder.itemView.getContext().getResources().getIdentifier(waypoint.getIconName(), "drawable", holder.itemView.getContext().getPackageName());
+        int iconResId = holder.itemView.getContext().getResources().getIdentifier(waypoint.getIconName(), "drawable",
+                holder.itemView.getContext().getPackageName());
         int iconColor = waypoint.getIconColor();
         holder.imageView.setImageResource(iconResId);
         holder.imageView.setColorFilter(iconColor);
@@ -73,14 +74,34 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         FrameLayout imageFrame = holder.itemView.findViewById(R.id.waypointImageFrame);
         ImageView crownView = holder.itemView.findViewById(R.id.waypointCrown);
         ImageView starView = holder.itemView.findViewById(R.id.waypointStar);
+        ImageView importView = holder.itemView.findViewById(R.id.waypointImport);
+        TextView importedLabel = holder.itemView.findViewById(R.id.waypointImportedLabel);
+
         if (completed) {
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.VISIBLE);
             starView.setVisibility(View.GONE);
+            // Show import indicators even when completed
+            if (waypoint.isImported()) {
+                importView.setVisibility(View.VISIBLE);
+                importedLabel.setVisibility(View.VISIBLE);
+            } else {
+                importView.setVisibility(View.GONE);
+                importedLabel.setVisibility(View.GONE);
+            }
+        } else if (waypoint.isImported()) {
+            // Show import icon and label for imported waypoints
+            imageFrame.setBackgroundResource(0);
+            crownView.setVisibility(View.GONE);
+            starView.setVisibility(View.GONE);
+            importView.setVisibility(View.VISIBLE);
+            importedLabel.setVisibility(View.VISIBLE);
         } else {
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.GONE);
             starView.setVisibility(View.VISIBLE);
+            importView.setVisibility(View.GONE);
+            importedLabel.setVisibility(View.GONE);
         }
 
         // Hook entire card view to navigation
