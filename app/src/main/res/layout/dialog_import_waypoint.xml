@@ -69,40 +69,115 @@
             android:textColor="@android:color/black"
             android:inputType="text"
             android:textIsSelectable="true"
+            android:hint="Enter waypoint code here..."
             app:layout_constraintTop_toBottomOf="@id/importLabel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/buttonRow"
+        <Button
+            android:id="@+id/btnScanQR"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="16dp"
+            android:text="Scan QR Code"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button"
             app:layout_constraintTop_toBottomOf="@id/editImportCode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/previewCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSecondary"
+            app:layout_constraintTop_toBottomOf="@id/btnScanQR"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <Button
-                android:id="@+id/btnScanQR"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Scan QR"
-                android:textColor="@android:color/white"
-                android:background="@drawable/rounded_button" />
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
 
-            <Button
-                android:id="@+id/btnImport"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="IMPORT"
-                android:textColor="@android:color/white"
-                android:background="@drawable/rounded_button" />
-        </LinearLayout>
+                <FrameLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/image_background_square"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/previewWaypointIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="Waypoint Icon" />
+
+                    <ImageView
+                        android:id="@+id/previewImportBadge"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top|end"
+                        android:src="@drawable/ic_download"
+                        android:background="@drawable/circular_button"
+                        android:padding="2dp" />
+                </FrameLayout>
+
+                <Space android:layout_width="16dp" android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/previewWaypointName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waypoint Name"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/previewWaypointDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Description"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/previewWaypointDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="2025-01-01"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnImport"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Import This Waypoint"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/previewCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnCancel"
@@ -112,7 +187,7 @@
             android:textColor="@android:color/white"
             android:background="@drawable/rounded_red_button"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/buttonRow"
+            app:layout_constraintTop_toBottomOf="@id/btnImport"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

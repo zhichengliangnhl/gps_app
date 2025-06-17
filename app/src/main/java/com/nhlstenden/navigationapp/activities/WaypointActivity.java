@@ -389,6 +389,81 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Button btnImport = dialogView.findViewById(R.id.btnImport);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
+        // Preview elements
+        View previewCard = dialogView.findViewById(R.id.previewCard);
+        ImageView previewWaypointIcon = dialogView.findViewById(R.id.previewWaypointIcon);
+        ImageView previewImportBadge = dialogView.findViewById(R.id.previewImportBadge);
+        TextView previewWaypointName = dialogView.findViewById(R.id.previewWaypointName);
+        TextView previewWaypointDescription = dialogView.findViewById(R.id.previewWaypointDescription);
+        TextView previewWaypointDate = dialogView.findViewById(R.id.previewWaypointDate);
+
+        // Store the current waypoint being previewed
+        final Waypoint[] previewWaypoint = { null };
+
+        // Real-time validation and preview
+        editImportCode.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                String code = s.toString().trim();
+                if (code.length() > 10) { // Only validate if there's enough text
+                    try {
+                        Waypoint wp = Waypoint.decode(WaypointActivity.this, code);
+                        if (wp != null && wp.getName() != null) {
+                            // Show preview
+                            previewWaypoint[0] = wp;
+                            previewWaypointName.setText(wp.getName());
+                            previewWaypointDescription.setText(wp.getDescription());
+                            previewWaypointDate.setText(wp.getDate());
+
+                            // Set icon and color
+                            int iconResId = getResources().getIdentifier(wp.getIconName(), "drawable",
+                                    getPackageName());
+                            if (iconResId != 0) {
+                                previewWaypointIcon.setImageResource(iconResId);
+                                previewWaypointIcon.setColorFilter(wp.getIconColor());
+                            }
+
+                            // Show preview elements
+                            previewCard.setVisibility(View.VISIBLE);
+                            btnImport.setVisibility(View.VISIBLE);
+
+                            // Animate the preview card appearance
+                            previewCard.setAlpha(0f);
+                            previewCard.setTranslationY(20f);
+                            previewCard.animate()
+                                    .alpha(1f)
+                                    .translationY(0f)
+                                    .setDuration(300)
+                                    .start();
+                        } else {
+                            // Hide preview
+                            previewWaypoint[0] = null;
+                            previewCard.setVisibility(View.GONE);
+                            btnImport.setVisibility(View.GONE);
+                        }
+                    } catch (Exception e) {
+                        // Hide preview
+                        previewWaypoint[0] = null;
+                        previewCard.setVisibility(View.GONE);
+                        btnImport.setVisibility(View.GONE);
+                    }
+                } else {
+                    // Hide preview
+                    previewWaypoint[0] = null;
+                    previewCard.setVisibility(View.GONE);
+                    btnImport.setVisibility(View.GONE);
+                }
+            }
+        });
+
         // Auto-paste logic: when the EditText is focused, check clipboard for a valid
         // app link
         editImportCode.setOnFocusChangeListener((v, hasFocus) -> {
@@ -433,6 +508,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                         @Override
                         public void onQrScanned(String code) {
                             editImportCode.setText(code);
+                            editImportCode.setSelection(code.length());
                             // Re-show the import dialog after scanning
                             dialog.show();
                         }
@@ -441,24 +517,18 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             dialog.dismiss();
         });
 
-        // Import button decodes and imports the waypoint
+        // Import button imports the previewed waypoint
         btnImport.setOnClickListener(v -> {
-            String code = editImportCode.getText().toString().trim();
-            try {
-                Waypoint wp = Waypoint.decode(this, code);
-                if (wp != null && wp.getName() != null) {
-                    // Mark the waypoint as imported
-                    wp.setImported(true);
-                    waypointList.add(wp);
-                    adapter.updateList(waypointList);
-                    Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
-                    saveFolderToPrefs(folder);
-                    dialog.dismiss();
-                } else {
-                    Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            if (previewWaypoint[0] != null) {
+                // Mark the waypoint as imported
+                previewWaypoint[0].setImported(true);
+                waypointList.add(previewWaypoint[0]);
+                adapter.updateList(waypointList);
+                Toast.makeText(this, "✅ Waypoint imported successfully!", Toast.LENGTH_SHORT).show();
+                saveFolderToPrefs(folder);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Please enter a valid waypoint code first", Toast.LENGTH_SHORT).show();
             }
         });
 
