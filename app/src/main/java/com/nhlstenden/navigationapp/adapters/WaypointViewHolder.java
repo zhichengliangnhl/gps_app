@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
 
-public class WaypointViewHolder extends RecyclerView.ViewHolder {
+public class WaypointViewHolder extends RecyclerView.ViewHolder
+{
     ImageView imageView;
     TextView nameTextView, descriptionTextView, dateTextView, timerTextView;
     ImageButton editButton, deleteButton, shareButton;
 
-    public WaypointViewHolder(@NonNull View itemView) {
+    public WaypointViewHolder(@NonNull View itemView)
+    {
         super(itemView);
         imageView = itemView.findViewById(R.id.waypointImage);
         nameTextView = itemView.findViewById(R.id.waypointName);

@@ -37,7 +37,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-public class CreateWaypointActivity extends BaseActivity {
+public class CreateWaypointActivity extends BaseActivity
+{
 
     private MapView mapPreview;
     private GoogleMap previewMap;
@@ -58,10 +59,13 @@ public class CreateWaypointActivity extends BaseActivity {
     private Waypoint existingWaypoint = null;
     // Launcher for picking location on map
     private final ActivityResultLauncher<Intent> mapLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->
+            {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                {
                     Intent data = result.getData();
-                    if (data.hasExtra("lat") && data.hasExtra("lng")) {
+                    if (data.hasExtra("lat") && data.hasExtra("lng"))
+                    {
                         lat = data.getDoubleExtra("lat", 0.0);
                         lng = data.getDoubleExtra("lng", 0.0);
 
@@ -75,7 +79,8 @@ public class CreateWaypointActivity extends BaseActivity {
             });
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
 
@@ -101,13 +106,15 @@ public class CreateWaypointActivity extends BaseActivity {
         boolean isImported;
 
         // Set appropriate title
-        if (headerTitle != null) {
+        if (headerTitle != null)
+        {
             headerTitle.setText("edit".equals(mode) ? "Edit Treasure" : "Create Treasure");
         }
         setupSettingsPanel();
 
         // Restore state or initialize from intent
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
+        {
             isImported = false;
             lat = savedInstanceState.getDouble("lat", 0.0);
             lng = savedInstanceState.getDouble("lng", 0.0);
@@ -117,9 +124,12 @@ public class CreateWaypointActivity extends BaseActivity {
             selectedIconColor = savedInstanceState.getInt("iconColor", Color.BLACK);
             imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
             imagePreview.setColorFilter(selectedIconColor);
-        } else if ("edit".equals(mode)) {
+        }
+        else if ("edit".equals(mode))
+        {
             existingWaypoint = getIntent().getParcelableExtra("WAYPOINT");
-            if (existingWaypoint != null) {
+            if (existingWaypoint != null)
+            {
                 etName.setText(existingWaypoint.getName());
                 etDescription.setText(existingWaypoint.getDescription());
                 lat = existingWaypoint.getLat();
@@ -130,12 +140,17 @@ public class CreateWaypointActivity extends BaseActivity {
                 selectedIconColor = existingWaypoint.getIconColor();
                 imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
                 imagePreview.setColorFilter(selectedIconColor);
-            } else {
+            }
+            else
+            {
                 isImported = false;
             }
-        } else {
+        }
+        else
+        {
             isImported = false;
-            if (getIntent().hasExtra("lat") && getIntent().hasExtra("lng")) {
+            if (getIntent().hasExtra("lat") && getIntent().hasExtra("lng"))
+            {
                 lat = getIntent().getDoubleExtra("lat", 0.0);
                 lng = getIntent().getDoubleExtra("lng", 0.0);
             }
@@ -143,7 +158,8 @@ public class CreateWaypointActivity extends BaseActivity {
 
         // MapView setup
         mapPreview.onCreate(savedInstanceState);
-        mapPreview.getMapAsync(googleMap -> {
+        mapPreview.getMapAsync(googleMap ->
+        {
             previewMap = googleMap;
             previewMap.getUiSettings().setAllGesturesEnabled(false);
             updateMapPreview(lat, lng);
@@ -151,18 +167,23 @@ public class CreateWaypointActivity extends BaseActivity {
 
         View ivCompass = findViewById(R.id.ivCompass);
 
-        if (isImported) {
+        if (isImported)
+        {
             mapPreview.setAlpha(0.6f);
             mapPreview.setVisibility(View.GONE);
             findViewById(R.id.mapClickOverlay).setVisibility(View.GONE);
             ivCompass.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             mapPreview.setVisibility(View.VISIBLE);
             findViewById(R.id.mapClickOverlay).setVisibility(View.VISIBLE);
             ivCompass.setVisibility(View.GONE);
-            findViewById(R.id.mapClickOverlay).setOnClickListener(v -> {
+            findViewById(R.id.mapClickOverlay).setOnClickListener(v ->
+            {
                 Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
-                if (lat != 0.0 && lng != 0.0) {
+                if (lat != 0.0 && lng != 0.0)
+                {
                     mapIntent.putExtra("lat", lat);
                     mapIntent.putExtra("lng", lng);
                 }
@@ -170,8 +191,10 @@ public class CreateWaypointActivity extends BaseActivity {
             });
         }
 
-        imageClickOverlay.setOnClickListener(v -> {
-            IconSelectionDialog dialog = new IconSelectionDialog(this, selectedIconName, selectedIconColor, (iconName, color) -> {
+        imageClickOverlay.setOnClickListener(v ->
+        {
+            IconSelectionDialog dialog = new IconSelectionDialog(this, selectedIconName, selectedIconColor, (iconName, color) ->
+            {
                 selectedIconName = iconName;
                 selectedIconColor = color;
                 imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
@@ -180,24 +203,30 @@ public class CreateWaypointActivity extends BaseActivity {
             dialog.show();
         });
 
-        btnSaveWaypoint.setOnClickListener(v -> {
-            if (!validateInput()) {
+        btnSaveWaypoint.setOnClickListener(v ->
+        {
+            if (!validateInput())
+            {
                 return;
             }
 
             String name = etName.getText().toString().trim();
             String description = etDescription.getText().toString().trim();
-            if (description.length() > MAX_DESCRIPTION_LENGTH) {
+            if (description.length() > MAX_DESCRIPTION_LENGTH)
+            {
                 description = description.substring(0, MAX_DESCRIPTION_LENGTH);
             }
 
             // Always use the existing waypoint's ID when in edit mode
             String waypointId;
             String waypointDate;
-            if (isEditMode && existingWaypoint != null) {
+            if (isEditMode && existingWaypoint != null)
+            {
                 waypointId = existingWaypoint.getId();
                 waypointDate = existingWaypoint.getDate();
-            } else {
+            }
+            else
+            {
                 waypointId = UUID.randomUUID().toString();
                 waypointDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 // Update First Steps achievement only for new waypoints
@@ -218,7 +247,7 @@ public class CreateWaypointActivity extends BaseActivity {
 
             Intent resultIntent = new Intent();
 
-            Log.d("WAYPOINT_RESULT", "Waypoint: " +  resultWaypoint);
+            Log.d("WAYPOINT_RESULT", "Waypoint: " + resultWaypoint);
 
             resultIntent.putExtra("WAYPOINT", resultWaypoint);
             resultIntent.putExtra("mode", mode);
@@ -226,40 +255,47 @@ public class CreateWaypointActivity extends BaseActivity {
             finish();
         });
 
-        btnCancel.setOnClickListener(v -> {
+        btnCancel.setOnClickListener(v ->
+        {
             setResult(RESULT_CANCELED);
             finish();
         });
 
         View topBar = findViewById(R.id.top_bar);
         View bottomNav = findViewById(R.id.bottom_nav_container);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) ->
+        {
             Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            if (bottomNav != null) {
+            if (bottomNav != null)
+            {
                 bottomNav.setPadding(
-                    bottomNav.getPaddingLeft(),
-                    bottomNav.getPaddingTop(),
-                    bottomNav.getPaddingRight(),
-                    systemInsets.bottom
+                        bottomNav.getPaddingLeft(),
+                        bottomNav.getPaddingTop(),
+                        bottomNav.getPaddingRight(),
+                        systemInsets.bottom
                 );
             }
             return insets;
         });
     }
 
-    private boolean validateInput() {
-        if (TextUtils.isEmpty(etName.getText().toString().trim())) {
+    private boolean validateInput()
+    {
+        if (TextUtils.isEmpty(etName.getText().toString().trim()))
+        {
             ToastUtils.show(this, "Please enter a name", Toast.LENGTH_SHORT);
             return false;
         }
 
-        if (lat == 0.0 && lng == 0.0) {
+        if (lat == 0.0 && lng == 0.0)
+        {
             ToastUtils.show(this, "Please select a location on the map", Toast.LENGTH_SHORT);
             return false;
         }
 
         String description = etDescription.getText().toString().trim();
-        if (description.length() > MAX_DESCRIPTION_LENGTH) {
+        if (description.length() > MAX_DESCRIPTION_LENGTH)
+        {
             ToastUtils.show(this, "Description too long (max 500 characters)", Toast.LENGTH_SHORT);
             return false;
         }
@@ -267,11 +303,13 @@ public class CreateWaypointActivity extends BaseActivity {
         return true;
     }
 
-    private void updateMapPreview(double lat, double lng) {
+    private void updateMapPreview(double lat, double lng)
+    {
         if (previewMap == null) return;
 
         previewMap.clear();
-        if (lat != 0.0 && lng != 0.0) {
+        if (lat != 0.0 && lng != 0.0)
+        {
             LatLng location = new LatLng(lat, lng);
             previewMap.addMarker(new MarkerOptions().position(location).title("Selected Location"));
             previewMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
@@ -280,31 +318,36 @@ public class CreateWaypointActivity extends BaseActivity {
 
     // MapView lifecycle methods
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         mapPreview.onResume();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
         mapPreview.onPause();
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy()
+    {
         super.onDestroy();
         mapPreview.onDestroy();
     }
 
     @Override
-    public void onLowMemory() {
+    public void onLowMemory()
+    {
         super.onLowMemory();
         mapPreview.onLowMemory();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState)
+    {
         super.onSaveInstanceState(outState);
         mapPreview.onSaveInstanceState(outState);
         outState.putDouble("lat", lat);

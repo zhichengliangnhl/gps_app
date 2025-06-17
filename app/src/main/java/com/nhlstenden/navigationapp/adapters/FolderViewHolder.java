@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nhlstenden.navigationapp.R;
 
-public class FolderViewHolder extends RecyclerView.ViewHolder {
+public class FolderViewHolder extends RecyclerView.ViewHolder
+{
     public TextView folderNameTextView;
     public ImageButton shareButton;
 
-    public FolderViewHolder(@NonNull View itemView) {
+    public FolderViewHolder(@NonNull View itemView)
+    {
         super(itemView);
         folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
     }

@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-public class ThemePurchaseManager {
+public class ThemePurchaseManager
+{
     private static final String PREF_NAME = "theme_purchase_prefs";
     private static final String PREFIX_PURCHASED = "purchased_";
 
@@ -19,16 +20,20 @@ public class ThemePurchaseManager {
     public static final int PRICE_MACCHIATO = 500;
     public static final int PRICE_COOKIE_CREAM = 1000;
 
-    public static boolean isThemePurchased(Context context, String themeName) {
-        if (themeName.equals("classic")) {
+    public static boolean isThemePurchased(Context context, String themeName)
+    {
+        if (themeName.equals("classic"))
+        {
             return true;
         }
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getBoolean(PREFIX_PURCHASED + themeName, false);
     }
 
-    public static int getThemePrice(String themeName) {
-        switch (themeName) {
+    public static int getThemePrice(String themeName)
+    {
+        switch (themeName)
+        {
             case "macha":
                 return PRICE_MACHA;
             case "savana":
@@ -52,23 +57,26 @@ public class ThemePurchaseManager {
         }
     }
 
-    public static boolean purchaseTheme(Context context, String themeName) {
-        if (isThemePurchased(context, themeName)) {
+    public static boolean purchaseTheme(Context context, String themeName)
+    {
+        if (isThemePurchased(context, themeName))
+        {
             return true;
         }
 
         int price = getThemePrice(themeName);
         int currentCoins = CoinManager.getCoins(context);
 
-        if (currentCoins >= price) {
+        if (currentCoins >= price)
+        {
             CoinManager.addCoins(context, -price);
 
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             prefs.edit().putBoolean(PREFIX_PURCHASED + themeName, true).apply();
-            
+
             return true;
         }
-        
+
         return false;
     }
 } 

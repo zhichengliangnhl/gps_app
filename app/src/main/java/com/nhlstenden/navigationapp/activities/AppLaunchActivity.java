@@ -8,9 +8,11 @@ import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 
 
-public class AppLaunchActivity extends BaseActivity {
+public class AppLaunchActivity extends BaseActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         // Important: remove any background left over from system splash
@@ -18,7 +20,8 @@ public class AppLaunchActivity extends BaseActivity {
 
         setContentView(R.layout.activity_app_launch);
 
-        new Handler().postDelayed(() -> {
+        new Handler().postDelayed(() ->
+        {
             startActivity(new Intent(this, CompassActivity.class));
             finish();
         }, 2000);

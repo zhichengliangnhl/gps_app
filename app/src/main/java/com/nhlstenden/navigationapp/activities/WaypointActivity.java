@@ -40,6 +40,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 
 import java.io.File;
@@ -54,10 +55,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.shape.CornerFamily;
+
 import android.content.res.ColorStateList;
+
 import androidx.core.content.ContextCompat;
 
-public class WaypointActivity extends BaseActivity implements OnWaypointClickListener {
+public class WaypointActivity extends BaseActivity implements OnWaypointClickListener
+{
 
     private Folder folder;
     private RecyclerView recyclerView;
@@ -72,12 +76,14 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     private EditText lastImportEditText;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
         folder = getIntent().getParcelableExtra("FOLDER");
-        if (folder == null) {
+        if (folder == null)
+        {
             Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -85,9 +91,11 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         View topBar = findViewById(R.id.top_bar);
         View bottomNav = findViewById(R.id.bottom_nav_container);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) ->
+        {
             Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            if (bottomNav != null) {
+            if (bottomNav != null)
+            {
                 bottomNav.setPadding(
                         bottomNav.getPaddingLeft(),
                         bottomNav.getPaddingTop(),
@@ -98,7 +106,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         });
 
         TextView headerTitle = topBar.findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
+        if (headerTitle != null)
+        {
             headerTitle.setText(folder.getName());
         }
 
@@ -117,24 +126,32 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         qrScanner = registerForActivityResult(
                 new ScanContract(),
-                result -> {
-                    if (result.getContents() != null) {
+                result ->
+                {
+                    if (result.getContents() != null)
+                    {
                         String encodedWaypoint = result.getContents();
-                        if (lastImportEditText != null && "awaiting_qr".equals(lastImportEditText.getTag())) {
+                        if (lastImportEditText != null && "awaiting_qr".equals(lastImportEditText.getTag()))
+                        {
                             lastImportEditText.setText(encodedWaypoint);
                             lastImportEditText.setTag(null);
                             // Optionally, re-show the import dialog
                             showImportDialog();
-                        } else {
+                        }
+                        else
+                        {
                             Waypoint imported = Waypoint.decode(this, encodedWaypoint);
-                            if (imported != null && imported.getName() != null) {
+                            if (imported != null && imported.getName() != null)
+                            {
                                 // Mark the waypoint as imported
                                 imported.setImported(true);
                                 waypointList.add(imported);
                                 adapter.updateList(waypointList);
                                 Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
                                 saveFolderToPrefs(folder);
-                            } else {
+                            }
+                            else
+                            {
                                 Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -142,7 +159,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 });
 
         Button btnAddWaypoint = findViewById(R.id.btnAddWaypoint);
-        btnAddWaypoint.setOnClickListener(v -> {
+        btnAddWaypoint.setOnClickListener(v ->
+        {
             Intent intent = new Intent(this, CreateWaypointActivity.class);
             intent.putExtra("mode", "create");
             intent.putExtra("id", java.util.UUID.randomUUID().toString());
@@ -151,34 +169,45 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         createEditLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                result ->
+                {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                    {
                         Waypoint w = result.getData().getParcelableExtra("WAYPOINT");
                         Log.d("WAYPOINT_EDIT",
                                 "Edited waypoint: " + (w != null ? w.getName() : "null") + ", icon: "
                                         + (w != null ? w.getIconName() : "null") + ", color: "
                                         + (w != null ? w.getIconColor() : "null"));
-                        if (w != null) {
+                        if (w != null)
+                        {
                             String mode = result.getData().getStringExtra("mode");
-                            if ("edit".equals(mode)) {
+                            if ("edit".equals(mode))
+                            {
                                 // Update the waypoint in the list (which is folder.getWaypoints())
-                                for (int i = 0; i < waypointList.size(); i++) {
-                                    if (waypointList.get(i).getId().equals(w.getId())) {
+                                for (int i = 0; i < waypointList.size(); i++)
+                                {
+                                    if (waypointList.get(i).getId().equals(w.getId()))
+                                    {
                                         waypointList.set(i, w);
                                         break;
                                     }
                                 }
                                 // Log the updated list
-                                for (Waypoint wp : waypointList) {
+                                for (Waypoint wp : waypointList)
+                                {
                                     Log.d("WAYPOINT_LIST", "Waypoint: " + wp.getName() + ", icon: " + wp.getIconName()
                                             + ", color: " + wp.getIconColor());
                                 }
                                 adapter.notifyDataSetChanged();
                                 saveFolderToPrefs(folder);
-                            } else {
+                            }
+                            else
+                            {
                                 // Check for duplicate waypoint name in this folder
-                                for (Waypoint wp : folder.getWaypoints()) {
-                                    if (wp.getName().equalsIgnoreCase(w.getName())) {
+                                for (Waypoint wp : folder.getWaypoints())
+                                {
+                                    if (wp.getName().equalsIgnoreCase(w.getName()))
+                                    {
                                         Toast.makeText(this, "Waypoint name must be unique in this folder",
                                                 Toast.LENGTH_SHORT).show();
                                         return;
@@ -193,8 +222,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         mapLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                result ->
+                {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                    {
                         double lat = result.getData().getDoubleExtra("lat", 0);
                         double lng = result.getData().getDoubleExtra("lng", 0);
 
@@ -211,21 +242,27 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         ImageView navArrow = findViewById(R.id.navArrow);
         ImageView navTrophy = findViewById(R.id.navTrophy);
 
-        navBrush.setOnClickListener(v -> {
+        navBrush.setOnClickListener(v ->
+        {
             openCreateWaypoint();
         });
 
-        navArrow.setOnClickListener(v -> {
-            if (!waypointList.isEmpty()) {
+        navArrow.setOnClickListener(v ->
+        {
+            if (!waypointList.isEmpty())
+            {
                 Intent intent = new Intent(this, CompassActivity.class);
                 intent.putExtra("WAYPOINT", waypointList.get(0));
                 startActivity(intent);
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
             }
         });
 
-        navTrophy.setOnClickListener(v -> {
+        navTrophy.setOnClickListener(v ->
+        {
             onBackPressed();
         });
 
@@ -236,7 +273,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         // exists
     }
 
-    private void openCreateWaypoint() {
+    private void openCreateWaypoint()
+    {
         Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "create");
         intent.putExtra("id", java.util.UUID.randomUUID().toString());
@@ -244,7 +282,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     @Override
-    public void onNavigateClick(Waypoint waypoint) {
+    public void onNavigateClick(Waypoint waypoint)
+    {
         saveSelectedWaypoint(waypoint);
         // Save selected folder name for CompassActivity display
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -255,7 +294,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     @Override
-    public void onEditClick(Waypoint waypoint) {
+    public void onEditClick(Waypoint waypoint)
+    {
         Intent intent = new Intent(this, CreateWaypointActivity.class);
         intent.putExtra("mode", "edit");
         intent.putExtra("WAYPOINT", waypoint);
@@ -263,11 +303,13 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     @Override
-    public void onDeleteClick(Waypoint waypoint) {
+    public void onDeleteClick(Waypoint waypoint)
+    {
         showDeleteConfirmationDialog(waypoint);
     }
 
-    private void showDeleteConfirmationDialog(Waypoint waypoint) {
+    private void showDeleteConfirmationDialog(Waypoint waypoint)
+    {
         // Inflate the custom bottom sheet layout
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_waypoint, null);
 
@@ -286,7 +328,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         // Set icon and color
         int iconResId = getResources().getIdentifier(waypoint.getIconName(), "drawable", getPackageName());
-        if (iconResId != 0) {
+        if (iconResId != 0)
+        {
             previewWaypointIcon.setImageResource(iconResId);
             previewWaypointIcon.setColorFilter(waypoint.getIconColor());
         }
@@ -294,18 +337,24 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         // Check if waypoint is completed
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean completed = false;
-        if (waypoint.getId() != null) {
+        if (waypoint.getId() != null)
+        {
             completed = prefs.getBoolean("waypoint_completed_" + waypoint.getId(), false);
         }
 
         // Show appropriate status indicators
-        if (completed) {
+        if (completed)
+        {
             previewWaypointCrown.setVisibility(View.VISIBLE);
             previewWaypointImport.setVisibility(View.GONE);
-        } else if (waypoint.isImported()) {
+        }
+        else if (waypoint.isImported())
+        {
             previewWaypointCrown.setVisibility(View.GONE);
             previewWaypointImport.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             previewWaypointCrown.setVisibility(View.GONE);
             previewWaypointImport.setVisibility(View.GONE);
         }
@@ -318,7 +367,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         // Configure bottom sheet behavior
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
             behavior.setDraggable(true);
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -327,7 +377,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         // Set up button click listeners
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        btnDelete.setOnClickListener(v -> {
+        btnDelete.setOnClickListener(v ->
+        {
             // Actually delete the waypoint
             folder.getWaypoints().remove(waypoint);
             adapter.updateList(folder.getWaypoints());
@@ -345,16 +396,19 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         dialog.show();
         // Set a stronger dim and remove default white background
-        if (dialog.getWindow() != null) {
+        if (dialog.getWindow() != null)
+        {
             dialog.getWindow().setDimAmount(0.6f); // Stronger dim
         }
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             bottomSheet.setBackgroundResource(android.R.color.transparent);
         }
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("FOLDER", folder);
         setResult(RESULT_OK, resultIntent);
@@ -362,9 +416,11 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     }
 
     @Override
-    public void onShareClick(Waypoint waypoint) {
+    public void onShareClick(Waypoint waypoint)
+    {
         String encoded = waypoint.encode();
-        if (encoded == null) {
+        if (encoded == null)
+        {
             Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -380,7 +436,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Button btnShare = dialogView.findViewById(R.id.btnShare);
 
         // Display the QR code in the dialog
-        if (qrBitmap != null && qrCodeImage != null) {
+        if (qrBitmap != null && qrCodeImage != null)
+        {
             qrCodeImage.setImageBitmap(qrBitmap);
         }
 
@@ -392,13 +449,15 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
             behavior.setDraggable(true);
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
-        btnCopy.setOnClickListener(v -> {
+        btnCopy.setOnClickListener(v ->
+        {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
             clipboard.setPrimaryClip(clip);
@@ -412,7 +471,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             .scaleX(1f)
                             .scaleY(1f)
                             .setDuration(100)
-                            .withEndAction(() -> {
+                            .withEndAction(() ->
+                            {
                                 btnCopy.setText(originalText);
                             })
                             .start())
@@ -420,15 +480,19 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
-        btnShare.setOnClickListener(v -> {
-            v.postDelayed(() -> {
-                try {
+        btnShare.setOnClickListener(v ->
+        {
+            v.postDelayed(() ->
+            {
+                try
+                {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     shareIntent.putExtra(Intent.EXTRA_TEXT, encoded); // Only the link
                     startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
                     dialog.dismiss();
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     Log.e("ShareWaypoint", "Failed to share waypoint: " + e.getMessage());
                     Toast.makeText(this, "Failed to share waypoint", Toast.LENGTH_SHORT).show();
                 }
@@ -438,7 +502,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         dialog.show();
     }
 
-    private void saveSelectedWaypoint(Waypoint waypoint) {
+    private void saveSelectedWaypoint(Waypoint waypoint)
+    {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         prefs.edit().putString("selected_wp_id", waypoint.getId())
                 .putString("selected_wp_name", waypoint.getName())
@@ -447,7 +512,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 .apply();
     }
 
-    private void showQrBottomSheet(Bitmap qrBitmap) {
+    private void showQrBottomSheet(Bitmap qrBitmap)
+    {
         View sheetView = getLayoutInflater().inflate(R.layout.activity_qr, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(sheetView);
@@ -465,7 +531,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         bottomSheetDialog.show();
     }
 
-    public void showImportDialog() {
+    public void showImportDialog()
+    {
         // Inflate the custom bottom sheet layout
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_import_waypoint, null);
         EditText editImportCode = dialogView.findViewById(R.id.editImportCode);
@@ -482,25 +549,32 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         TextView previewWaypointDate = dialogView.findViewById(R.id.previewWaypointDate);
 
         // Store the current waypoint being previewed
-        final Waypoint[] previewWaypoint = { null };
+        final Waypoint[] previewWaypoint = {null};
 
         // Real-time validation and preview
-        editImportCode.addTextChangedListener(new android.text.TextWatcher() {
+        editImportCode.addTextChangedListener(new android.text.TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
             }
 
             @Override
-            public void afterTextChanged(android.text.Editable s) {
+            public void afterTextChanged(android.text.Editable s)
+            {
                 String code = s.toString().trim();
-                if (code.length() > 10) { // Only validate if there's enough text
-                    try {
+                if (code.length() > 10)
+                { // Only validate if there's enough text
+                    try
+                    {
                         Waypoint wp = Waypoint.decode(WaypointActivity.this, code);
-                        if (wp != null && wp.getName() != null) {
+                        if (wp != null && wp.getName() != null)
+                        {
                             // Show preview
                             previewWaypoint[0] = wp;
                             previewWaypointName.setText(wp.getName());
@@ -510,7 +584,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             // Set icon and color
                             int iconResId = getResources().getIdentifier(wp.getIconName(), "drawable",
                                     getPackageName());
-                            if (iconResId != 0) {
+                            if (iconResId != 0)
+                            {
                                 previewWaypointIcon.setImageResource(iconResId);
                                 previewWaypointIcon.setColorFilter(wp.getIconColor());
                             }
@@ -527,19 +602,24 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                     .translationY(0f)
                                     .setDuration(300)
                                     .start();
-                        } else {
+                        }
+                        else
+                        {
                             // Hide preview
                             previewWaypoint[0] = null;
                             previewCard.setVisibility(View.GONE);
                             btnImport.setVisibility(View.GONE);
                         }
-                    } catch (Exception e) {
+                    } catch (Exception e)
+                    {
                         // Hide preview
                         previewWaypoint[0] = null;
                         previewCard.setVisibility(View.GONE);
                         btnImport.setVisibility(View.GONE);
                     }
-                } else {
+                }
+                else
+                {
                     // Hide preview
                     previewWaypoint[0] = null;
                     previewCard.setVisibility(View.GONE);
@@ -550,23 +630,31 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
 
         // Auto-paste logic: when the EditText is focused, check clipboard for a valid
         // app link
-        editImportCode.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+        editImportCode.setOnFocusChangeListener((v, hasFocus) ->
+        {
+            if (hasFocus)
+            {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipboard != null && clipboard.hasPrimaryClip()) {
+                if (clipboard != null && clipboard.hasPrimaryClip())
+                {
                     ClipData clip = clipboard.getPrimaryClip();
-                    if (clip != null && clip.getItemCount() > 0) {
+                    if (clip != null && clip.getItemCount() > 0)
+                    {
                         CharSequence text = clip.getItemAt(0).getText();
-                        if (text != null) {
+                        if (text != null)
+                        {
                             String code = text.toString().trim();
                             // Check if the clipboard text is a valid waypoint link/code
-                            try {
+                            try
+                            {
                                 Waypoint wp = Waypoint.decode(this, code);
-                                if (wp != null && wp.getName() != null) {
+                                if (wp != null && wp.getName() != null)
+                                {
                                     editImportCode.setText(code);
                                     editImportCode.setSelection(code.length());
                                 }
-                            } catch (Exception ignored) {
+                            } catch (Exception ignored)
+                            {
                             }
                         }
                     }
@@ -579,18 +667,22 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
             behavior.setDraggable(true);
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
         // Scan QR button launches our custom bottom sheet scanner
-        btnScanQR.setOnClickListener(v -> {
+        btnScanQR.setOnClickListener(v ->
+        {
             QrScannerBottomSheet qrScannerBottomSheet = new QrScannerBottomSheet(
-                    new QrScannerBottomSheet.QrScanListener() {
+                    new QrScannerBottomSheet.QrScanListener()
+                    {
                         @Override
-                        public void onQrScanned(String code) {
+                        public void onQrScanned(String code)
+                        {
                             editImportCode.setText(code);
                             editImportCode.setSelection(code.length());
                             // Re-show the import dialog after scanning
@@ -602,8 +694,10 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         });
 
         // Import button imports the previewed waypoint
-        btnImport.setOnClickListener(v -> {
-            if (previewWaypoint[0] != null) {
+        btnImport.setOnClickListener(v ->
+        {
+            if (previewWaypoint[0] != null)
+            {
                 // Mark the waypoint as imported
                 previewWaypoint[0].setImported(true);
                 waypointList.add(previewWaypoint[0]);
@@ -611,61 +705,75 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 Toast.makeText(this, "✅ Waypoint imported successfully!", Toast.LENGTH_SHORT).show();
                 saveFolderToPrefs(folder);
                 dialog.dismiss();
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, "Please enter a valid waypoint code first", Toast.LENGTH_SHORT).show();
             }
         });
 
-        if (btnCancel != null) {
+        if (btnCancel != null)
+        {
             btnCancel.setBackgroundTintList(null);
         }
 
         dialog.show();
     }
 
-    public static String decodeBase64ToImageFile(Context context, String base64Data) {
-        try {
+    public static String decodeBase64ToImageFile(Context context, String base64Data)
+    {
+        try
+        {
             byte[] imageBytes = Base64.decode(base64Data, Base64.NO_WRAP);
             File file = new File(context.getFilesDir(), "shared_img_" + System.currentTimeMillis() + ".jpg");
 
-            try (FileOutputStream fos = new FileOutputStream(file)) {
+            try (FileOutputStream fos = new FileOutputStream(file))
+            {
                 fos.write(imageBytes);
                 fos.flush();
             }
 
             return file.getAbsolutePath();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public void finish() {
+    public void finish()
+    {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("FOLDER", folder);
         setResult(RESULT_OK, resultIntent);
         super.finish();
     }
 
-    private void saveFolderToPrefs(Folder folder) {
+    private void saveFolderToPrefs(Folder folder)
+    {
         SharedPreferences prefs = getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE);
         String json = prefs.getString("folders_json", null);
         List<Folder> folderList = new java.util.ArrayList<>();
-        if (json != null) {
-            Type type = new TypeToken<List<Folder>>() {
+        if (json != null)
+        {
+            Type type = new TypeToken<List<Folder>>()
+            {
             }.getType();
             folderList = new Gson().fromJson(json, type);
         }
         boolean found = false;
-        for (int i = 0; i < folderList.size(); i++) {
-            if (folderList.get(i).getId().equals(folder.getId())) {
+        for (int i = 0; i < folderList.size(); i++)
+        {
+            if (folderList.get(i).getId().equals(folder.getId()))
+            {
                 folderList.set(i, folder);
                 found = true;
                 break;
             }
         }
-        if (!found) {
+        if (!found)
+        {
             folderList.add(folder);
         }
         prefs.edit().putString("folders_json", new Gson().toJson(folderList)).apply();

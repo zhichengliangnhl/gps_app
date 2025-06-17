@@ -19,31 +19,36 @@ import com.nhlstenden.navigationapp.models.Waypoint;
 import java.util.List;
 import java.util.Locale;
 
-public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
+public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
+{
 
     private List<Waypoint> waypointList;
     private final OnWaypointClickListener listener;
 
-    public WaypointAdapter(List<Waypoint> waypointList, OnWaypointClickListener listener) {
+    public WaypointAdapter(List<Waypoint> waypointList, OnWaypointClickListener listener)
+    {
         this.waypointList = waypointList;
         this.listener = listener;
     }
 
-    public void updateList(List<Waypoint> newList) {
+    public void updateList(List<Waypoint> newList)
+    {
         this.waypointList = newList;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public WaypointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WaypointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_waypoint, parent, false);
         return new WaypointViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WaypointViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WaypointViewHolder holder, int position)
+    {
         Waypoint waypoint = waypointList.get(position);
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
@@ -51,9 +56,12 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
 
         // Show navigation timer
         long navTime = waypoint.getNavigationTimeMillis();
-        if (navTime > 0) {
+        if (navTime > 0)
+        {
             holder.timerTextView.setText("Timer: " + formatTimer(navTime));
-        } else {
+        }
+        else
+        {
             holder.timerTextView.setText("Timer: --");
         }
 
@@ -68,7 +76,8 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         boolean completed = false;
         android.content.SharedPreferences prefs = holder.itemView.getContext().getSharedPreferences("AppPrefs",
                 android.content.Context.MODE_PRIVATE);
-        if (waypoint.getId() != null) {
+        if (waypoint.getId() != null)
+        {
             completed = prefs.getBoolean("waypoint_completed_" + waypoint.getId(), false);
         }
         FrameLayout imageFrame = holder.itemView.findViewById(R.id.waypointImageFrame);
@@ -77,26 +86,34 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         ImageView importView = holder.itemView.findViewById(R.id.waypointImport);
         TextView importedLabel = holder.itemView.findViewById(R.id.waypointImportedLabel);
 
-        if (completed) {
+        if (completed)
+        {
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.VISIBLE);
             starView.setVisibility(View.GONE);
             // Show import indicators even when completed
-            if (waypoint.isImported()) {
+            if (waypoint.isImported())
+            {
                 importView.setVisibility(View.VISIBLE);
                 importedLabel.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else
+            {
                 importView.setVisibility(View.GONE);
                 importedLabel.setVisibility(View.GONE);
             }
-        } else if (waypoint.isImported()) {
+        }
+        else if (waypoint.isImported())
+        {
             // Show import icon and label for imported waypoints
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.GONE);
             starView.setVisibility(View.GONE);
             importView.setVisibility(View.VISIBLE);
             importedLabel.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.GONE);
             starView.setVisibility(View.VISIBLE);
@@ -114,18 +131,23 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return waypointList.size();
     }
 
-    public void addWaypoint(Waypoint waypoint) {
+    public void addWaypoint(Waypoint waypoint)
+    {
         waypointList.add(waypoint);
         notifyItemInserted(waypointList.size() - 1);
     }
 
-    public void updateWaypoint(Waypoint updated) {
-        for (int i = 0; i < waypointList.size(); i++) {
-            if (waypointList.get(i).getId().equals(updated.getId())) {
+    public void updateWaypoint(Waypoint updated)
+    {
+        for (int i = 0; i < waypointList.size(); i++)
+        {
+            if (waypointList.get(i).getId().equals(updated.getId()))
+            {
                 waypointList.set(i, updated);
                 notifyDataSetChanged();
                 break;
@@ -133,18 +155,22 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         }
     }
 
-    public void removeWaypoint(Waypoint waypoint) {
+    public void removeWaypoint(Waypoint waypoint)
+    {
         int position = -1;
         // Find the position of the waypoint to remove
-        for (int i = 0; i < waypointList.size(); i++) {
-            if (waypointList.get(i).getId().equals(waypoint.getId())) {
+        for (int i = 0; i < waypointList.size(); i++)
+        {
+            if (waypointList.get(i).getId().equals(waypoint.getId()))
+            {
                 position = i;
                 break;
             }
         }
 
         // Only remove if we found the waypoint
-        if (position != -1) {
+        if (position != -1)
+        {
             waypointList.remove(position);
             notifyItemRemoved(position);
             // Notify any items after the removed position that they need to update their
@@ -153,14 +179,18 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder> {
         }
     }
 
-    private String formatTimer(long millis) {
+    private String formatTimer(long millis)
+    {
         long seconds = millis / 1000;
         long minutes = (seconds % 3600) / 60;
         long hours = seconds / 3600;
         long secs = seconds % 60;
-        if (hours > 0) {
+        if (hours > 0)
+        {
             return String.format("%02d:%02d:%02d", hours, minutes, secs);
-        } else {
+        }
+        else
+        {
             return String.format("%02d:%02d", minutes, secs);
         }
     }

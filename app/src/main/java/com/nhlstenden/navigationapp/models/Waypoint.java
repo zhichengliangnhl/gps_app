@@ -25,7 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Waypoint implements Parcelable {
+public class Waypoint implements Parcelable
+{
     private String id;
     private String name;
     private String description;
@@ -37,7 +38,8 @@ public class Waypoint implements Parcelable {
     private long navigationTimeMillis = 0L;
     private boolean isImported = false;
 
-    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng) {
+    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng)
+    {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -50,7 +52,8 @@ public class Waypoint implements Parcelable {
         this.date = sdf.format(new Date());
     }
 
-    protected Waypoint(Parcel in) {
+    protected Waypoint(Parcel in)
+    {
         id = in.readString();
         name = in.readString();
         description = in.readString();
@@ -63,106 +66,131 @@ public class Waypoint implements Parcelable {
         isImported = in.readByte() != 0;
     }
 
-    public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>() {
+    public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>()
+    {
         @Override
-        public Waypoint createFromParcel(Parcel in) {
+        public Waypoint createFromParcel(Parcel in)
+        {
             return new Waypoint(in);
         }
 
         @Override
-        public Waypoint[] newArray(int size) {
+        public Waypoint[] newArray(int size)
+        {
             return new Waypoint[size];
         }
     };
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public String getIconName() {
+    public String getIconName()
+    {
         return iconName;
     }
 
-    public int getIconColor() {
+    public int getIconColor()
+    {
         return iconColor;
     }
 
-    public double getLat() {
+    public double getLat()
+    {
         return lat;
     }
 
-    public double getLng() {
+    public double getLng()
+    {
         return lng;
     }
 
-    public String getDate() {
+    public String getDate()
+    {
         return date;
     }
 
-    public long getNavigationTimeMillis() {
+    public long getNavigationTimeMillis()
+    {
         return navigationTimeMillis;
     }
 
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
 
-    public void setIconName(String iconName) {
+    public void setIconName(String iconName)
+    {
         this.iconName = iconName;
     }
 
-    public void setIconColor(int iconColor) {
+    public void setIconColor(int iconColor)
+    {
         this.iconColor = iconColor;
     }
 
-    public void setLat(double lat) {
+    public void setLat(double lat)
+    {
         this.lat = lat;
     }
 
-    public void setLng(double lng) {
+    public void setLng(double lng)
+    {
         this.lng = lng;
     }
 
-    public void setDate(String date) {
+    public void setDate(String date)
+    {
         this.date = date;
     }
 
-    public void setNavigationTimeMillis(long navigationTimeMillis) {
+    public void setNavigationTimeMillis(long navigationTimeMillis)
+    {
         this.navigationTimeMillis = navigationTimeMillis;
     }
 
-    public boolean isImported() {
+    public boolean isImported()
+    {
         return isImported;
     }
 
-    public void setImported(boolean imported) {
+    public void setImported(boolean imported)
+    {
         isImported = imported;
     }
 
 
     @Override
-    public int describeContents() {
+    public int describeContents()
+    {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags)
+    {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
@@ -175,8 +203,10 @@ public class Waypoint implements Parcelable {
         dest.writeByte((byte) (isImported ? 1 : 0));
     }
 
-    public String encode() {
-        try {
+    public String encode()
+    {
+        try
+        {
             JSONObject json = new JSONObject();
             json.put("id", id);
             json.put("name", name);
@@ -189,14 +219,17 @@ public class Waypoint implements Parcelable {
             json.put("navigationTimeMillis", navigationTimeMillis);
 
             return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Waypoint decode(Context context, String encoded) {
-        try {
+    public static Waypoint decode(Context context, String encoded)
+    {
+        try
+        {
             String jsonStr = new String(Base64.decode(encoded, Base64.NO_WRAP));
             JSONObject json = new JSONObject(jsonStr);
 
@@ -214,7 +247,8 @@ public class Waypoint implements Parcelable {
             if (date != null) wp.setDate(date);
             wp.setImported(true);
             return wp;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }

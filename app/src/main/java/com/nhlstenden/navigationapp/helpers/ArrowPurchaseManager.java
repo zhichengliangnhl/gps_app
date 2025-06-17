@@ -3,7 +3,8 @@ package com.nhlstenden.navigationapp.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class ArrowPurchaseManager {
+public class ArrowPurchaseManager
+{
     private static final String PREF_NAME = "arrow_purchase_prefs";
     private static final String PREFIX_PURCHASED = "purchased_";
     private static final String SELECTED_ARROW = "selected_arrow";
@@ -19,16 +20,20 @@ public class ArrowPurchaseManager {
     public static final int PRICE_GREY = 50;
     public static final int PRICE_WHITE = 50;
 
-    public static boolean isArrowPurchased(Context context, String arrowName) {
-        if (arrowName.equals("orange")) {
+    public static boolean isArrowPurchased(Context context, String arrowName)
+    {
+        if (arrowName.equals("orange"))
+        {
             return true; // Orange arrow is free
         }
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getBoolean(PREFIX_PURCHASED + arrowName, false);
     }
 
-    public static int getArrowPrice(String arrowName) {
-        switch (arrowName) {
+    public static int getArrowPrice(String arrowName)
+    {
+        switch (arrowName)
+        {
             case "red":
                 return PRICE_RED;
             case "yellow":
@@ -52,32 +57,37 @@ public class ArrowPurchaseManager {
         }
     }
 
-    public static boolean purchaseArrow(Context context, String arrowName) {
-        if (isArrowPurchased(context, arrowName)) {
+    public static boolean purchaseArrow(Context context, String arrowName)
+    {
+        if (isArrowPurchased(context, arrowName))
+        {
             return true;
         }
 
         int price = getArrowPrice(arrowName);
         int currentCoins = CoinManager.getCoins(context);
 
-        if (currentCoins >= price) {
+        if (currentCoins >= price)
+        {
             CoinManager.addCoins(context, -price);
 
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             prefs.edit().putBoolean(PREFIX_PURCHASED + arrowName, true).apply();
-            
+
             return true;
         }
-        
+
         return false;
     }
 
-    public static void setSelectedArrow(Context context, String arrowName) {
+    public static void setSelectedArrow(Context context, String arrowName)
+    {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(SELECTED_ARROW, arrowName).apply();
     }
 
-    public static String getSelectedArrow(Context context) {
+    public static String getSelectedArrow(Context context)
+    {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(SELECTED_ARROW, "orange"); // Default to orange arrow
     }

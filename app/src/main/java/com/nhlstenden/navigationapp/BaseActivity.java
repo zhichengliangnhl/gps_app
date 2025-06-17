@@ -26,7 +26,8 @@ import com.nhlstenden.navigationapp.helpers.CoinManager;
 import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.helpers.AchievementManager;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity
+{
 
     public static final int SIDE_PANEL_WIDTH = 600;
     public static final int SCRIM_COLOR = 0x88000000;
@@ -36,26 +37,31 @@ public abstract class BaseActivity extends AppCompatActivity {
     private boolean isSidePanelVisible = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         applyDynamicTheme();
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
 
         TextView coinCounter = findViewById(R.id.coinCounter);
-        if (coinCounter != null) {
+        if (coinCounter != null)
+        {
             CoinManager.updateCoinDisplay(this, coinCounter);
         }
 
         setupBottomNavigation();
     }
 
-    protected void setupSettingsPanel() {
+    protected void setupSettingsPanel()
+    {
         ImageView topBarSettingsIcon = findViewById(R.id.settingsIcon);
-        if (topBarSettingsIcon != null) {
+        if (topBarSettingsIcon != null)
+        {
             topBarSettingsIcon.setOnClickListener(v -> toggleSidePanel());
         }
 
@@ -85,7 +91,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         root.addView(sidePanel);
 
         ImageView panelSettingsIcon = sidePanel.findViewById(R.id.sidePanelSettingsIcon);
-        if (panelSettingsIcon != null) {
+        if (panelSettingsIcon != null)
+        {
             panelSettingsIcon.setOnClickListener(v -> toggleSidePanel());
         }
 
@@ -95,9 +102,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // Add Reset App button logic
         Button btnResetApp = sidePanel.findViewById(R.id.btnResetApp);
-        if (btnResetApp != null) {
+        if (btnResetApp != null)
+        {
             btnResetApp.setBackgroundTintList(null);
-            btnResetApp.setOnClickListener(v -> {
+            btnResetApp.setOnClickListener(v ->
+            {
                 // Use the already declared 'root' variable from above
                 View overlay = new View(this);
                 overlay.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -115,11 +124,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                         .create();
                 Button btnCancel = dialogView.findViewById(R.id.btnCancel);
                 Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
-                btnCancel.setOnClickListener(v2 -> {
+                btnCancel.setOnClickListener(v2 ->
+                {
                     dialog.dismiss();
                 });
-                btnConfirm.setOnClickListener(v2 -> {
-                    if ("clear".equalsIgnoreCase(input.getText().toString().trim())) {
+                btnConfirm.setOnClickListener(v2 ->
+                {
+                    if ("clear".equalsIgnoreCase(input.getText().toString().trim()))
+                    {
                         getSharedPreferences("coin_prefs", MODE_PRIVATE).edit().clear().apply();
                         AchievementManager.resetAchievements(this);
                         getSharedPreferences("AppPrefs", MODE_PRIVATE).edit().clear().apply();
@@ -131,11 +143,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                         Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                         recreate();
-                    } else {
+                    }
+                    else
+                    {
                         input.setError("You must type 'clear' to confirm.");
                     }
                 });
-                dialog.setOnDismissListener(d -> {
+                dialog.setOnDismissListener(d ->
+                {
                     // Remove the overlay when dialog is dismissed
                     root.removeView(overlay);
                 });
@@ -145,21 +160,26 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // Add 500 Gold button logic
         Button btnAddGold = sidePanel.findViewById(R.id.btnAddGold);
-        if (btnAddGold != null) {
-            btnAddGold.setOnClickListener(v -> {
+        if (btnAddGold != null)
+        {
+            btnAddGold.setOnClickListener(v ->
+            {
                 CoinManager.addCoins(this, 500);
                 Toast.makeText(this, "+500 gold added!", Toast.LENGTH_SHORT).show();
                 // Optionally update coin display if visible
                 TextView coinCounter = findViewById(R.id.coinCounter);
-                if (coinCounter != null) {
+                if (coinCounter != null)
+                {
                     CoinManager.updateCoinDisplay(this, coinCounter);
                 }
             });
         }
     }
 
-    private void toggleSidePanel() {
-        if (sidePanel == null) {
+    private void toggleSidePanel()
+    {
+        if (sidePanel == null)
+        {
             setupSettingsPanel();
         }
 
@@ -169,13 +189,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         isSidePanelVisible = show;
     }
 
-    private void bindToggle(int btnId, String prefKey, String label) {
+    private void bindToggle(int btnId, String prefKey, String label)
+    {
         Button b = sidePanel.findViewById(btnId);
         if (b == null)
             return;
 
         updateToggleLabel(b, label, AppSettings.get(this, prefKey, true));
-        b.setOnClickListener(v -> {
+        b.setOnClickListener(v ->
+        {
             boolean newState = !AppSettings.get(this, prefKey, true);
             AppSettings.set(this, prefKey, newState);
             updateToggleLabel(b, label, newState);
@@ -183,18 +205,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    private void updateToggleLabel(Button b, String label, boolean on) {
+    private void updateToggleLabel(Button b, String label, boolean on)
+    {
         b.setText(label + ": " + (on ? "ON" : "OFF"));
     }
 
-    private void setupBottomNavigation() {
+    private void setupBottomNavigation()
+    {
         ImageView navBrush = findViewById(R.id.navBrush);
         ImageView navArrow = findViewById(R.id.navArrow);
         ImageView navTrophy = findViewById(R.id.navTrophy);
 
-        if (navBrush != null) {
-            navBrush.setOnClickListener(v -> {
-                if (!(this instanceof BrushActivity)) {
+        if (navBrush != null)
+        {
+            navBrush.setOnClickListener(v ->
+            {
+                if (!(this instanceof BrushActivity))
+                {
                     Intent intent = new Intent(this, BrushActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -203,9 +230,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
         }
 
-        if (navArrow != null) {
-            navArrow.setOnClickListener(v -> {
-                if (!(this instanceof CompassActivity)) {
+        if (navArrow != null)
+        {
+            navArrow.setOnClickListener(v ->
+            {
+                if (!(this instanceof CompassActivity))
+                {
                     Intent intent = new Intent(this, CompassActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -214,9 +244,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
         }
 
-        if (navTrophy != null) {
-            navTrophy.setOnClickListener(v -> {
-                if (!(this instanceof AchievementActivity)) {
+        if (navTrophy != null)
+        {
+            navTrophy.setOnClickListener(v ->
+            {
+                if (!(this instanceof AchievementActivity))
+                {
                     Intent intent = new Intent(this, AchievementActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -227,19 +260,23 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         TextView coinCounter = findViewById(R.id.coinCounter);
-        if (coinCounter != null) {
+        if (coinCounter != null)
+        {
             CoinManager.updateCoinDisplay(this, coinCounter);
         }
     }
 
-    private void applyDynamicTheme() {
+    private void applyDynamicTheme()
+    {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         String selectedTheme = prefs.getString("selected_theme", "classic");
 
-        switch (selectedTheme) {
+        switch (selectedTheme)
+        {
             case "macha":
                 setTheme(R.style.Theme_NavigationApp_Macha);
                 break;

@@ -18,13 +18,16 @@ import com.nhlstenden.navigationapp.helpers.ArrowPurchaseManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BrushActivity extends BaseActivity {
+public class BrushActivity extends BaseActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brush);
         TextView headerTitle = findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
+        if (headerTitle != null)
+        {
             headerTitle.setText("Treasure Themes");
         }
         setupSettingsPanel();
@@ -42,10 +45,13 @@ public class BrushActivity extends BaseActivity {
         themeMap.put(R.id.theme9, "macchiato");
         themeMap.put(R.id.theme10, "cookieCream");
 
-        for (Map.Entry<Integer, String> entry : themeMap.entrySet()) {
+        for (Map.Entry<Integer, String> entry : themeMap.entrySet())
+        {
             LinearLayout layout = findViewById(entry.getKey());
             String themeName = entry.getValue();
-            if (layout != null) {
+
+            if (layout != null)
+            {
                 updateThemeCardUI(layout, themeName);
                 layout.setOnClickListener(v -> handleThemeClick(themeName));
             }
@@ -64,40 +70,53 @@ public class BrushActivity extends BaseActivity {
         arrowMap.put(R.id.arrow9, "grey");
         arrowMap.put(R.id.arrow10, "white");
 
-        for (Map.Entry<Integer, String> entry : arrowMap.entrySet()) {
+        for (Map.Entry<Integer, String> entry : arrowMap.entrySet())
+        {
             LinearLayout layout = findViewById(entry.getKey());
             String arrowName = entry.getValue();
-            if (layout != null) {
+
+            if (layout != null)
+            {
                 updateArrowCardUI(layout, arrowName);
                 layout.setOnClickListener(v -> handleArrowClick(arrowName));
             }
         }
     }
 
-    private void updateThemeCardUI(LinearLayout layout, String themeName) {
+    private void updateThemeCardUI(LinearLayout layout, String themeName)
+    {
         RelativeLayout priceLayout = null;
         TextView priceText = null;
-        
-        for (int i = 0; i < layout.getChildCount(); i++) {
+
+        for (int i = 0; i < layout.getChildCount(); i++)
+        {
             View child = layout.getChildAt(i);
-            if (child instanceof RelativeLayout) {
+            if (child instanceof RelativeLayout)
+            {
                 priceLayout = (RelativeLayout) child;
-                for (int j = 0; j < priceLayout.getChildCount(); j++) {
+                for (int j = 0; j < priceLayout.getChildCount(); j++)
+                {
                     View grandChild = priceLayout.getChildAt(j);
-                    if (grandChild instanceof TextView) {
+                    if (grandChild instanceof TextView)
+                    {
                         priceText = (TextView) grandChild;
                         break;
                     }
                 }
+
                 break;
             }
         }
 
-        if (priceLayout != null && priceText != null) {
-            if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
+        if (priceLayout != null && priceText != null)
+        {
+            if (ThemePurchaseManager.isThemePurchased(this, themeName))
+            {
                 priceLayout.setVisibility(View.GONE);
                 layout.setAlpha(1.0f);
-            } else {
+            }
+            else
+            {
                 priceLayout.setVisibility(View.VISIBLE);
                 int price = ThemePurchaseManager.getThemePrice(themeName);
                 priceText.setText(String.valueOf(price));
@@ -106,30 +125,40 @@ public class BrushActivity extends BaseActivity {
         }
     }
 
-    private void updateArrowCardUI(LinearLayout layout, String arrowName) {
+    private void updateArrowCardUI(LinearLayout layout, String arrowName)
+    {
         RelativeLayout priceLayout = null;
         TextView priceText = null;
-        
-        for (int i = 0; i < layout.getChildCount(); i++) {
+
+        for (int i = 0; i < layout.getChildCount(); i++)
+        {
             View child = layout.getChildAt(i);
-            if (child instanceof RelativeLayout) {
+            if (child instanceof RelativeLayout)
+            {
                 priceLayout = (RelativeLayout) child;
-                for (int j = 0; j < priceLayout.getChildCount(); j++) {
+                for (int j = 0; j < priceLayout.getChildCount(); j++)
+                {
                     View grandChild = priceLayout.getChildAt(j);
-                    if (grandChild instanceof TextView) {
+                    if (grandChild instanceof TextView)
+                    {
                         priceText = (TextView) grandChild;
                         break;
                     }
                 }
+
                 break;
             }
         }
 
-        if (priceLayout != null && priceText != null) {
-            if (ArrowPurchaseManager.isArrowPurchased(this, arrowName)) {
+        if (priceLayout != null && priceText != null)
+        {
+            if (ArrowPurchaseManager.isArrowPurchased(this, arrowName))
+            {
                 priceLayout.setVisibility(View.GONE);
                 layout.setAlpha(1.0f);
-            } else {
+            }
+            else
+            {
                 priceLayout.setVisibility(View.VISIBLE);
                 int price = ArrowPurchaseManager.getArrowPrice(arrowName);
                 priceText.setText(String.valueOf(price));
@@ -138,37 +167,52 @@ public class BrushActivity extends BaseActivity {
         }
     }
 
-    private void handleThemeClick(String themeName) {
-        if (ThemePurchaseManager.isThemePurchased(this, themeName)) {
+    private void handleThemeClick(String themeName)
+    {
+        if (ThemePurchaseManager.isThemePurchased(this, themeName))
+        {
             saveTheme(themeName);
             recreate();
-        } else {
-            if (ThemePurchaseManager.purchaseTheme(this, themeName)) {
+        }
+        else
+        {
+            if (ThemePurchaseManager.purchaseTheme(this, themeName))
+            {
                 ToastUtils.show(this, "Theme purchased successfully!", Toast.LENGTH_SHORT);
                 saveTheme(themeName);
                 recreate();
-            } else {
+            }
+            else
+            {
                 ToastUtils.show(this, "Not enough coins to purchase this theme!", Toast.LENGTH_SHORT);
             }
         }
     }
 
-    private void handleArrowClick(String arrowName) {
-        if (ArrowPurchaseManager.isArrowPurchased(this, arrowName)) {
+    private void handleArrowClick(String arrowName)
+    {
+        if (ArrowPurchaseManager.isArrowPurchased(this, arrowName))
+        {
             ArrowPurchaseManager.setSelectedArrow(this, arrowName);
             recreate();
-        } else {
-            if (ArrowPurchaseManager.purchaseArrow(this, arrowName)) {
+        }
+        else
+        {
+            if (ArrowPurchaseManager.purchaseArrow(this, arrowName))
+            {
                 Toast.makeText(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT).show();
                 ArrowPurchaseManager.setSelectedArrow(this, arrowName);
                 recreate();
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void saveTheme(String themeName) {
+    private void saveTheme(String themeName)
+    {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         prefs.edit().putString("selected_theme", themeName).apply();
         Log.println(Log.DEBUG, "SELECTED_THEME", themeName);

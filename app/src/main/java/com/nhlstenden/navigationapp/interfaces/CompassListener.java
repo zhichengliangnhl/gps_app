@@ -1,5 +1,6 @@
 package com.nhlstenden.navigationapp.interfaces;
 
-public interface CompassListener {
+public interface CompassListener
+{
     void onAzimuthChanged(float azimuth);
 }

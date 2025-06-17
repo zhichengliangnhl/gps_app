@@ -35,7 +35,8 @@ import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import java.io.IOException;
 import java.util.List;
 
-public class MapActivity extends BaseActivity implements OnMapReadyCallback {
+public class MapActivity extends BaseActivity implements OnMapReadyCallback
+{
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
@@ -44,23 +45,29 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     private final ActivityResultLauncher<Intent> createWaypointLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
+            result ->
+            {
+                if (result.getResultCode() == RESULT_OK)
+                {
                     setResult(RESULT_OK, result.getData());
                     finish();
-                } else if (result.getResultCode() == RESULT_CANCELED) {
+                }
+                else if (result.getResultCode() == RESULT_CANCELED)
+                {
                     ToastUtils.show(this, "Waypoint creation cancelled", Toast.LENGTH_SHORT);
                 }
             });
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
         // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
+        if (headerTitle != null)
+        {
             headerTitle.setText("Loot land");
         }
         setupSettingsPanel();
@@ -75,11 +82,14 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         EditText searchEditText = findViewById(R.id.searchEditText);
-        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+        searchEditText.setOnEditorActionListener((v, actionId, event) ->
+        {
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN))
+            {
                 String locationName = searchEditText.getText().toString().trim();
-                if (!locationName.isEmpty()) {
+                if (!locationName.isEmpty())
+                {
                     searchLocation(locationName);
                 }
                 return true;
@@ -92,7 +102,8 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
 
         Button btnBackWaypoint = findViewById(R.id.btnBackWaypoint);
-        btnBackWaypoint.setOnClickListener(v -> {
+        btnBackWaypoint.setOnClickListener(v ->
+        {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("cancel_reason", "User pressed back on map");
             setResult(RESULT_CANCELED, resultIntent);
@@ -101,10 +112,12 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
         // If coordinates were passed to center the map
         Intent intent = getIntent();
-        if (intent.hasExtra("lat") && intent.hasExtra("lng")) {
+        if (intent.hasExtra("lat") && intent.hasExtra("lng"))
+        {
             double lat = intent.getDoubleExtra("lat", 0.0);
             double lng = intent.getDoubleExtra("lng", 0.0);
-            if (lat != 0.0 && lng != 0.0) {
+            if (lat != 0.0 && lng != 0.0)
+            {
                 selectedLocation = new LatLng(lat, lng);
                 btnSaveWaypoint.setEnabled(true);
             }
@@ -112,38 +125,48 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         mMap = googleMap;
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED)
+        {
             enableMyLocation();
-        } else {
+        }
+        else
+        {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        mMap.setOnMapClickListener(latLng -> {
+        mMap.setOnMapClickListener(latLng ->
+        {
             selectedLocation = latLng;
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
             btnSaveWaypoint.setEnabled(true);
         });
 
-        if (selectedLocation != null) {
+        if (selectedLocation != null)
+        {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
             mMap.addMarker(new MarkerOptions().position(selectedLocation).title("Selected Location"));
         }
     }
 
-    private void enableMyLocation() {
+    private void enableMyLocation()
+    {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED)
+        {
             mMap.setMyLocationEnabled(true);
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
+                    .addOnSuccessListener(this, location ->
+                    {
+                        if (location != null)
+                        {
                             LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
                         }
@@ -153,20 +176,27 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
                 enableMyLocation();
-            } else {
+            }
+            else
+            {
                 ToastUtils.show(this, "Location permission is required for this feature",
                         Toast.LENGTH_LONG);
             }
         }
     }
 
-    private void saveWaypoint() {
-        if (selectedLocation != null) {
+    private void saveWaypoint()
+    {
+        if (selectedLocation != null)
+        {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("lat", selectedLocation.latitude);
             resultIntent.putExtra("lng", selectedLocation.longitude);
@@ -175,11 +205,14 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         }
     }
 
-    private void searchLocation(String locationName) {
+    private void searchLocation(String locationName)
+    {
         Geocoder geocoder = new Geocoder(this);
-        try {
+        try
+        {
             List<Address> addressList = geocoder.getFromLocationName(locationName, 1);
-            if (addressList != null && !addressList.isEmpty()) {
+            if (addressList != null && !addressList.isEmpty())
+            {
                 Address address = addressList.get(0);
                 LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                 selectedLocation = latLng;
@@ -187,10 +220,13 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                 mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 btnSaveWaypoint.setEnabled(true);
-            } else {
+            }
+            else
+            {
                 ToastUtils.show(this, "Address not found", Toast.LENGTH_SHORT);
             }
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             Log.e("MapActivity", "Geocoder failed", e);
             ToastUtils.show(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG);
         }
