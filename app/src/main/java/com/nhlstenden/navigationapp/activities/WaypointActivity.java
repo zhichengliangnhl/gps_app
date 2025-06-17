@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
+import com.nhlstenden.navigationapp.dialogs.QrScannerBottomSheet;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -50,6 +51,11 @@ import androidx.core.graphics.Insets;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.shape.MaterialShapeDrawable;
+import com.google.android.material.shape.ShapeAppearanceModel;
+import com.google.android.material.shape.CornerFamily;
+import android.content.res.ColorStateList;
+import androidx.core.content.ContextCompat;
 
 public class WaypointActivity extends BaseActivity implements OnWaypointClickListener {
 
@@ -61,6 +67,9 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
     private ActivityResultLauncher<Intent> createEditLauncher;
     private ActivityResultLauncher<Intent> mapLauncher;
     private ActivityResultLauncher<ScanOptions> qrScanner;
+
+    // Add a field to hold the last import EditText for QR callback
+    private EditText lastImportEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,14 +120,21 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 result -> {
                     if (result.getContents() != null) {
                         String encodedWaypoint = result.getContents();
-                        Waypoint imported = Waypoint.decode(this, encodedWaypoint);
-                        if (imported != null && imported.getName() != null) {
-                            waypointList.add(imported);
-                            adapter.updateList(waypointList);
-                            Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
-                            saveFolderToPrefs(folder);
+                        if (lastImportEditText != null && "awaiting_qr".equals(lastImportEditText.getTag())) {
+                            lastImportEditText.setText(encodedWaypoint);
+                            lastImportEditText.setTag(null);
+                            // Optionally, re-show the import dialog
+                            showImportDialog();
                         } else {
-                            Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                            Waypoint imported = Waypoint.decode(this, encodedWaypoint);
+                            if (imported != null && imported.getName() != null) {
+                                waypointList.add(imported);
+                                adapter.updateList(waypointList);
+                                Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                                saveFolderToPrefs(folder);
+                            } else {
+                                Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
@@ -264,6 +280,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             return;
         }
 
+        // Generate and display the QR code in the dialog
         Bitmap qrBitmap = QRCodeUtils.generateQRCode(encoded);
 
         // Inflate the custom layout
@@ -273,26 +290,18 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         Button btnCopy = dialogView.findViewById(R.id.btnCopy);
         Button btnShare = dialogView.findViewById(R.id.btnShare);
 
-        // Set up the QR code with a fade-in animation
-        qrCodeImage.setAlpha(0f);
-        qrCodeImage.setImageBitmap(qrBitmap);
-        qrCodeImage.animate()
-                .alpha(1f)
-                .setDuration(300)
-                .setInterpolator(new android.view.animation.DecelerateInterpolator())
-                .start();
+        // Display the QR code in the dialog
+        if (qrBitmap != null && qrCodeImage != null) {
+            qrCodeImage.setImageBitmap(qrBitmap);
+        }
 
         importLink.setText(encoded);
 
         // Show as a BottomSheetDialog with custom behavior
-        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.Dialog_Rounded);
         dialog.setContentView(dialogView);
-
-        // Set the dialog to be draggable and dismissible
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
-
-        // Set up the bottom sheet behavior
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (bottomSheet != null) {
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
@@ -304,8 +313,6 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Waypoint Link", encoded);
             clipboard.setPrimaryClip(clip);
-
-            // Show a nice animation for the copy button
             String originalText = btnCopy.getText().toString();
             btnCopy.setText("Copied!");
             btnCopy.animate()
@@ -321,76 +328,17 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             })
                             .start())
                     .start();
-
             Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
         btnShare.setOnClickListener(v -> {
-            // Add a small delay to show the button press animation
             v.postDelayed(() -> {
                 try {
-                    // Validate inputs
-                    if (encoded == null || encoded.isEmpty()) {
-                        Toast.makeText(this, "Invalid waypoint data", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (qrBitmap == null) {
-                        Toast.makeText(this, "Failed to generate QR code", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Create a simple text share intent first
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Waypoint: " + waypoint.getName());
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this waypoint: " + encoded);
-
-                    // Try to add the QR code image if possible
-                    boolean imageAdded = false;
-                    try {
-                        File cachePath = new File(getCacheDir(), "images");
-                        if (!cachePath.exists()) {
-                            cachePath.mkdirs();
-                        }
-
-                        File imageFile = new File(cachePath, "qr_code.png");
-                        FileOutputStream stream = new FileOutputStream(imageFile);
-                        qrBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        stream.close();
-
-                        // Get the URI for the image file
-                        Uri contentUri = androidx.core.content.FileProvider.getUriForFile(
-                                this,
-                                getPackageName() + ".fileprovider",
-                                imageFile);
-
-                        // Add the image to the share intent
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        imageAdded = true;
-                    } catch (Exception e) {
-                        // If image sharing fails, just share text
-                        Log.w("ShareWaypoint", "Failed to add image to share intent: " + e.getMessage());
-                    }
-
-                    // Check if there are apps that can handle this intent
-                    if (shareIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
-                        dialog.dismiss();
-                    } else {
-                        // Fallback: try to share just text
-                        Intent textShareIntent = new Intent(Intent.ACTION_SEND);
-                        textShareIntent.setType("text/plain");
-                        textShareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this waypoint: " + encoded);
-
-                        if (textShareIntent.resolveActivity(getPackageManager()) != null) {
-                            startActivity(Intent.createChooser(textShareIntent, "Share Waypoint"));
-                            dialog.dismiss();
-                        } else {
-                            Toast.makeText(this, "No apps available to share", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, encoded); // Only the link
+                    startActivity(Intent.createChooser(shareIntent, "Share Waypoint"));
+                    dialog.dismiss();
                 } catch (Exception e) {
                     Log.e("ShareWaypoint", "Failed to share waypoint: " + e.getMessage());
                     Toast.makeText(this, "Failed to share waypoint", Toast.LENGTH_SHORT).show();
@@ -428,15 +376,43 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         bottomSheetDialog.show();
     }
 
-    public void showImportLinkDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Import Waypoint Code");
+    public void showImportDialog() {
+        // Inflate the custom bottom sheet layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_import_waypoint, null);
+        EditText editImportCode = dialogView.findViewById(R.id.editImportCode);
+        Button btnScanQR = dialogView.findViewById(R.id.btnScanQR);
+        Button btnImport = dialogView.findViewById(R.id.btnImport);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
-        final EditText input = new EditText(this);
-        builder.setView(input);
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.Dialog_Rounded);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setDraggable(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
 
-        builder.setPositiveButton("Import", (dialog, which) -> {
-            String code = input.getText().toString().trim();
+        // Scan QR button launches our custom bottom sheet scanner
+        btnScanQR.setOnClickListener(v -> {
+            QrScannerBottomSheet qrScannerBottomSheet = new QrScannerBottomSheet(
+                    new QrScannerBottomSheet.QrScanListener() {
+                        @Override
+                        public void onQrScanned(String code) {
+                            editImportCode.setText(code);
+                            // Re-show the import dialog after scanning
+                            dialog.show();
+                        }
+                    });
+            qrScannerBottomSheet.show(getSupportFragmentManager(), "qr_scanner");
+            dialog.dismiss();
+        });
+
+        // Import button decodes and imports the waypoint
+        btnImport.setOnClickListener(v -> {
+            String code = editImportCode.getText().toString().trim();
             try {
                 Waypoint wp = Waypoint.decode(this, code);
                 if (wp != null && wp.getName() != null) {
@@ -444,6 +420,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                     adapter.updateList(waypointList);
                     Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
                     saveFolderToPrefs(folder);
+                    dialog.dismiss();
                 } else {
                     Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
                 }
@@ -452,33 +429,11 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             }
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.show();
-    }
+        if (btnCancel != null) {
+            btnCancel.setBackgroundTintList(null);
+        }
 
-    public void showImportDialog() {
-        // Create a simple dialog with import options instead of using a side panel
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Import Waypoint");
-
-        String[] options = { "Import from Code", "Scan QR Code" };
-        builder.setItems(options, (dialog, which) -> {
-            switch (which) {
-                case 0: // Import from Code
-                    showImportLinkDialog();
-                    break;
-                case 1: // Scan QR Code
-                    ScanOptions scanOptions = new ScanOptions();
-                    scanOptions.setPrompt("Scan QR Code");
-                    scanOptions.setCaptureActivity(PortraitCaptureActivity.class);
-                    scanOptions.setOrientationLocked(true);
-                    qrScanner.launch(scanOptions);
-                    break;
-            }
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        dialog.show();
     }
 
     public static String decodeBase64ToImageFile(Context context, String base64Data) {

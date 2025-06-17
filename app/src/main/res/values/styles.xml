@@ -26,10 +26,20 @@
     </style>
 
     <style name="CustomBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.BottomSheetDialog</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="behavior_peekHeight">0dp</item>
-        <item name="behavior_hideable">true</item>
-        <item name="behavior_draggable">true</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.MaterialComponents.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.BottomSheetDialog" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="Dialog.Rounded" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

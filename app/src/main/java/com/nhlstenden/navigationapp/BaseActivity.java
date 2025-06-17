@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
+import android.app.AlertDialog;
+import android.text.InputType;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,18 +24,16 @@ import com.nhlstenden.navigationapp.activities.CompassActivity;
 import com.nhlstenden.navigationapp.helpers.AppSettings;
 import com.nhlstenden.navigationapp.helpers.CoinManager;
 import com.nhlstenden.navigationapp.helpers.ToastUtils;
+import com.nhlstenden.navigationapp.helpers.AchievementManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
-
 
     public static final int SIDE_PANEL_WIDTH = 600;
     public static final int SCRIM_COLOR = 0x88000000;
 
-
     private View sidePanel;
     private View touchInterceptor;
     private boolean isSidePanelVisible = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setupBottomNavigation();
     }
 
-
     protected void setupSettingsPanel() {
         ImageView topBarSettingsIcon = findViewById(R.id.settingsIcon);
         if (topBarSettingsIcon != null) {
@@ -61,13 +61,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         ViewGroup root = (ViewGroup) getWindow().getDecorView();
 
-        if (sidePanel != null) return;
+        if (sidePanel != null)
+            return;
 
         touchInterceptor = new View(this);
         touchInterceptor.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+                ViewGroup.LayoutParams.MATCH_PARENT));
         touchInterceptor.setBackgroundColor(SCRIM_COLOR);
         touchInterceptor.setClickable(true);
         touchInterceptor.setVisibility(View.GONE);
@@ -79,8 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 SIDE_PANEL_WIDTH,
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                Gravity.END
-        );
+                Gravity.END);
         sidePanel.setLayoutParams(params);
         sidePanel.setVisibility(View.GONE);
         root.addView(sidePanel);
@@ -93,6 +92,40 @@ public abstract class BaseActivity extends AppCompatActivity {
         bindToggle(R.id.btnToggleVibration, AppSettings.VIBRATION, "Vibration");
         bindToggle(R.id.btnToggleToast, AppSettings.TOAST_ENABLED, "Toast");
         bindToggle(R.id.btnToggleDistance, AppSettings.DISTANCE_DISPLAY, "Distance");
+
+        // Add Reset App button logic
+        Button btnResetApp = sidePanel.findViewById(R.id.btnResetApp);
+        if (btnResetApp != null) {
+            btnResetApp.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Reset App");
+                builder.setMessage("Type 'clear' to confirm resetting all app data. This cannot be undone.");
+                final EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+                builder.setPositiveButton("Confirm", (dialog, which) -> {
+                    if ("clear".equalsIgnoreCase(input.getText().toString().trim())) {
+                        // Clear coins
+                        getSharedPreferences("coin_prefs", MODE_PRIVATE).edit().clear().apply();
+                        // Clear achievements
+                        AchievementManager.resetAchievements(this);
+                        // Clear folders, waypoints, and theme
+                        getSharedPreferences("AppPrefs", MODE_PRIVATE).edit().clear().apply();
+                        // Clear settings
+                        getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE).edit().clear().apply();
+                        // Clear default preferences
+                        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+                        Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
+                        // Optionally restart the app
+                        recreate();
+                    } else {
+                        Toast.makeText(this, "You must type 'clear' to confirm.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                builder.show();
+            });
+        }
     }
 
     private void toggleSidePanel() {
@@ -108,7 +141,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void bindToggle(int btnId, String prefKey, String label) {
         Button b = sidePanel.findViewById(btnId);
-        if (b == null) return;
+        if (b == null)
+            return;
 
         updateToggleLabel(b, label, AppSettings.get(this, prefKey, true));
         b.setOnClickListener(v -> {
@@ -122,7 +156,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void updateToggleLabel(Button b, String label, boolean on) {
         b.setText(label + ": " + (on ? "ON" : "OFF"));
     }
-
 
     private void setupBottomNavigation() {
         ImageView navBrush = findViewById(R.id.navBrush);
@@ -177,16 +210,36 @@ public abstract class BaseActivity extends AppCompatActivity {
         String selectedTheme = prefs.getString("selected_theme", "classic");
 
         switch (selectedTheme) {
-            case "macha":        setTheme(R.style.Theme_NavigationApp_Macha);        break;
-            case "savana":       setTheme(R.style.Theme_NavigationApp_Savana);       break;
-            case "aqua":         setTheme(R.style.Theme_NavigationApp_Aqua);         break;
-            case "lavander":     setTheme(R.style.Theme_NavigationApp_Lavander);     break;
-            case "sunset":       setTheme(R.style.Theme_NavigationApp_Sunset);       break;
-            case "navy":         setTheme(R.style.Theme_NavigationApp_Navy);         break;
-            case "fakeHolland":  setTheme(R.style.Theme_NavigationApp_FakeHolland);  break;
-            case "macchiato":    setTheme(R.style.Theme_NavigationApp_Macchiato);    break;
-            case "cookieCream":  setTheme(R.style.Theme_NavigationApp_CookieCream);  break;
-            default:             setTheme(R.style.Theme_NavigationApp_Classic);      break;
+            case "macha":
+                setTheme(R.style.Theme_NavigationApp_Macha);
+                break;
+            case "savana":
+                setTheme(R.style.Theme_NavigationApp_Savana);
+                break;
+            case "aqua":
+                setTheme(R.style.Theme_NavigationApp_Aqua);
+                break;
+            case "lavander":
+                setTheme(R.style.Theme_NavigationApp_Lavander);
+                break;
+            case "sunset":
+                setTheme(R.style.Theme_NavigationApp_Sunset);
+                break;
+            case "navy":
+                setTheme(R.style.Theme_NavigationApp_Navy);
+                break;
+            case "fakeHolland":
+                setTheme(R.style.Theme_NavigationApp_FakeHolland);
+                break;
+            case "macchiato":
+                setTheme(R.style.Theme_NavigationApp_Macchiato);
+                break;
+            case "cookieCream":
+                setTheme(R.style.Theme_NavigationApp_CookieCream);
+                break;
+            default:
+                setTheme(R.style.Theme_NavigationApp_Classic);
+                break;
         }
     }
 }

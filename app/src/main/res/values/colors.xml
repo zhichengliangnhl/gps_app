@@ -80,4 +80,6 @@
     <color name="cookiecream_2ndLightest">#ccc5b9</color>
     <color name="cookiecream_lightest">#fffcf2</color>
 
+    <color name="drag_handle">#66000000</color>
+
 </resources>
