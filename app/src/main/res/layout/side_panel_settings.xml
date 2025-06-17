@@ -76,6 +76,15 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="12dp" />
 
+        <Button
+            android:id="@+id/btnAddGold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add 500 Gold"
+            android:background="@drawable/rounded_button"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp" />
+
     </LinearLayout>
 
 </FrameLayout>

@@ -115,6 +115,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                         getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE).edit().clear().apply();
                         // Clear default preferences
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+                        // Clear theme purchases
+                        getSharedPreferences("theme_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
+                        // Clear arrow purchases
+                        getSharedPreferences("arrow_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
+                        // Clear selected theme
+                        getSharedPreferences("theme_prefs", MODE_PRIVATE).edit().clear().apply();
                         Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
                         // Optionally restart the app
                         recreate();
@@ -124,6 +130,20 @@ public abstract class BaseActivity extends AppCompatActivity {
                 });
                 builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                 builder.show();
+            });
+        }
+
+        // Add 500 Gold button logic
+        Button btnAddGold = sidePanel.findViewById(R.id.btnAddGold);
+        if (btnAddGold != null) {
+            btnAddGold.setOnClickListener(v -> {
+                CoinManager.addCoins(this, 500);
+                Toast.makeText(this, "+500 gold added!", Toast.LENGTH_SHORT).show();
+                // Optionally update coin display if visible
+                TextView coinCounter = findViewById(R.id.coinCounter);
+                if (coinCounter != null) {
+                    CoinManager.updateCoinDisplay(this, coinCounter);
+                }
             });
         }
     }
