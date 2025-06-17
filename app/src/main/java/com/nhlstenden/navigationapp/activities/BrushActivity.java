@@ -200,13 +200,13 @@ public class BrushActivity extends BaseActivity
         {
             if (ArrowPurchaseManager.purchaseArrow(this, arrowName))
             {
-                Toast.makeText(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Arrow purchased successfully!", Toast.LENGTH_SHORT);
                 ArrowPurchaseManager.setSelectedArrow(this, arrowName);
                 recreate();
             }
             else
             {
-                Toast.makeText(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Not enough coins to purchase this arrow!", Toast.LENGTH_SHORT);
             }
         }
     }

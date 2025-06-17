@@ -32,6 +32,7 @@ import com.nhlstenden.navigationapp.BaseActivity;
 import com.nhlstenden.navigationapp.R;
 import com.nhlstenden.navigationapp.adapters.WaypointAdapter;
 import com.nhlstenden.navigationapp.dialogs.QrScannerBottomSheet;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 import com.nhlstenden.navigationapp.interfaces.OnWaypointClickListener;
 import com.nhlstenden.navigationapp.models.Folder;
 import com.nhlstenden.navigationapp.models.Waypoint;
@@ -84,7 +85,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         folder = getIntent().getParcelableExtra("FOLDER");
         if (folder == null)
         {
-            Toast.makeText(this, "No folder provided", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "No folder provided", Toast.LENGTH_SHORT);
             finish();
             return;
         }
@@ -147,12 +148,12 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 imported.setImported(true);
                                 waypointList.add(imported);
                                 adapter.updateList(waypointList);
-                                Toast.makeText(this, "Waypoint imported!", Toast.LENGTH_SHORT).show();
+                                ToastUtils.show(this, "Waypoint imported!", Toast.LENGTH_SHORT);
                                 saveFolderToPrefs(folder);
                             }
                             else
                             {
-                                Toast.makeText(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT).show();
+                                ToastUtils.show(this, "Invalid or corrupted waypoint", Toast.LENGTH_SHORT);
                             }
                         }
                     }
@@ -208,8 +209,8 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                                 {
                                     if (wp.getName().equalsIgnoreCase(w.getName()))
                                     {
-                                        Toast.makeText(this, "Waypoint name must be unique in this folder",
-                                                Toast.LENGTH_SHORT).show();
+                                        ToastUtils.show(this, "Waypoint name must be unique in this folder",
+                                                Toast.LENGTH_SHORT);
                                         return;
                                     }
                                 }
@@ -257,7 +258,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             }
             else
             {
-                Toast.makeText(this, "No waypoints available", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "No waypoints available", Toast.LENGTH_SHORT);
             }
         });
 
@@ -385,7 +386,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
             saveFolderToPrefs(folder);
 
             // Show success message
-            Toast.makeText(this, "Waypoint deleted", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Waypoint deleted", Toast.LENGTH_SHORT);
 
             dialog.dismiss();
         });
@@ -421,7 +422,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         String encoded = waypoint.encode();
         if (encoded == null)
         {
-            Toast.makeText(this, "Failed to encode waypoint", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Failed to encode waypoint", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -477,7 +478,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                             })
                             .start())
                     .start();
-            Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Link copied to clipboard", Toast.LENGTH_SHORT);
         });
 
         btnShare.setOnClickListener(v ->
@@ -494,7 +495,7 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 } catch (Exception e)
                 {
                     Log.e("ShareWaypoint", "Failed to share waypoint: " + e.getMessage());
-                    Toast.makeText(this, "Failed to share waypoint", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Failed to share waypoint", Toast.LENGTH_SHORT);
                 }
             }, 100);
         });
@@ -702,13 +703,13 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
                 previewWaypoint[0].setImported(true);
                 waypointList.add(previewWaypoint[0]);
                 adapter.updateList(waypointList);
-                Toast.makeText(this, "✅ Waypoint imported successfully!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "✅ Waypoint imported successfully!", Toast.LENGTH_SHORT);
                 saveFolderToPrefs(folder);
                 dialog.dismiss();
             }
             else
             {
-                Toast.makeText(this, "Please enter a valid waypoint code first", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Please enter a valid waypoint code first", Toast.LENGTH_SHORT);
             }
         });
 

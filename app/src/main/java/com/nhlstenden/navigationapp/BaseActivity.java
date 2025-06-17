@@ -140,7 +140,7 @@ public abstract class BaseActivity extends AppCompatActivity
                         getSharedPreferences("theme_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
                         getSharedPreferences("arrow_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
                         getSharedPreferences("theme_prefs", MODE_PRIVATE).edit().clear().apply();
-                        Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
+                        ToastUtils.show(this, "App data reset! Restarting...", Toast.LENGTH_LONG);
                         dialog.dismiss();
                         recreate();
                     }
@@ -165,7 +165,7 @@ public abstract class BaseActivity extends AppCompatActivity
             btnAddGold.setOnClickListener(v ->
             {
                 CoinManager.addCoins(this, 500);
-                Toast.makeText(this, "+500 gold added!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "+500 gold added!", Toast.LENGTH_SHORT);
                 // Optionally update coin display if visible
                 TextView coinCounter = findViewById(R.id.coinCounter);
                 if (coinCounter != null)

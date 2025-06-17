@@ -75,7 +75,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 if (result.getContents() != null)
                 {
                     String encodedWaypoint = result.getContents();
-                    Toast.makeText(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT);
                     // Optional: Decode or handle it
                 }
             });
@@ -135,14 +135,14 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             String folderName = folderNameInput.getText().toString().trim();
             if (TextUtils.isEmpty(folderName))
             {
-                Toast.makeText(this, "Please enter a folder name", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, "Please enter a folder name", Toast.LENGTH_SHORT);
                 return;
             }
             for (Folder f : folderList)
             {
                 if (f.getName().equalsIgnoreCase(folderName))
                 {
-                    Toast.makeText(this, "Folder name must be unique", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(this, "Folder name must be unique", Toast.LENGTH_SHORT);
                     return;
                 }
             }
@@ -251,7 +251,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             folderList.remove(folder);
             folderAdapter.notifyDataSetChanged();
             saveFolders();
-            Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(this, "Folder deleted", Toast.LENGTH_SHORT);
             dialog.dismiss();
         });
         btnCancel.setBackgroundTintList(null);
