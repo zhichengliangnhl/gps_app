@@ -96,40 +96,50 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Add Reset App button logic
         Button btnResetApp = sidePanel.findViewById(R.id.btnResetApp);
         if (btnResetApp != null) {
+            btnResetApp.setBackgroundTintList(null);
             btnResetApp.setOnClickListener(v -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Reset App");
-                builder.setMessage("Type 'clear' to confirm resetting all app data. This cannot be undone.");
-                final EditText input = new EditText(this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
-                builder.setPositiveButton("Confirm", (dialog, which) -> {
+                // Use the already declared 'root' variable from above
+                View overlay = new View(this);
+                overlay.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                overlay.setBackgroundColor(0x88000000); // semi-transparent black
+                overlay.setId(View.generateViewId());
+                root.addView(overlay);
+                // Use a custom themed dialog for better UI
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_reset_confirm, null);
+                final EditText input = dialogView.findViewById(R.id.editConfirmText);
+                androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this,
+                        R.style.Dialog_Rounded)
+                        .setView(dialogView)
+                        .setCancelable(true)
+                        .create();
+                Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+                Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+                btnCancel.setOnClickListener(v2 -> {
+                    dialog.dismiss();
+                });
+                btnConfirm.setOnClickListener(v2 -> {
                     if ("clear".equalsIgnoreCase(input.getText().toString().trim())) {
-                        // Clear coins
                         getSharedPreferences("coin_prefs", MODE_PRIVATE).edit().clear().apply();
-                        // Clear achievements
                         AchievementManager.resetAchievements(this);
-                        // Clear folders, waypoints, and theme
                         getSharedPreferences("AppPrefs", MODE_PRIVATE).edit().clear().apply();
-                        // Clear settings
                         getSharedPreferences("com.nhlstenden.navigationapp.PREFS", MODE_PRIVATE).edit().clear().apply();
-                        // Clear default preferences
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-                        // Clear theme purchases
                         getSharedPreferences("theme_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
-                        // Clear arrow purchases
                         getSharedPreferences("arrow_purchase_prefs", MODE_PRIVATE).edit().clear().apply();
-                        // Clear selected theme
                         getSharedPreferences("theme_prefs", MODE_PRIVATE).edit().clear().apply();
                         Toast.makeText(this, "App data reset! Restarting...", Toast.LENGTH_LONG).show();
-                        // Optionally restart the app
+                        dialog.dismiss();
                         recreate();
                     } else {
-                        Toast.makeText(this, "You must type 'clear' to confirm.", Toast.LENGTH_SHORT).show();
+                        input.setError("You must type 'clear' to confirm.");
                     }
                 });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                builder.show();
+                dialog.setOnDismissListener(d -> {
+                    // Remove the overlay when dialog is dismissed
+                    root.removeView(overlay);
+                });
+                dialog.show();
             });
         }
 
