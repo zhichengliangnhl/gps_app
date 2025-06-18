@@ -1,7 +1,13 @@
 import java.util.Properties
 
 val dotenv = Properties()
-file("../.env").inputStream().use { dotenv.load(it) }
+val envFile = file("../.env")
+if (envFile.exists()) {
+    envFile.inputStream().use { dotenv.load(it) }
+    println(".env loaded from ${envFile.absolutePath}")
+} else {
+    println(".env file not found, skipping")
+}
 val apiKey = dotenv.getProperty("API_KEY") ?: ""
 
 plugins {
