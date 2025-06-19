@@ -657,21 +657,23 @@ public class WaypointActivity extends BaseActivity implements OnWaypointClickLis
         String json = prefs.getString("folders_json", null);
         List<Folder> folderList = new java.util.ArrayList<>();
         if (json != null) {
-            Type type = new TypeToken<List<Folder>>() {
-            }.getType();
+            Type type = new TypeToken<List<Folder>>() {}.getType();
             folderList = new Gson().fromJson(json, type);
         }
+
         boolean found = false;
         for (int i = 0; i < folderList.size(); i++) {
-            if (folderList.get(i).getId().equals(folder.getId())) {
+            if (folder.getId() != null && folder.getId().equals(folderList.get(i).getId())) {
                 folderList.set(i, folder);
                 found = true;
                 break;
             }
         }
+
         if (!found) {
             folderList.add(folder);
         }
+
         prefs.edit().putString("folders_json", new Gson().toJson(folderList)).apply();
     }
 }
