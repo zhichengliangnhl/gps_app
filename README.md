@@ -144,7 +144,7 @@ Students from NHL Stenden:
 
 - Mihael Druzeta
 - Jia Men Lam
-- Thijs
+- Thijs Thierry
 - Fjodor Smorodins
 - Zhi Cheng Liang
 
