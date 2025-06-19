@@ -35,7 +35,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderActivity extends BaseActivity implements OnFolderClickListener {
+public class FolderActivity extends BaseActivity implements OnFolderClickListener
+{
 
     private RecyclerView recyclerView;
     private FolderAdapter folderAdapter;
@@ -47,15 +48,20 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
 
     private final ActivityResultLauncher<Intent> folderResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+            result ->
+            {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                {
                     Folder updatedFolder = result.getData().getParcelableExtra("FOLDER");
-                    if (updatedFolder != null) {
-                        folderAdapter.updateFolder(updatedFolder);
-                        for (int i = 0; i < folderList.size(); i++) {
-                            if (folderList.get(i).getId().equals(updatedFolder.getId())) {
-                                folderList.set(i, updatedFolder);
-                                saveFolders();
+                    if (updatedFolder != null)
+                    {
+                        this.folderAdapter.updateFolder(updatedFolder);
+                        for (int i = 0; i < this.folderList.size(); i++)
+                        {
+                            if (this.folderList.get(i).getId().equals(updatedFolder.getId()))
+                            {
+                                this.folderList.set(i, updatedFolder);
+                                this.saveFolders();
                                 break;
                             }
                         }
@@ -64,8 +70,10 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             });
 
     private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(
-            new com.journeyapps.barcodescanner.ScanContract(), result -> {
-                if (result.getContents() != null) {
+            new com.journeyapps.barcodescanner.ScanContract(), result ->
+            {
+                if (result.getContents() != null)
+                {
                     String encodedWaypoint = result.getContents();
                     ToastUtils.show(this, "Scanned: " + encodedWaypoint, Toast.LENGTH_SHORT);
                     // Optional: Decode or handle it
@@ -73,15 +81,18 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             });
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folder);
 
         final View topBar = findViewById(R.id.top_bar);
         final View bottomNav = findViewById(R.id.bottom_nav_container);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) ->
+        {
             Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            if (bottomNav != null) {
+            if (bottomNav != null)
+            {
                 bottomNav.setPadding(
                         bottomNav.getPaddingLeft(),
                         bottomNav.getPaddingTop(),
@@ -92,61 +103,69 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         });
 
         ImageView settingsIcon = findViewById(R.id.settingsIcon);
-        if (settingsIcon != null) {
-            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+        if (settingsIcon != null)
+        {
+            settingsIcon.setOnClickListener(v -> this.showSettingsPanel());
         }
 
         // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
-        if (headerTitle != null) {
+        if (headerTitle != null)
+        {
             headerTitle.setText("Treasure Collections");
         }
-        setupSettingsPanel();
+        this.setupSettingsPanel();
 
         // Initialize views
-        recyclerView = findViewById(R.id.recyclerViewFolders);
-        addFolderButton = findViewById(R.id.addFolderButton);
-        folderNameInput = findViewById(R.id.folderNameInput);
+        this.recyclerView = findViewById(R.id.recyclerViewFolders);
+        this.addFolderButton = findViewById(R.id.addFolderButton);
+        this.folderNameInput = findViewById(R.id.folderNameInput);
 
         // Folder list
-        folderList = new ArrayList<>();
-        loadFolders();
+        this.folderList = new ArrayList<>();
+        this.loadFolders();
 
-        folderAdapter = new FolderAdapter(folderList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(folderAdapter);
+        this.folderAdapter = new FolderAdapter(this.folderList, this);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.recyclerView.setAdapter(this.folderAdapter);
 
         // Add folder logic
-        addFolderButton.setOnClickListener(v -> {
-            String folderName = folderNameInput.getText().toString().trim();
-            if (TextUtils.isEmpty(folderName)) {
+        this.addFolderButton.setOnClickListener(v ->
+        {
+            String folderName = this.folderNameInput.getText().toString().trim();
+            if (TextUtils.isEmpty(folderName))
+            {
                 ToastUtils.show(this, "Please enter a folder name", Toast.LENGTH_SHORT);
                 return;
             }
-            for (Folder f : this.folderList) {
-                if (f.getName().equalsIgnoreCase(folderName)) {
+            for (Folder f : this.folderList)
+            {
+                if (f.getName().equalsIgnoreCase(folderName))
+                {
                     ToastUtils.show(this, "Folder name must be unique", Toast.LENGTH_SHORT);
                     return;
                 }
             }
             Folder folder = new Folder(folderName);
-            folderList.add(folder);
-            folderAdapter.notifyItemInserted(folderList.size() - 1);
-            saveFolders();
-            folderNameInput.setText("");
-            onFolderClicked(folder); // Open folder immediately
+            this.folderList.add(folder);
+            this.folderAdapter.notifyItemInserted(this.folderList.size() - 1);
+            this.saveFolders();
+            this.folderNameInput.setText("");
+            this.onFolderClicked(folder); // Open folder immediately
         });
     }
 
     @Override
-    public void onFolderClicked(Folder folder) {
+    public void onFolderClicked(Folder folder)
+    {
         Intent intent = new Intent(this, WaypointActivity.class);
         intent.putExtra("FOLDER", folder);
-        folderResultLauncher.launch(intent);
+        this.folderResultLauncher.launch(intent);
     }
 
     @Override
-    public void onEditFolder(Folder folder) {
+    public void onEditFolder(Folder folder)
+    {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_folder, null);
         EditText editFolderName = dialogView.findViewById(R.id.editFolderName);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
@@ -161,33 +180,40 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
                     .from(bottomSheet);
             behavior.setDraggable(true);
             behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
         }
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-        btnSave.setOnClickListener(v -> {
+        btnSave.setOnClickListener(v ->
+        {
             String newName = editFolderName.getText().toString().trim();
-            if (!TextUtils.isEmpty(newName)) {
+            if (!TextUtils.isEmpty(newName))
+            {
                 folder.setName(newName);
-                folderAdapter.notifyDataSetChanged();
-                saveFolders();
+                this.folderAdapter.notifyDataSetChanged();
+                this.saveFolders();
                 dialog.dismiss();
-            } else {
+            }
+            else
+            {
                 editFolderName.setError("Folder name cannot be empty");
             }
         });
         btnCancel.setBackgroundTintList(null);
         btnSave.setBackgroundTintList(null);
         dialog.show();
-        if (dialog.getWindow() != null) {
+        if (dialog.getWindow() != null)
+        {
             dialog.getWindow().setDimAmount(0.6f);
         }
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             bottomSheet.setBackgroundResource(android.R.color.transparent);
-            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.4); // 60% of screen
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.4);
             bottomSheet.getLayoutParams().height = desiredHeight;
             bottomSheet.requestLayout();
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -198,7 +224,8 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
     }
 
     @Override
-    public void onDeleteFolder(Folder folder) {
+    public void onDeleteFolder(Folder folder)
+    {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_folder, null);
         TextView previewFolderName = dialogView.findViewById(R.id.previewFolderName);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
@@ -211,14 +238,16 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
                     .from(bottomSheet);
             behavior.setDraggable(true);
             behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
         }
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-        btnDelete.setOnClickListener(v -> {
+        btnDelete.setOnClickListener(v ->
+        {
             this.folderList.remove(folder);
             this.folderAdapter.notifyDataSetChanged();
             this.saveFolders();
@@ -228,12 +257,14 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         btnCancel.setBackgroundTintList(null);
         btnDelete.setBackgroundTintList(null);
         dialog.show();
-        if (dialog.getWindow() != null) {
+        if (dialog.getWindow() != null)
+        {
             dialog.getWindow().setDimAmount(0.6f);
         }
-        if (bottomSheet != null) {
+        if (bottomSheet != null)
+        {
             bottomSheet.setBackgroundResource(android.R.color.transparent);
-            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.6); // 60% of screen
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.6);
             bottomSheet.getLayoutParams().height = desiredHeight;
             bottomSheet.requestLayout();
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -244,7 +275,8 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
     }
 
     @Override
-    public void onShareFolder(Folder folder) {
+    public void onShareFolder(Folder folder)
+    {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Check out my folder");
@@ -252,27 +284,32 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         startActivity(Intent.createChooser(intent, "Share Folder via"));
     }
 
-    private void loadFolders() {
+    private void loadFolders()
+    {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = prefs.getString(KEY_FOLDERS, null);
-        if (json != null) {
-            Type type = new TypeToken<List<Folder>>() {
+        if (json != null)
+        {
+            Type type = new TypeToken<List<Folder>>()
+            {
             }.getType();
             List<Folder> saved = new Gson().fromJson(json, type);
-            folderList.clear();
-            folderList.addAll(saved);
+            this.folderList.clear();
+            this.folderList.addAll(saved);
         }
     }
 
-    private void saveFolders() {
-        String json = new Gson().toJson(folderList);
+    private void saveFolders()
+    {
+        String json = new Gson().toJson(this.folderList);
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 .edit()
                 .putString(KEY_FOLDERS, json)
                 .apply();
     }
 
-    private void showSettingsPanel() {
+    private void showSettingsPanel()
+    {
         View sidePanelView = getLayoutInflater().inflate(R.layout.side_panel_settings, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.RightSlideDialog)
@@ -281,5 +318,4 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
 
         dialog.show();
     }
-
 }

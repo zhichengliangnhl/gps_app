@@ -22,20 +22,20 @@ public class CompassSensorManager implements SensorEventListener
 
     public CompassSensorManager(Context ctx)
     {
-        sensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
-        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        this.sensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
+        this.accelSensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.magSensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     public void start()
     {
-        sensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, magSensor, SensorManager.SENSOR_DELAY_UI);
+        this.sensorManager.registerListener(this, this.accelSensor, SensorManager.SENSOR_DELAY_UI);
+        this.sensorManager.registerListener(this, this.magSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     public void stop()
     {
-        sensorManager.unregisterListener(this);
+        this.sensorManager.unregisterListener(this);
     }
 
     public void setCompassListener(CompassListener listener)
@@ -48,31 +48,31 @@ public class CompassSensorManager implements SensorEventListener
     {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
-            System.arraycopy(event.values, 0, accelVals, 0, accelVals.length);
+            System.arraycopy(event.values, 0, this.accelVals, 0, this.accelVals.length);
         }
         else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
         {
-            System.arraycopy(event.values, 0, magVals, 0, magVals.length);
+            System.arraycopy(event.values, 0, this.magVals, 0, this.magVals.length);
         }
 
-        if (accelVals != null && magVals != null)
+        if (this.accelVals != null && this.magVals != null)
         {
-            SensorManager.getRotationMatrix(rotationMatrix, null, accelVals, magVals);
-            SensorManager.getOrientation(rotationMatrix, orientation);
-            float azimuthRad = orientation[0];
+            SensorManager.getRotationMatrix(this.rotationMatrix, null, this.accelVals, this.magVals);
+            SensorManager.getOrientation(this.rotationMatrix, this.orientation);
+            float azimuthRad = this.orientation[0];
             float azimuthDeg = (float) Math.toDegrees(azimuthRad);
             if (azimuthDeg < 0) azimuthDeg += 360;
 
             // --- Smoothing ---
-            azimuthHistory[azimuthIdx] = azimuthDeg;
-            azimuthIdx = (azimuthIdx + 1) % WINDOW;
+            this.azimuthHistory[this.azimuthIdx] = azimuthDeg;
+            this.azimuthIdx = (this.azimuthIdx + 1) % WINDOW;
             float avgAzimuth = 0;
-            for (float a : azimuthHistory) avgAzimuth += a;
+            for (float a : this.azimuthHistory) avgAzimuth += a;
             avgAzimuth /= WINDOW;
 
-            if (listener != null)
+            if (this.listener != null)
             {
-                listener.onAzimuthChanged(avgAzimuth); // Only send the smoothed value!
+                this.listener.onAzimuthChanged(avgAzimuth);
             }
         }
     }

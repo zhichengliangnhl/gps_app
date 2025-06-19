@@ -69,8 +69,8 @@ public class IconSelectionDialog extends AppCompatDialog
                 int finalI = i;
                 iconView.setOnClickListener(v ->
                 {
-                    selectedIconName = "icon" + finalI;
-                    updateAllIconsColor(selectedColor);
+                    this.selectedIconName = "icon" + finalI;
+                    updateAllIconsColor(this.selectedColor);
                     updateSelectedIcon(finalI);
                 });
             }
@@ -81,14 +81,14 @@ public class IconSelectionDialog extends AppCompatDialog
         for (int i = 1; i <= 10; i++)
         {
             int resId = getContext().getResources().getIdentifier("icon" + i, "drawable", getContext().getPackageName());
-            if (resId == getContext().getResources().getIdentifier(initialIconName, "drawable", getContext().getPackageName()))
+            if (resId == getContext().getResources().getIdentifier(this.initialIconName, "drawable", getContext().getPackageName()))
             {
                 initialIndex = i;
                 break;
             }
         }
         updateSelectedIcon(initialIndex);
-        updateAllIconsColor(initialColor);
+        updateAllIconsColor(this.initialColor);
 
         // Initialize color grid
         for (int i = 1; i <= 10; i++)
@@ -100,8 +100,8 @@ public class IconSelectionDialog extends AppCompatDialog
                 int finalColor = getColorForIndex(i);
                 colorView.setOnClickListener(v ->
                 {
-                    selectedColor = finalColor;
-                    updateAllIconsColor(selectedColor);
+                    this.selectedColor = finalColor;
+                    updateAllIconsColor(this.selectedColor);
                 });
             }
         }
@@ -110,9 +110,9 @@ public class IconSelectionDialog extends AppCompatDialog
         Button okButton = findViewById(R.id.okButton);
         okButton.setOnClickListener(v ->
         {
-            if (listener != null)
+            if (this.listener != null)
             {
-                listener.onIconSelected(selectedIconName, selectedColor);
+                this.listener.onIconSelected(this.selectedIconName, this.selectedColor);
             }
             dismiss();
         });

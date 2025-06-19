@@ -39,7 +39,6 @@ import java.util.UUID;
 
 public class CreateWaypointActivity extends BaseActivity
 {
-
     private MapView mapPreview;
     private GoogleMap previewMap;
 
@@ -57,7 +56,7 @@ public class CreateWaypointActivity extends BaseActivity
     private String originalDate;
     private boolean isEditMode = false;
     private Waypoint existingWaypoint = null;
-    // Launcher for picking location on map
+
     private final ActivityResultLauncher<Intent> mapLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->
             {
@@ -66,14 +65,14 @@ public class CreateWaypointActivity extends BaseActivity
                     Intent data = result.getData();
                     if (data.hasExtra("lat") && data.hasExtra("lng"))
                     {
-                        lat = data.getDoubleExtra("lat", 0.0);
-                        lng = data.getDoubleExtra("lng", 0.0);
+                        this.lat = data.getDoubleExtra("lat", 0.0);
+                        this.lng = data.getDoubleExtra("lng", 0.0);
 
                         ToastUtils.show(this,
-                                String.format("Location selected: %.6f, %.6f", lat, lng),
+                                String.format("Location selected: %.6f, %.6f", this.lat, this.lng),
                                 Toast.LENGTH_SHORT);
 
-                        updateMapPreview(lat, lng);
+                        this.updateMapPreview(this.lat, this.lng);
                     }
                 }
             });
@@ -84,62 +83,57 @@ public class CreateWaypointActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_waypoint);
 
-        // Initialize views
         TextView headerTitle = findViewById(R.id.headerTitle);
-        etName = findViewById(R.id.etName);
-        etDescription = findViewById(R.id.etDescription);
-        btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
-        btnCancel = findViewById(R.id.btnCancel);
-        mapPreview = findViewById(R.id.mapPreview);
-        imagePreview = findViewById(R.id.imagePreview);
-        imageClickOverlay = findViewById(R.id.imageClickOverlay);
+        this.etName = findViewById(R.id.etName);
+        this.etDescription = findViewById(R.id.etDescription);
+        this.btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
+        this.btnCancel = findViewById(R.id.btnCancel);
+        this.mapPreview = findViewById(R.id.mapPreview);
+        this.imagePreview = findViewById(R.id.imagePreview);
+        this.imageClickOverlay = findViewById(R.id.imageClickOverlay);
 
-        // Set initial icon
-        imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
-        imagePreview.setColorFilter(selectedIconColor);
+        this.imagePreview.setImageResource(getResources().getIdentifier(this.selectedIconName, "drawable", getPackageName()));
+        this.imagePreview.setColorFilter(this.selectedIconColor);
 
-        // Handle intent extras
-        mode = getIntent().getStringExtra("mode");
-        isEditMode = "edit".equals(mode);
-        id = getIntent().getStringExtra("id");
+        this.mode = getIntent().getStringExtra("mode");
+        this.isEditMode = "edit".equals(this.mode);
+        this.id = getIntent().getStringExtra("id");
 
         boolean isImported;
 
-        // Set appropriate title
         if (headerTitle != null)
         {
-            headerTitle.setText("edit".equals(mode) ? "Edit Treasure" : "Create Treasure");
+            headerTitle.setText("edit".equals(this.mode) ? "Edit Treasure" : "Create Treasure");
         }
         setupSettingsPanel();
 
-        // Restore state or initialize from intent
         if (savedInstanceState != null)
         {
             isImported = false;
-            lat = savedInstanceState.getDouble("lat", 0.0);
-            lng = savedInstanceState.getDouble("lng", 0.0);
-            mode = savedInstanceState.getString("mode");
-            id = savedInstanceState.getString("id");
-            selectedIconName = savedInstanceState.getString("iconName");
-            selectedIconColor = savedInstanceState.getInt("iconColor", Color.BLACK);
-            imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
-            imagePreview.setColorFilter(selectedIconColor);
+            this.lat = savedInstanceState.getDouble("lat", 0.0);
+            this.lng = savedInstanceState.getDouble("lng", 0.0);
+            this.mode = savedInstanceState.getString("mode");
+            this.id = savedInstanceState.getString("id");
+            this.selectedIconName = savedInstanceState.getString("iconName");
+            this.selectedIconColor = savedInstanceState.getInt("iconColor", Color.BLACK);
+            this.imagePreview.setImageResource(getResources().getIdentifier(this.selectedIconName, "drawable", getPackageName()));
+            this.imagePreview.setColorFilter(this.selectedIconColor);
         }
-        else if ("edit".equals(mode))
+        else if ("edit".equals(this.mode))
         {
-            existingWaypoint = getIntent().getParcelableExtra("WAYPOINT");
-            if (existingWaypoint != null)
+            this.existingWaypoint = getIntent().getParcelableExtra("WAYPOINT");
+            if (this.existingWaypoint != null)
             {
-                etName.setText(existingWaypoint.getName());
-                etDescription.setText(existingWaypoint.getDescription());
-                lat = existingWaypoint.getLat();
-                lng = existingWaypoint.getLng();
-                originalDate = existingWaypoint.getDate();
-                isImported = existingWaypoint.isImported();
-                selectedIconName = existingWaypoint.getIconName();
-                selectedIconColor = existingWaypoint.getIconColor();
-                imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
-                imagePreview.setColorFilter(selectedIconColor);
+                this.etName.setText(this.existingWaypoint.getName());
+                this.etDescription.setText(this.existingWaypoint.getDescription());
+                this.lat = this.existingWaypoint.getLat();
+                this.lng = this.existingWaypoint.getLng();
+                this.originalDate = this.existingWaypoint.getDate();
+                isImported = this.existingWaypoint.isImported();
+                this.selectedIconName = this.existingWaypoint.getIconName();
+                this.selectedIconColor = this.existingWaypoint.getIconColor();
+                this.imagePreview.setImageResource(getResources().getIdentifier(this.selectedIconName, "drawable", getPackageName()));
+                this.imagePreview.setColorFilter(this.selectedIconColor);
             }
             else
             {
@@ -151,85 +145,82 @@ public class CreateWaypointActivity extends BaseActivity
             isImported = false;
             if (getIntent().hasExtra("lat") && getIntent().hasExtra("lng"))
             {
-                lat = getIntent().getDoubleExtra("lat", 0.0);
-                lng = getIntent().getDoubleExtra("lng", 0.0);
+                this.lat = getIntent().getDoubleExtra("lat", 0.0);
+                this.lng = getIntent().getDoubleExtra("lng", 0.0);
             }
         }
 
-        // MapView setup
-        mapPreview.onCreate(savedInstanceState);
-        mapPreview.getMapAsync(googleMap ->
+        this.mapPreview.onCreate(savedInstanceState);
+        this.mapPreview.getMapAsync(googleMap ->
         {
-            previewMap = googleMap;
-            previewMap.getUiSettings().setAllGesturesEnabled(false);
-            updateMapPreview(lat, lng);
+            this.previewMap = googleMap;
+            this.previewMap.getUiSettings().setAllGesturesEnabled(false);
+            this.updateMapPreview(this.lat, this.lng);
         });
 
         View ivCompass = findViewById(R.id.ivCompass);
 
         if (isImported)
         {
-            mapPreview.setAlpha(0.6f);
-            mapPreview.setVisibility(View.GONE);
+            this.mapPreview.setAlpha(0.6f);
+            this.mapPreview.setVisibility(View.GONE);
             findViewById(R.id.mapClickOverlay).setVisibility(View.GONE);
             ivCompass.setVisibility(View.VISIBLE);
         }
         else
         {
-            mapPreview.setVisibility(View.VISIBLE);
+            this.mapPreview.setVisibility(View.VISIBLE);
             findViewById(R.id.mapClickOverlay).setVisibility(View.VISIBLE);
             ivCompass.setVisibility(View.GONE);
             findViewById(R.id.mapClickOverlay).setOnClickListener(v ->
             {
                 Intent mapIntent = new Intent(CreateWaypointActivity.this, MapActivity.class);
-                if (lat != 0.0 && lng != 0.0)
+                if (this.lat != 0.0 && this.lng != 0.0)
                 {
-                    mapIntent.putExtra("lat", lat);
-                    mapIntent.putExtra("lng", lng);
+                    mapIntent.putExtra("lat", this.lat);
+                    mapIntent.putExtra("lng", this.lng);
                 }
-                mapLauncher.launch(mapIntent);
+                this.mapLauncher.launch(mapIntent);
             });
         }
 
-        imageClickOverlay.setOnClickListener(v ->
+        this.imageClickOverlay.setOnClickListener(v ->
         {
-            IconSelectionDialog dialog = new IconSelectionDialog(this, selectedIconName, selectedIconColor, (iconName, color) ->
+            IconSelectionDialog dialog = new IconSelectionDialog(this, this.selectedIconName, this.selectedIconColor, (iconName, color) ->
             {
-                selectedIconName = iconName;
-                selectedIconColor = color;
-                imagePreview.setImageResource(getResources().getIdentifier(selectedIconName, "drawable", getPackageName()));
-                imagePreview.setColorFilter(selectedIconColor);
+                this.selectedIconName = iconName;
+                this.selectedIconColor = color;
+                this.imagePreview.setImageResource(getResources().getIdentifier(this.selectedIconName, "drawable", getPackageName()));
+                this.imagePreview.setColorFilter(this.selectedIconColor);
             });
             dialog.show();
         });
 
-        btnSaveWaypoint.setOnClickListener(v ->
+        this.btnSaveWaypoint.setOnClickListener(v ->
         {
-            if (!validateInput())
+            if (!this.validateInput())
             {
                 return;
             }
 
-            String name = etName.getText().toString().trim();
-            String description = etDescription.getText().toString().trim();
+            String name = this.etName.getText().toString().trim();
+            String description = this.etDescription.getText().toString().trim();
             if (description.length() > MAX_DESCRIPTION_LENGTH)
             {
                 description = description.substring(0, MAX_DESCRIPTION_LENGTH);
             }
 
-            // Always use the existing waypoint's ID when in edit mode
             String waypointId;
             String waypointDate;
-            if (isEditMode && existingWaypoint != null)
+            if (this.isEditMode && this.existingWaypoint != null)
             {
-                waypointId = existingWaypoint.getId();
-                waypointDate = existingWaypoint.getDate();
+                waypointId = this.existingWaypoint.getId();
+                waypointDate = this.existingWaypoint.getDate();
             }
             else
             {
                 waypointId = UUID.randomUUID().toString();
                 waypointDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                // Update First Steps achievement only for new waypoints
                 AchievementManager.updateFirstStepsProgress(this);
             }
 
@@ -237,31 +228,28 @@ public class CreateWaypointActivity extends BaseActivity
                     waypointId,
                     name,
                     description,
-                    selectedIconName,
-                    selectedIconColor,
-                    lat,
-                    lng
+                    this.selectedIconName,
+                    this.selectedIconColor,
+                    this.lat,
+                    this.lng
             );
             resultWaypoint.setDate(waypointDate);
             resultWaypoint.setImported(isImported);
 
             Intent resultIntent = new Intent();
-
             Log.d("WAYPOINT_RESULT", "Waypoint: " + resultWaypoint);
-
             resultIntent.putExtra("WAYPOINT", resultWaypoint);
-            resultIntent.putExtra("mode", mode);
+            resultIntent.putExtra("mode", this.mode);
             setResult(RESULT_OK, resultIntent);
             finish();
         });
 
-        btnCancel.setOnClickListener(v ->
+        this.btnCancel.setOnClickListener(v ->
         {
             setResult(RESULT_CANCELED);
             finish();
         });
 
-        View topBar = findViewById(R.id.top_bar);
         View bottomNav = findViewById(R.id.bottom_nav_container);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) ->
         {
@@ -281,19 +269,19 @@ public class CreateWaypointActivity extends BaseActivity
 
     private boolean validateInput()
     {
-        if (TextUtils.isEmpty(etName.getText().toString().trim()))
+        if (TextUtils.isEmpty(this.etName.getText().toString().trim()))
         {
             ToastUtils.show(this, "Please enter a name", Toast.LENGTH_SHORT);
             return false;
         }
 
-        if (lat == 0.0 && lng == 0.0)
+        if (this.lat == 0.0 && this.lng == 0.0)
         {
             ToastUtils.show(this, "Please select a location on the map", Toast.LENGTH_SHORT);
             return false;
         }
 
-        String description = etDescription.getText().toString().trim();
+        String description = this.etDescription.getText().toString().trim();
         if (description.length() > MAX_DESCRIPTION_LENGTH)
         {
             ToastUtils.show(this, "Description too long (max 500 characters)", Toast.LENGTH_SHORT);
@@ -305,56 +293,55 @@ public class CreateWaypointActivity extends BaseActivity
 
     private void updateMapPreview(double lat, double lng)
     {
-        if (previewMap == null) return;
+        if (this.previewMap == null) return;
 
-        previewMap.clear();
+        this.previewMap.clear();
         if (lat != 0.0 && lng != 0.0)
         {
             LatLng location = new LatLng(lat, lng);
-            previewMap.addMarker(new MarkerOptions().position(location).title("Selected Location"));
-            previewMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+            this.previewMap.addMarker(new MarkerOptions().position(location).title("Selected Location"));
+            this.previewMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
         }
     }
 
-    // MapView lifecycle methods
     @Override
     protected void onResume()
     {
         super.onResume();
-        mapPreview.onResume();
+        this.mapPreview.onResume();
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        mapPreview.onPause();
+        this.mapPreview.onPause();
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        mapPreview.onDestroy();
+        this.mapPreview.onDestroy();
     }
 
     @Override
     public void onLowMemory()
     {
         super.onLowMemory();
-        mapPreview.onLowMemory();
+        this.mapPreview.onLowMemory();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        mapPreview.onSaveInstanceState(outState);
-        outState.putDouble("lat", lat);
-        outState.putDouble("lng", lng);
-        outState.putString("mode", mode);
-        outState.putString("id", id);
-        outState.putString("iconName", selectedIconName);
-        outState.putInt("iconColor", selectedIconColor);
+        this.mapPreview.onSaveInstanceState(outState);
+        outState.putDouble("lat", this.lat);
+        outState.putDouble("lng", this.lng);
+        outState.putString("mode", this.mode);
+        outState.putString("id", this.id);
+        outState.putString("iconName", this.selectedIconName);
+        outState.putInt("iconColor", this.selectedIconColor);
     }
 }

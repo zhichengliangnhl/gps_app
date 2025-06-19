@@ -19,13 +19,13 @@ public class WaypointViewHolder extends RecyclerView.ViewHolder
     public WaypointViewHolder(@NonNull View itemView)
     {
         super(itemView);
-        imageView = itemView.findViewById(R.id.waypointImage);
-        nameTextView = itemView.findViewById(R.id.waypointName);
-        descriptionTextView = itemView.findViewById(R.id.waypointDescription);
-        dateTextView = itemView.findViewById(R.id.waypointDate);
-        timerTextView = itemView.findViewById(R.id.waypointTimer);
-        editButton = itemView.findViewById(R.id.btnEdit);
-        deleteButton = itemView.findViewById(R.id.btnDelete);
-        shareButton = itemView.findViewById(R.id.btnShare);
+        this.imageView = itemView.findViewById(R.id.waypointImage);
+        this.nameTextView = itemView.findViewById(R.id.waypointName);
+        this.descriptionTextView = itemView.findViewById(R.id.waypointDescription);
+        this.dateTextView = itemView.findViewById(R.id.waypointDate);
+        this.timerTextView = itemView.findViewById(R.id.waypointTimer);
+        this.editButton = itemView.findViewById(R.id.btnEdit);
+        this.deleteButton = itemView.findViewById(R.id.btnDelete);
+        this.shareButton = itemView.findViewById(R.id.btnShare);
     }
 }
