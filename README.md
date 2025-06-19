@@ -142,7 +142,7 @@ The app is built with:
 
 Students from NHL Stenden:
 
-- Mihail Druzeta
+- Mihael Druzeta
 - Jia Men Lam
 - Thijs
 - Fjodor Smorodins
