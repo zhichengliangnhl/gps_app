@@ -58,12 +58,6 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:5.12.0")
     testImplementation ("org.mockito:mockito-inline:5.2.0") // for static mocking
     implementation(libs.preference)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
 
 
     annotationProcessor(libs.room.compiler)
