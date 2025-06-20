@@ -39,33 +39,42 @@ public class ThemeUtils
 
         boolean isSelected = themeName.equals(selectedTheme);
 
-        if (priceLayout != null && priceText != null)
+        if (ThemePurchaseManager.isThemePurchased(context, themeName))
         {
-            if (ThemePurchaseManager.isThemePurchased(context, themeName))
+            // Hide price layout if it exists
+            if (priceLayout != null)
             {
                 priceLayout.setVisibility(View.GONE);
-                layout.setAlpha(1.0f);
-                if (isSelected)
-                {
-                    int themeColor = getThemeColor(themeName);
-                    int lightColor = lightenColor(themeColor, 0.5f);
-                    layout.setBackgroundColor(lightColor);
-                    layout.setForeground(context.getDrawable(R.drawable.selected_card_background));
-                }
-                else
-                {
-                    layout.setBackgroundResource(R.drawable.rounded_card_bg);
-                    layout.setForeground(null);
-                }
+            }
+            layout.setAlpha(1.0f);
+            
+            if (isSelected)
+            {
+                int themeColor = getThemeColor(themeName);
+                int lightColor = lightenColor(themeColor, 0.5f);
+                android.graphics.drawable.GradientDrawable roundedBg = new android.graphics.drawable.GradientDrawable();
+                roundedBg.setColor(lightColor);
+                roundedBg.setCornerRadius(40 * context.getResources().getDisplayMetrics().density);
+                layout.setBackground(roundedBg);
+                layout.setForeground(context.getDrawable(R.drawable.selected_card_background));
             }
             else
             {
-                priceLayout.setVisibility(View.VISIBLE);
-                priceText.setText(String.valueOf(ThemePurchaseManager.getThemePrice(themeName)));
-                layout.setAlpha(0.7f);
                 layout.setBackgroundResource(R.drawable.rounded_card_bg);
                 layout.setForeground(null);
             }
+        }
+        else
+        {
+            // Show price layout if it exists
+            if (priceLayout != null && priceText != null)
+            {
+                priceLayout.setVisibility(View.VISIBLE);
+                priceText.setText(String.valueOf(ThemePurchaseManager.getThemePrice(themeName)));
+            }
+            layout.setAlpha(0.7f);
+            layout.setBackgroundResource(R.drawable.rounded_card_bg);
+            layout.setForeground(null);
         }
     }
 
@@ -96,33 +105,42 @@ public class ThemeUtils
 
         boolean isSelected = arrowName.equals(selectedArrow);
 
-        if (priceLayout != null && priceText != null)
+        if (ArrowPurchaseManager.isArrowPurchased(context, arrowName))
         {
-            if (ArrowPurchaseManager.isArrowPurchased(context, arrowName))
+            // Hide price layout if it exists
+            if (priceLayout != null)
             {
                 priceLayout.setVisibility(View.GONE);
-                layout.setAlpha(1.0f);
-                if (isSelected)
-                {
-                    int arrowColor = getArrowColor(arrowName);
-                    int lightColor = lightenColor(arrowColor, 0.5f);
-                    layout.setBackgroundColor(lightColor);
-                    layout.setForeground(context.getDrawable(R.drawable.selected_card_background));
-                }
-                else
-                {
-                    layout.setBackgroundResource(R.drawable.rounded_card_bg);
-                    layout.setForeground(null);
-                }
+            }
+            layout.setAlpha(1.0f);
+            
+            if (isSelected)
+            {
+                int arrowColor = getArrowColor(arrowName);
+                int lightColor = lightenColor(arrowColor, 0.5f);
+                android.graphics.drawable.GradientDrawable roundedBg = new android.graphics.drawable.GradientDrawable();
+                roundedBg.setColor(lightColor);
+                roundedBg.setCornerRadius(40 * context.getResources().getDisplayMetrics().density);
+                layout.setBackground(roundedBg);
+                layout.setForeground(context.getDrawable(R.drawable.selected_card_background));
             }
             else
             {
-                priceLayout.setVisibility(View.VISIBLE);
-                priceText.setText(String.valueOf(ArrowPurchaseManager.getArrowPrice(arrowName)));
-                layout.setAlpha(0.7f);
                 layout.setBackgroundResource(R.drawable.rounded_card_bg);
                 layout.setForeground(null);
             }
+        }
+        else
+        {
+            // Show price layout if it exists
+            if (priceLayout != null && priceText != null)
+            {
+                priceLayout.setVisibility(View.VISIBLE);
+                priceText.setText(String.valueOf(ArrowPurchaseManager.getArrowPrice(arrowName)));
+            }
+            layout.setAlpha(0.7f);
+            layout.setBackgroundResource(R.drawable.rounded_card_bg);
+            layout.setForeground(null);
         }
     }
 
