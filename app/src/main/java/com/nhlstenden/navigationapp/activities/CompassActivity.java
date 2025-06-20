@@ -386,6 +386,15 @@ public class CompassActivity extends BaseActivity implements CompassListener
                     saveTimerToWaypoint(targetWaypoint.getId(), elapsed);
                     PreferencesHelper.remove(this, "timer_elapsed_" + targetWaypoint.getId());
                     PreferencesHelper.saveBoolean(this, "waypoint_completed_" + targetWaypoint.getId(), true);
+                    // Award 50 coins for reaching a waypoint
+                    CoinManager.addCoins(this, 50);
+                    // Immediately update coin display
+                    TextView coinCounter = findViewById(R.id.coinCounter);
+                    if (coinCounter != null) {
+                        CoinManager.updateCoinDisplay(this, coinCounter);
+                    }
+                    // Update Runner achievements before clearing selected waypoint
+                    AchievementManager.checkWaypointCompletion(this, distance);
                 }
                 clearSelectedWaypoint();
             });
