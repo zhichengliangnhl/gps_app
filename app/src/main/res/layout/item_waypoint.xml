@@ -169,7 +169,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
                 android:src="@drawable/share_icon"
-                card_view:tint="#000000"
+                card_view:tint="?attr/colorOnSecondary"
                 tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
     </LinearLayout>

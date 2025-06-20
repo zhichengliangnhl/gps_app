@@ -60,7 +60,11 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation ("org.mockito:mockito-core:5.12.0")
+    testImplementation ("org.mockito:mockito-inline:5.2.0") // for static mocking
     implementation(libs.preference)
+
 
     annotationProcessor(libs.room.compiler)
 

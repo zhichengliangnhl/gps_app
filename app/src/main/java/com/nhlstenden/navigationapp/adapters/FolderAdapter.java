@@ -38,28 +38,28 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     @Override
     public void onBindViewHolder(@NonNull FolderViewHolder holder, int position)
     {
-        Folder folder = folderList.get(position);
+        Folder folder = this.folderList.get(position);
         holder.folderNameTextView.setText(folder.getName());
 
-        holder.itemView.setOnClickListener(v -> listener.onFolderClicked(folder));
-        holder.editButton.setOnClickListener(v -> listener.onEditFolder(folder));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteFolder(folder));
+        holder.itemView.setOnClickListener(v -> this.listener.onFolderClicked(folder));
+        holder.editButton.setOnClickListener(v -> this.listener.onEditFolder(folder));
+        holder.deleteButton.setOnClickListener(v -> this.listener.onDeleteFolder(folder));
     }
 
     @Override
     public int getItemCount()
     {
-        return folderList.size();
+        return this.folderList.size();
     }
 
     public void updateFolder(Folder updatedFolder)
     {
-        for (int i = 0; i < folderList.size(); i++)
+        for (int i = 0; i < this.folderList.size(); i++)
         {
-            if (folderList.get(i).getName().equals(updatedFolder.getName()))
+            if (this.folderList.get(i).getName().equals(updatedFolder.getName()))
             {
-                folderList.set(i, updatedFolder);
-                notifyItemChanged(i);
+                this.folderList.set(i, updatedFolder);
+                this.notifyItemChanged(i);
                 break;
             }
         }
@@ -73,9 +73,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         public FolderViewHolder(@NonNull View itemView)
         {
             super(itemView);
-            folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
-            editButton = itemView.findViewById(R.id.editFolderButton);
-            deleteButton = itemView.findViewById(R.id.deleteFolderButton);
+            this.folderNameTextView = itemView.findViewById(R.id.folderNameTextView);
+            this.editButton = itemView.findViewById(R.id.editFolderButton);
+            this.deleteButton = itemView.findViewById(R.id.deleteFolderButton);
         }
     }
 }

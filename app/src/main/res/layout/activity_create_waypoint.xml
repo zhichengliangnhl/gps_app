@@ -77,15 +77,15 @@
                             android:layout_marginBottom="8dp"
                             android:background="@null"
                             android:hint="Treasure Name"
-                            android:textColor="#000000"
-                            android:textColorHint="#444444"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textColorHint="?attr/colorOnSurface"
                             android:textSize="23sp" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="2dp"
                             android:layout_marginBottom="12dp"
-                            android:background="#000000" />
+                            android:background="?attr/darkColor" />
 
                         <EditText
                             android:id="@+id/etDescription"
@@ -94,15 +94,15 @@
                             android:background="@null"
                             android:gravity="top"
                             android:hint="Description"
-                            android:textColor="#000000"
-                            android:textColorHint="#444444"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textColorHint="?attr/colorOnSurface"
                             android:textSize="20sp" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="2dp"
                             android:layout_marginBottom="12dp"
-                            android:background="#000000" />
+                            android:background="?attr/darkColor" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -142,7 +142,7 @@
                     android:orientation="horizontal"
                     android:gravity="center">
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnCancel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                         android:layout_marginRight="16dp"
                         app:backgroundTint="@null"/>
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnSaveWaypoint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

@@ -31,6 +31,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
 import com.nhlstenden.navigationapp.R;
+import com.nhlstenden.navigationapp.helpers.ToastUtils;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -68,16 +69,23 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        previewView = view.findViewById(R.id.previewView);
+        this.previewView = view.findViewById(R.id.previewView);
         ImageButton btnClose = view.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> dismiss());
 
-        cameraExecutor = Executors.newSingleThreadExecutor();
+        this.cameraExecutor = Executors.newSingleThreadExecutor();
+        
+        // Check if context is still valid
+        if (getContext() == null) {
+            Log.e(TAG, "Context is null, cannot start camera");
+            return;
+        }
+        
         if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
         {
             Log.d(TAG, "Camera permission granted, starting camera");
-            startCamera(previewView);
+            startCamera(this.previewView);
         }
         else
         {
@@ -89,17 +97,37 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
     private void startCamera(PreviewView previewView)
     {
         Log.d(TAG, "startCamera called");
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider
-                .getInstance(requireContext());
+        
+        if (previewView == null) {
+            Log.e(TAG, "PreviewView is null, cannot start camera");
+            return;
+        }
+        
+        if (getContext() == null) {
+            Log.e(TAG, "Context is null, cannot start camera");
+            return;
+        }
+        
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(requireContext());
+
         cameraProviderFuture.addListener(() ->
         {
             try
             {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                if (cameraProvider == null) {
+                    Log.e(TAG, "CameraProvider is null");
+                    return;
+                }
+                
                 Preview preview = new Preview.Builder().build();
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder().build();
-                imageAnalysis.setAnalyzer(cameraExecutor, imageProxy -> processImageProxy(imageProxy));
+                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                        .setTargetResolution(new android.util.Size(1280, 720))
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build();
+                imageAnalysis.setAnalyzer(this.cameraExecutor, imageProxy -> processImageProxy(imageProxy));
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -108,6 +136,16 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
             {
                 Log.e(TAG, "Failed to start camera: " + e.getMessage());
                 e.printStackTrace();
+                // Show error to user
+                if (getContext() != null) {
+                    ToastUtils.show(getContext(), "Failed to start camera: " + e.getMessage(), Toast.LENGTH_LONG);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Unexpected error starting camera: " + e.getMessage());
+                e.printStackTrace();
+                if (getContext() != null) {
+                    ToastUtils.show(getContext(), "Camera error: " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
@@ -115,16 +153,16 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void processImageProxy(ImageProxy imageProxy)
     {
-        if (!scanning)
+        if (!this.scanning)
         {
             imageProxy.close();
             return;
         }
-        @androidx.camera.core.ExperimentalGetImage
         android.media.Image mediaImage = imageProxy.getImage();
         if (mediaImage != null)
         {
-            InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+            InputImage image = InputImage.fromMediaImage(mediaImage,
+                    imageProxy.getImageInfo().getRotationDegrees());
             BarcodeScannerOptions options = new BarcodeScannerOptions.Builder()
                     .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                     .build();
@@ -136,9 +174,9 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
                         {
                             if (barcode.getRawValue() != null)
                             {
-                                scanning = false;
-                                if (listener != null)
-                                    listener.onQrScanned(barcode.getRawValue());
+                                this.scanning = false;
+                                if (this.listener != null)
+                                    this.listener.onQrScanned(barcode.getRawValue());
                                 dismiss();
                                 break;
                             }
@@ -157,8 +195,8 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
     public void onDestroy()
     {
         super.onDestroy();
-        if (cameraExecutor != null)
-            cameraExecutor.shutdown();
+        if (this.cameraExecutor != null)
+            this.cameraExecutor.shutdown();
     }
 
     @Override
@@ -166,12 +204,13 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
                                            @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1001 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        if (requestCode == 1001 && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
             Log.d(TAG, "Camera permission granted in callback, starting camera");
-            if (previewView != null)
+            if (this.previewView != null)
             {
-                startCamera(previewView);
+                startCamera(this.previewView);
             }
             else
             {
@@ -181,7 +220,7 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
         else
         {
             Log.d(TAG, "Camera permission denied");
-            Toast.makeText(getContext(), "Camera permission is required to scan QR codes", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(getContext(), "Camera permission is required to scan QR codes", Toast.LENGTH_SHORT);
             dismiss();
         }
     }

@@ -38,7 +38,8 @@ public class Waypoint implements Parcelable
     private long navigationTimeMillis = 0L;
     private boolean isImported = false;
 
-    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat, double lng)
+    public Waypoint(String id, String name, String description, String iconName, int iconColor, double lat,
+                    double lng)
     {
         this.id = id;
         this.name = name;
@@ -54,16 +55,16 @@ public class Waypoint implements Parcelable
 
     protected Waypoint(Parcel in)
     {
-        id = in.readString();
-        name = in.readString();
-        description = in.readString();
-        iconName = in.readString();
-        iconColor = in.readInt();
-        lat = in.readDouble();
-        lng = in.readDouble();
-        date = in.readString();
-        navigationTimeMillis = in.readLong();
-        isImported = in.readByte() != 0;
+        this.id = in.readString();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.iconName = in.readString();
+        this.iconColor = in.readInt();
+        this.lat = in.readDouble();
+        this.lng = in.readDouble();
+        this.date = in.readString();
+        this.navigationTimeMillis = in.readLong();
+        this.isImported = in.readByte() != 0;
     }
 
     public static final Creator<Waypoint> CREATOR = new Creator<Waypoint>()
@@ -83,47 +84,47 @@ public class Waypoint implements Parcelable
 
     public String getId()
     {
-        return id;
+        return this.id;
     }
 
     public String getName()
     {
-        return name;
+        return this.name;
     }
 
     public String getDescription()
     {
-        return description;
+        return this.description;
     }
 
     public String getIconName()
     {
-        return iconName;
+        return this.iconName;
     }
 
     public int getIconColor()
     {
-        return iconColor;
+        return this.iconColor;
     }
 
     public double getLat()
     {
-        return lat;
+        return this.lat;
     }
 
     public double getLng()
     {
-        return lng;
+        return this.lng;
     }
 
     public String getDate()
     {
-        return date;
+        return this.date;
     }
 
     public long getNavigationTimeMillis()
     {
-        return navigationTimeMillis;
+        return this.navigationTimeMillis;
     }
 
     public void setId(String id)
@@ -173,14 +174,13 @@ public class Waypoint implements Parcelable
 
     public boolean isImported()
     {
-        return isImported;
+        return this.isImported;
     }
 
     public void setImported(boolean imported)
     {
-        isImported = imported;
+        this.isImported = imported;
     }
-
 
     @Override
     public int describeContents()
@@ -191,16 +191,16 @@ public class Waypoint implements Parcelable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeString(iconName);
-        dest.writeInt(iconColor);
-        dest.writeDouble(lat);
-        dest.writeDouble(lng);
-        dest.writeString(date);
-        dest.writeLong(navigationTimeMillis);
-        dest.writeByte((byte) (isImported ? 1 : 0));
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeString(this.iconName);
+        dest.writeInt(this.iconColor);
+        dest.writeDouble(this.lat);
+        dest.writeDouble(this.lng);
+        dest.writeString(this.date);
+        dest.writeLong(this.navigationTimeMillis);
+        dest.writeByte((byte) (this.isImported ? 1 : 0));
     }
 
     public String encode()
@@ -208,15 +208,15 @@ public class Waypoint implements Parcelable
         try
         {
             JSONObject json = new JSONObject();
-            json.put("id", id);
-            json.put("name", name);
-            json.put("description", description);
-            json.put("iconName", iconName);
-            json.put("iconColor", iconColor);
-            json.put("lat", lat);
-            json.put("lng", lng);
-            json.put("date", date);
-            json.put("navigationTimeMillis", navigationTimeMillis);
+            json.put("id", this.id);
+            json.put("name", this.name);
+            json.put("description", this.description);
+            json.put("iconName", this.iconName);
+            json.put("iconColor", this.iconColor);
+            json.put("lat", this.lat);
+            json.put("lng", this.lng);
+            json.put("date", this.date);
+            json.put("navigationTimeMillis", this.navigationTimeMillis);
 
             return Base64.encodeToString(json.toString().getBytes(), Base64.NO_WRAP);
         } catch (Exception e)
@@ -244,7 +244,8 @@ public class Waypoint implements Parcelable
             long navigationTimeMillis = json.optLong("navigationTimeMillis", 0L);
 
             Waypoint wp = new Waypoint(id, name, description, iconName, iconColor, lat, lng);
-            if (date != null) wp.setDate(date);
+            if (date != null)
+                wp.setDate(date);
             wp.setImported(true);
             return wp;
         } catch (Exception e)

@@ -5,7 +5,8 @@ import android.widget.Toast;
 
 public class ToastUtils
 {
-
+    public static final int SHORT = Toast.LENGTH_SHORT;
+    public static final int LONG = Toast.LENGTH_LONG;
 
     public static void show(Context context, String message)
     {

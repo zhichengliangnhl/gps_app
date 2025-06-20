@@ -29,9 +29,9 @@ public class Folder implements Parcelable
 
     protected Folder(Parcel in)
     {
-        id = in.readString();
-        name = in.readString();
-        waypoints = in.createTypedArrayList(Waypoint.CREATOR);
+        this.id = in.readString();
+        this.name = in.readString();
+        this.waypoints = in.createTypedArrayList(Waypoint.CREATOR);
     }
 
     public static final Creator<Folder> CREATOR = new Creator<Folder>()
@@ -51,7 +51,7 @@ public class Folder implements Parcelable
 
     public String getId()
     {
-        return id;
+        return this.id;
     }
 
     public void setId(String id)
@@ -61,7 +61,7 @@ public class Folder implements Parcelable
 
     public String getName()
     {
-        return name;
+        return this.name;
     }
 
     public void setName(String name)
@@ -71,17 +71,17 @@ public class Folder implements Parcelable
 
     public List<Waypoint> getWaypoints()
     {
-        return waypoints;
+        return this.waypoints;
     }
 
     public void addWaypoint(Waypoint waypoint)
     {
-        waypoints.add(waypoint);
+        this.waypoints.add(waypoint);
     }
 
     public void removeWaypoint(Waypoint waypoint)
     {
-        waypoints.remove(waypoint);
+        this.waypoints.remove(waypoint);
     }
 
     public void deleteWaypoint(Waypoint waypoint)
@@ -98,8 +98,8 @@ public class Folder implements Parcelable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeTypedList(waypoints);
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeTypedList(this.waypoints);
     }
 }

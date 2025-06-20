@@ -55,13 +55,13 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                     Folder updatedFolder = result.getData().getParcelableExtra("FOLDER");
                     if (updatedFolder != null)
                     {
-                        folderAdapter.updateFolder(updatedFolder);
-                        for (int i = 0; i < folderList.size(); i++)
+                        this.folderAdapter.updateFolder(updatedFolder);
+                        for (int i = 0; i < this.folderList.size(); i++)
                         {
-                            if (folderList.get(i).getId().equals(updatedFolder.getId()))
+                            if (this.folderList.get(i).getId().equals(updatedFolder.getId()))
                             {
-                                folderList.set(i, updatedFolder);
-                                saveFolders();
+                                this.folderList.set(i, updatedFolder);
+                                this.saveFolders();
                                 break;
                             }
                         }
@@ -105,7 +105,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         ImageView settingsIcon = findViewById(R.id.settingsIcon);
         if (settingsIcon != null)
         {
-            settingsIcon.setOnClickListener(v -> showSettingsPanel());
+            settingsIcon.setOnClickListener(v -> this.showSettingsPanel());
         }
 
         // Set top bar title
@@ -114,31 +114,31 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         {
             headerTitle.setText("Treasure Collections");
         }
-        setupSettingsPanel();
+        this.setupSettingsPanel();
 
         // Initialize views
-        recyclerView = findViewById(R.id.recyclerViewFolders);
-        addFolderButton = findViewById(R.id.addFolderButton);
-        folderNameInput = findViewById(R.id.folderNameInput);
+        this.recyclerView = findViewById(R.id.recyclerViewFolders);
+        this.addFolderButton = findViewById(R.id.addFolderButton);
+        this.folderNameInput = findViewById(R.id.folderNameInput);
 
         // Folder list
-        folderList = new ArrayList<>();
-        loadFolders();
+        this.folderList = new ArrayList<>();
+        this.loadFolders();
 
-        folderAdapter = new FolderAdapter(folderList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(folderAdapter);
+        this.folderAdapter = new FolderAdapter(this.folderList, this);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.recyclerView.setAdapter(this.folderAdapter);
 
         // Add folder logic
-        addFolderButton.setOnClickListener(v ->
+        this.addFolderButton.setOnClickListener(v ->
         {
-            String folderName = folderNameInput.getText().toString().trim();
+            String folderName = this.folderNameInput.getText().toString().trim();
             if (TextUtils.isEmpty(folderName))
             {
                 ToastUtils.show(this, "Please enter a folder name", Toast.LENGTH_SHORT);
                 return;
             }
-            for (Folder f : folderList)
+            for (Folder f : this.folderList)
             {
                 if (f.getName().equalsIgnoreCase(folderName))
                 {
@@ -147,11 +147,11 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
                 }
             }
             Folder folder = new Folder(folderName);
-            folderList.add(folder);
-            folderAdapter.notifyItemInserted(folderList.size() - 1);
-            saveFolders();
-            folderNameInput.setText("");
-            onFolderClicked(folder); // Open folder immediately
+            this.folderList.add(folder);
+            this.folderAdapter.notifyItemInserted(this.folderList.size() - 1);
+            this.saveFolders();
+            this.folderNameInput.setText("");
+            this.onFolderClicked(folder); // Open folder immediately
         });
     }
 
@@ -160,7 +160,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
     {
         Intent intent = new Intent(this, WaypointActivity.class);
         intent.putExtra("FOLDER", folder);
-        folderResultLauncher.launch(intent);
+        this.folderResultLauncher.launch(intent);
     }
 
     @Override
@@ -194,8 +194,8 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             if (!TextUtils.isEmpty(newName))
             {
                 folder.setName(newName);
-                folderAdapter.notifyDataSetChanged();
-                saveFolders();
+                this.folderAdapter.notifyDataSetChanged();
+                this.saveFolders();
                 dialog.dismiss();
             }
             else
@@ -213,7 +213,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         if (bottomSheet != null)
         {
             bottomSheet.setBackgroundResource(android.R.color.transparent);
-            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.4); // 60% of screen
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.4);
             bottomSheet.getLayoutParams().height = desiredHeight;
             bottomSheet.requestLayout();
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -248,9 +248,9 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnDelete.setOnClickListener(v ->
         {
-            folderList.remove(folder);
-            folderAdapter.notifyDataSetChanged();
-            saveFolders();
+            this.folderList.remove(folder);
+            this.folderAdapter.notifyDataSetChanged();
+            this.saveFolders();
             ToastUtils.show(this, "Folder deleted", Toast.LENGTH_SHORT);
             dialog.dismiss();
         });
@@ -264,7 +264,7 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
         if (bottomSheet != null)
         {
             bottomSheet.setBackgroundResource(android.R.color.transparent);
-            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.6); // 60% of screen
+            int desiredHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.6);
             bottomSheet.getLayoutParams().height = desiredHeight;
             bottomSheet.requestLayout();
             com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior = com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -294,14 +294,14 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
             {
             }.getType();
             List<Folder> saved = new Gson().fromJson(json, type);
-            folderList.clear();
-            folderList.addAll(saved);
+            this.folderList.clear();
+            this.folderList.addAll(saved);
         }
     }
 
     private void saveFolders()
     {
-        String json = new Gson().toJson(folderList);
+        String json = new Gson().toJson(this.folderList);
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 .edit()
                 .putString(KEY_FOLDERS, json)
@@ -318,5 +318,4 @@ public class FolderActivity extends BaseActivity implements OnFolderClickListene
 
         dialog.show();
     }
-
 }

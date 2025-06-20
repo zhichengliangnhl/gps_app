@@ -64,22 +64,20 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // Set top bar title
         TextView headerTitle = findViewById(R.id.headerTitle);
         if (headerTitle != null)
         {
             headerTitle.setText("Loot land");
         }
-        setupSettingsPanel();
+        this.setupSettingsPanel();
 
-        // Initialize the map
         SupportMapFragment mapFragment = new SupportMapFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.map_container, mapFragment)
                 .commit();
         mapFragment.getMapAsync(this);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         EditText searchEditText = findViewById(R.id.searchEditText);
         searchEditText.setOnEditorActionListener((v, actionId, event) ->
@@ -90,16 +88,16 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
                 String locationName = searchEditText.getText().toString().trim();
                 if (!locationName.isEmpty())
                 {
-                    searchLocation(locationName);
+                    this.searchLocation(locationName);
                 }
                 return true;
             }
             return false;
         });
 
-        btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
-        btnSaveWaypoint.setEnabled(false);
-        btnSaveWaypoint.setOnClickListener(v -> saveWaypoint());
+        this.btnSaveWaypoint = findViewById(R.id.btnSaveWaypoint);
+        this.btnSaveWaypoint.setEnabled(false);
+        this.btnSaveWaypoint.setOnClickListener(v -> this.saveWaypoint());
 
         Button btnBackWaypoint = findViewById(R.id.btnBackWaypoint);
         btnBackWaypoint.setOnClickListener(v ->
@@ -110,7 +108,6 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
             finish();
         });
 
-        // If coordinates were passed to center the map
         Intent intent = getIntent();
         if (intent.hasExtra("lat") && intent.hasExtra("lng"))
         {
@@ -118,8 +115,8 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
             double lng = intent.getDoubleExtra("lng", 0.0);
             if (lat != 0.0 && lng != 0.0)
             {
-                selectedLocation = new LatLng(lat, lng);
-                btnSaveWaypoint.setEnabled(true);
+                this.selectedLocation = new LatLng(lat, lng);
+                this.btnSaveWaypoint.setEnabled(true);
             }
         }
     }
@@ -127,12 +124,12 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
-        mMap = googleMap;
+        this.mMap = googleMap;
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
         {
-            enableMyLocation();
+            this.enableMyLocation();
         }
         else
         {
@@ -141,18 +138,18 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        mMap.setOnMapClickListener(latLng ->
+        this.mMap.setOnMapClickListener(latLng ->
         {
-            selectedLocation = latLng;
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
-            btnSaveWaypoint.setEnabled(true);
+            this.selectedLocation = latLng;
+            this.mMap.clear();
+            this.mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
+            this.btnSaveWaypoint.setEnabled(true);
         });
 
-        if (selectedLocation != null)
+        if (this.selectedLocation != null)
         {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
-            mMap.addMarker(new MarkerOptions().position(selectedLocation).title("Selected Location"));
+            this.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.selectedLocation, 15));
+            this.mMap.addMarker(new MarkerOptions().position(this.selectedLocation).title("Selected Location"));
         }
     }
 
@@ -161,14 +158,14 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
         {
-            mMap.setMyLocationEnabled(true);
-            fusedLocationClient.getLastLocation()
+            this.mMap.setMyLocationEnabled(true);
+            this.fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location ->
                     {
                         if (location != null)
                         {
                             LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                            this.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
                         }
                     });
         }
@@ -183,7 +180,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
         {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                enableMyLocation();
+                this.enableMyLocation();
             }
             else
             {
@@ -195,11 +192,11 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
 
     private void saveWaypoint()
     {
-        if (selectedLocation != null)
+        if (this.selectedLocation != null)
         {
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("lat", selectedLocation.latitude);
-            resultIntent.putExtra("lng", selectedLocation.longitude);
+            resultIntent.putExtra("lat", this.selectedLocation.latitude);
+            resultIntent.putExtra("lng", this.selectedLocation.longitude);
             setResult(RESULT_OK, resultIntent);
             finish();
         }
@@ -215,17 +212,18 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback
             {
                 Address address = addressList.get(0);
                 LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                selectedLocation = latLng;
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                btnSaveWaypoint.setEnabled(true);
+                this.selectedLocation = latLng;
+                this.mMap.clear();
+                this.mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
+                this.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                this.btnSaveWaypoint.setEnabled(true);
             }
             else
             {
                 ToastUtils.show(this, "Address not found", Toast.LENGTH_SHORT);
             }
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.e("MapActivity", "Geocoder failed", e);
             ToastUtils.show(this, "Geocoding failed: " + e.getMessage(), Toast.LENGTH_LONG);

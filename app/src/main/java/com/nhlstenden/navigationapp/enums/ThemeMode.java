@@ -1,7 +1,6 @@
 package com.nhlstenden.navigationapp.enums;
 
-public enum ThemeMode
-{
+public enum ThemeMode {
     CLASSIC,
     SPLASH,
     RETRO

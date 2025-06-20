@@ -46,7 +46,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon1"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -70,7 +70,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon2"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -94,7 +94,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon3"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -118,7 +118,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon4"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -142,7 +142,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon5"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -166,7 +166,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon6"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -190,7 +190,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon7"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -214,7 +214,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon8"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -238,7 +238,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon9"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
 
         <FrameLayout
@@ -262,7 +262,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon10"
-                app:tint="#000000"/>
+                app:tint="?attr/colorOnSurface"/>
         </FrameLayout>
     </GridLayout>
 

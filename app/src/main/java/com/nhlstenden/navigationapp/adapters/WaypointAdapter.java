@@ -19,9 +19,9 @@ import com.nhlstenden.navigationapp.models.Waypoint;
 import java.util.List;
 import java.util.Locale;
 
+
 public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
 {
-
     private List<Waypoint> waypointList;
     private final OnWaypointClickListener listener;
 
@@ -34,7 +34,7 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
     public void updateList(List<Waypoint> newList)
     {
         this.waypointList = newList;
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -49,37 +49,38 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
     @Override
     public void onBindViewHolder(@NonNull WaypointViewHolder holder, int position)
     {
-        Waypoint waypoint = waypointList.get(position);
+        Waypoint waypoint = this.waypointList.get(position);
         holder.nameTextView.setText(waypoint.getName());
         holder.descriptionTextView.setText(waypoint.getDescription());
         holder.dateTextView.setText(waypoint.getDate());
 
-        // Show navigation timer
         long navTime = waypoint.getNavigationTimeMillis();
         if (navTime > 0)
         {
-            holder.timerTextView.setText("Timer: " + formatTimer(navTime));
+            holder.timerTextView.setText("Timer: " + this.formatTimer(navTime));
         }
         else
         {
             holder.timerTextView.setText("Timer: --");
         }
 
-        // Set icon and color (use default if not set)
-        int iconResId = holder.itemView.getContext().getResources().getIdentifier(waypoint.getIconName(), "drawable",
-                holder.itemView.getContext().getPackageName());
+        int iconResId = holder.itemView.getContext().getResources().getIdentifier(
+                waypoint.getIconName(), "drawable",
+                holder.itemView.getContext().getPackageName()
+        );
         int iconColor = waypoint.getIconColor();
         holder.imageView.setImageResource(iconResId);
         holder.imageView.setColorFilter(iconColor);
 
-        // Set border based on completion
         boolean completed = false;
-        android.content.SharedPreferences prefs = holder.itemView.getContext().getSharedPreferences("AppPrefs",
-                android.content.Context.MODE_PRIVATE);
+        android.content.SharedPreferences prefs = holder.itemView.getContext().getSharedPreferences(
+                "AppPrefs", android.content.Context.MODE_PRIVATE
+        );
         if (waypoint.getId() != null)
         {
             completed = prefs.getBoolean("waypoint_completed_" + waypoint.getId(), false);
         }
+
         FrameLayout imageFrame = holder.itemView.findViewById(R.id.waypointImageFrame);
         ImageView crownView = holder.itemView.findViewById(R.id.waypointCrown);
         ImageView starView = holder.itemView.findViewById(R.id.waypointStar);
@@ -91,7 +92,6 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.VISIBLE);
             starView.setVisibility(View.GONE);
-            // Show import indicators even when completed
             if (waypoint.isImported())
             {
                 importView.setVisibility(View.VISIBLE);
@@ -105,7 +105,6 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
         }
         else if (waypoint.isImported())
         {
-            // Show import icon and label for imported waypoints
             imageFrame.setBackgroundResource(0);
             crownView.setVisibility(View.GONE);
             starView.setVisibility(View.GONE);
@@ -121,35 +120,32 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
             importedLabel.setVisibility(View.GONE);
         }
 
-        // Hook entire card view to navigation
-        holder.itemView.setOnClickListener(v -> listener.onNavigateClick(waypoint));
-
-        // Edit & delete
-        holder.editButton.setOnClickListener(v -> listener.onEditClick(waypoint));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(waypoint));
-        holder.shareButton.setOnClickListener(v -> listener.onShareClick(waypoint));
+        holder.itemView.setOnClickListener(v -> this.listener.onNavigateClick(waypoint));
+        holder.editButton.setOnClickListener(v -> this.listener.onEditClick(waypoint));
+        holder.deleteButton.setOnClickListener(v -> this.listener.onDeleteClick(waypoint));
+        holder.shareButton.setOnClickListener(v -> this.listener.onShareClick(waypoint));
     }
 
     @Override
     public int getItemCount()
     {
-        return waypointList.size();
+        return this.waypointList.size();
     }
 
     public void addWaypoint(Waypoint waypoint)
     {
-        waypointList.add(waypoint);
-        notifyItemInserted(waypointList.size() - 1);
+        this.waypointList.add(waypoint);
+        this.notifyItemInserted(this.waypointList.size() - 1);
     }
 
     public void updateWaypoint(Waypoint updated)
     {
-        for (int i = 0; i < waypointList.size(); i++)
+        for (int i = 0; i < this.waypointList.size(); i++)
         {
-            if (waypointList.get(i).getId().equals(updated.getId()))
+            if (this.waypointList.get(i).getId().equals(updated.getId()))
             {
-                waypointList.set(i, updated);
-                notifyDataSetChanged();
+                this.waypointList.set(i, updated);
+                this.notifyDataSetChanged();
                 break;
             }
         }
@@ -158,24 +154,20 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
     public void removeWaypoint(Waypoint waypoint)
     {
         int position = -1;
-        // Find the position of the waypoint to remove
-        for (int i = 0; i < waypointList.size(); i++)
+        for (int i = 0; i < this.waypointList.size(); i++)
         {
-            if (waypointList.get(i).getId().equals(waypoint.getId()))
+            if (this.waypointList.get(i).getId().equals(waypoint.getId()))
             {
                 position = i;
                 break;
             }
         }
 
-        // Only remove if we found the waypoint
         if (position != -1)
         {
-            waypointList.remove(position);
-            notifyItemRemoved(position);
-            // Notify any items after the removed position that they need to update their
-            // positions
-            notifyItemRangeChanged(position, waypointList.size() - position);
+            this.waypointList.remove(position);
+            this.notifyItemRemoved(position);
+            this.notifyItemRangeChanged(position, this.waypointList.size() - position);
         }
     }
 
@@ -185,14 +177,14 @@ public class WaypointAdapter extends RecyclerView.Adapter<WaypointViewHolder>
         long minutes = (seconds % 3600) / 60;
         long hours = seconds / 3600;
         long secs = seconds % 60;
+
         if (hours > 0)
         {
-            return String.format("%02d:%02d:%02d", hours, minutes, secs);
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs);
         }
         else
         {
-            return String.format("%02d:%02d", minutes, secs);
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, secs);
         }
     }
-
 }
