@@ -1,5 +1,6 @@
 package com.nhlstenden.navigationapp.helpers;
 
+import android.animation.ObjectAnimator;
 import android.location.Location;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,6 +43,13 @@ public class CompassUIController {
     }
 
     public void updateNeedleRotation(float angle) {
-        compassNeedle.setRotation(angle);
+        float currentRotation = compassNeedle.getRotation();
+
+        // Prevent unnecessary animation for very small changes
+        if (Math.abs(currentRotation - angle) < 1.0f) return;
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(compassNeedle, "rotation", currentRotation, angle);
+        animator.setDuration(300); // You can tweak this for faster/slower animation
+        animator.start();
     }
 } 
