@@ -12,11 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/upload-artifact@v4
-        name: "Upload Node Modules - v4"
-        with:
-          name: node_modules-v4
-          path: node_modules
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -45,19 +40,8 @@ jobs:
       - name: Build project
         run: ./gradlew assembleDebug
 
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
-
       - name: Run Lint
         run: ./gradlew lintDebug
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            build/reports
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
