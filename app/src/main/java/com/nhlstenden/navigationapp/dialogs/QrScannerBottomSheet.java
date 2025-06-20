@@ -74,6 +74,13 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
         btnClose.setOnClickListener(v -> dismiss());
 
         this.cameraExecutor = Executors.newSingleThreadExecutor();
+        
+        // Check if context is still valid
+        if (getContext() == null) {
+            Log.e(TAG, "Context is null, cannot start camera");
+            return;
+        }
+        
         if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
         {
@@ -90,6 +97,17 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
     private void startCamera(PreviewView previewView)
     {
         Log.d(TAG, "startCamera called");
+        
+        if (previewView == null) {
+            Log.e(TAG, "PreviewView is null, cannot start camera");
+            return;
+        }
+        
+        if (getContext() == null) {
+            Log.e(TAG, "Context is null, cannot start camera");
+            return;
+        }
+        
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(requireContext());
 
@@ -98,9 +116,17 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
             try
             {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                if (cameraProvider == null) {
+                    Log.e(TAG, "CameraProvider is null");
+                    return;
+                }
+                
                 Preview preview = new Preview.Builder().build();
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder().build();
+                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                        .setTargetResolution(new android.util.Size(1280, 720))
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build();
                 imageAnalysis.setAnalyzer(this.cameraExecutor, imageProxy -> processImageProxy(imageProxy));
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
@@ -110,6 +136,16 @@ public class QrScannerBottomSheet extends BottomSheetDialogFragment
             {
                 Log.e(TAG, "Failed to start camera: " + e.getMessage());
                 e.printStackTrace();
+                // Show error to user
+                if (getContext() != null) {
+                    ToastUtils.show(getContext(), "Failed to start camera: " + e.getMessage(), Toast.LENGTH_LONG);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Unexpected error starting camera: " + e.getMessage());
+                e.printStackTrace();
+                if (getContext() != null) {
+                    ToastUtils.show(getContext(), "Camera error: " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
